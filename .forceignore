@@ -1,0 +1,10 @@
+# Standard noise
+**/jsconfig.json
+**/.eslintrc.json
+**/__tests__/**
+
+# Profiles drift a lot in dev orgs — manage access via permission sets
+**/profiles/**
+
+# Click-heavy config that is documented in docs/manual-setup/ instead of source-tracked
+# (uncomment specific Data 360 / Agentforce types here once we confirm what won't retrieve)

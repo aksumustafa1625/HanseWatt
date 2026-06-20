@@ -1,0 +1,20 @@
+{
+  "name": "hansewatt",
+  "version": "0.1.0",
+  "private": true,
+  "description": "HanseWatt — Agentforce Service Cloud + Data 360 (DACH Energy) portfolio project",
+  "scripts": {
+    "lint": "eslint **/lwc/**/*.js",
+    "test": "sfdx-lwc-jest",
+    "prettier": "prettier --write \"**/*.{cls,trigger,js,html,css,json,md,xml}\"",
+    "prettier:verify": "prettier --check \"**/*.{cls,trigger,js,html,css,json,md,xml}\""
+  },
+  "devDependencies": {
+    "@prettier/plugin-xml": "^3.4.1",
+    "@salesforce/eslint-config-lwc": "^3.5.3",
+    "@salesforce/sfdx-lwc-jest": "^5.1.0",
+    "eslint": "^8.57.0",
+    "prettier": "^3.3.3",
+    "prettier-plugin-apex": "^2.1.5"
+  }
+}

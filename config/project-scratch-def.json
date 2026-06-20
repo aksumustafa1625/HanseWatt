@@ -1,0 +1,15 @@
+{
+  "orgName": "HanseWatt",
+  "edition": "Developer",
+  "language": "de",
+  "features": [],
+  "settings": {
+    "lightningExperienceSettings": {
+      "enableS1DesktopEnabled": true
+    },
+    "mobileSettings": {
+      "enableS1EncryptedStoragePref2": false
+    }
+  },
+  "_comment": "Primary build target is the Developer Edition with Agentforce + Data 360 (connected via 'sf org login web --alias hansewatt'). This scratch def is a fallback; Agentforce/Data 360 features are NOT available in standard scratch orgs, so the live Dev Edition org is the real target. Confirm feature/API availability in P0 (D2)."
+}

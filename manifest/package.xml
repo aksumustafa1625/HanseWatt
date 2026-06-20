@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  HanseWatt deploy manifest.
+  Starts empty; we add <types> per phase as metadata is built (P1 objects/Knowledge,
+  P5 ApexClass/agent, etc.). Deploy a single dir during dev with:
+    sf project deploy start --source-dir force-app --target-org hansewatt
+-->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <version>64.0</version>
+</Package>

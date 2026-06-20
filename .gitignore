@@ -1,0 +1,27 @@
+# Salesforce DX
+.sf/
+.sfdx/
+.localdevserver/
+deploy-options.json
+
+# Secrets / credentials (never commit) — set via gitignored anonymous Apex scripts
+org_info.json
+**/setup_*_config.apex
+scripts/**/secrets*.apex
+.env
+*.key
+
+# Tooling
+node_modules/
+coverage/
+.husky/_/
+*.log
+.DS_Store
+
+# IDE (keep shared .vscode settings, ignore local)
+.idea/
+*.code-workspace
+
+# Build / temp
+.tmp/
+tmp/

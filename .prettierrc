@@ -1,0 +1,13 @@
+{
+  "trailingComma": "none",
+  "overrides": [
+    {
+      "files": "*.{cls,trigger}",
+      "options": { "apexInsertFinalNewline": true }
+    },
+    {
+      "files": "*.{html,xml}",
+      "options": { "parser": "xml", "xmlWhitespaceSensitivity": "ignore" }
+    }
+  ]
+}

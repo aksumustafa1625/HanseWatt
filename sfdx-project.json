@@ -1,0 +1,16 @@
+{
+  "packageDirectories": [
+    { "path": "force-app", "default": true },
+    { "path": "force-app-services" },
+    { "path": "force-app-actions" },
+    { "path": "force-app-handlers" },
+    { "path": "force-app-agent" },
+    { "path": "force-app-datacloud" },
+    { "path": "force-app-lwc" },
+    { "path": "force-app-tests" }
+  ],
+  "name": "HanseWatt",
+  "namespace": "",
+  "sfdcLoginUrl": "https://login.salesforce.com",
+  "sourceApiVersion": "64.0"
+}

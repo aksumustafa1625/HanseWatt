@@ -1,0 +1,12 @@
+{
+  "salesforcedx-vscode-core.show-cli-success-msg": true,
+  "salesforcedx-vscode-apex.enable-semantic-errors": true,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "files.defaultLanguage": "apex",
+  "[apex]": {
+    "editor.defaultFormatter": "salesforce.salesforcedx-vscode-apex"
+  }
+}
