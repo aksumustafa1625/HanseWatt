@@ -8,5 +8,6 @@
   "files.defaultLanguage": "apex",
   "[apex]": {
     "editor.defaultFormatter": "salesforce.salesforcedx-vscode-apex"
-  }
+  },
+  "xml.preferences.showSchemaDocumentationType": "none"
 }
