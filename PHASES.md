@@ -10,6 +10,34 @@
 
 ---
 
+## ⚠️ KOTA DİSİPLİNİ (consumption discipline) — her faz için geçerli standing kural
+
+Bu projeyi durduracak şey storage veya Apex governor limit'leri DEĞİL; **Data 360 ve
+Agentforce'un kredi (consumption) kotalarıdır.** Her agent action, her CI refresh, her
+identity-resolution job, her generative call kredi yakar ve bu kodla optimize edilemez —
+bittiğinde reset beklersin. Aşağıdaki 7 kural her fazda uygulanır:
+
+1. **Faz 0 sert gate:** Digital Wallet'tan gerçek kota rakamlarını ölçmeden P1'e geçilmez.
+2. **Mock-first:** Apex action mantığı (SOQL/DML/JSON) önce Apex testleriyle doğrulanır
+   (kredi yakmaz); agent'a bağlama en sona bırakılır. Agent'ı 50 kez deneyip kredi yakma.
+3. **Küçük veri setiyle geliştir:** CI/identity mapping'ini 10 kayıtla doğrula, doğruysa
+   tüm synthetic feed'e ölçekle. Mapping'i tekrar tekrar full-refresh'leme.
+4. **On-demand, schedule etme:** dev sırasında CI / Identity Resolution / Segment'i elle
+   tetikle; otomatik nightly schedule'a bağlama (boşa kredi).
+5. **Eval/Red-team küçük + bir kez:** 8-10 utterance, bir kez çalıştır, sonucu kaydet
+   (`HW_Agent_Eval_Result__c` + screenshot). İkinci LLM judge sadece final koşuda.
+6. **Artımlı kayıt:** her faz biter bitmez o parçanın video snippet'ini al; demo'yu
+   snippet'lerden montajla. Tek büyük final canlı koşuya bağımlı kalma.
+7. **Digital Wallet'ı ritüel yap:** her agent-yoğun seansın başında kalan krediyi kontrol
+   et; `docs/manual-setup/burn-budget.md` tablosunu güncelle.
+
+> Tek-org stratejisi: TechnoStore/Configra'dan ayrı **tek bir** HanseWatt build org'u
+> kullanıyoruz. İkinci "temiz demo org" fikri reddedildi — Data 360 + Agentforce config
+> source-track edilemediği için ikinci org'da elle baştan kurmak ağır bakım yükü. Demo
+> güvenliği artımlı kayıtla (kural 6) sağlanır. Duvara çarparsak yeniden değerlendiririz.
+
+---
+
 ## 🟢 FAZ 0 — Org + Temel (Foundations)
 
 **Amaç:** Org'a bağlan, repo iskeletini kur, gerçek limitleri doğrula.
@@ -19,12 +47,18 @@
 2. `sfdx-project.json` + paket dizinleri oluştur (force-app, -services, -actions, -handlers, -agent, -datacloud, -lwc, -tests)
 3. `docs/` alt klasörleri: `adr/`, `architecture/`, `manual-setup/`, `security/`, `eval/`
 4. Base permission set'ler: `HW_Admin`, `HW_ServiceAgent`, `HW_ReadOnly` (boş iskelet)
-5. **D2 — Limit kontrolü:** org'un gerçek Data 360 (ingestion/CI/segment) ve Agentforce (action/conversation) limitlerini not et → `docs/manual-setup/limits.md`
-6. **D4 — Metadata isim kontrolü:** `GenAiPlanner` / `GenAiPromptTemplate` / `Bot` / `GenAiFunction` isimlerini canlı org'da teyit et
-7. Boş skeleton'ı commit et + `.gitignore` (secret script'ler, org_info)
+5. **D2 — SERT GATE: kota ölçümü.** Setup → **Digital Wallet** (Agentforce'un real-time
+   tüketim ekranı) aç ve şu 3 sayıyı `docs/manual-setup/limits.md`'ye yaz:
+   (a) aylık Agentforce action/credit tavanı, (b) Data 360 credit tavanı,
+   (c) reset periyodu (aylık mı/günlük mü). **Bu 3 sayı bilinmeden P1'e geçilmez.**
+6. **Burn-budget tablosu kur:** `docs/manual-setup/burn-budget.md` — faz / işlem tipi /
+   tahmini kredi / kümülatif. "P10'a geldiğimde kaç kredi kalır" sorusunu önceden cevapla.
+7. **D4 — Metadata isim kontrolü:** `GenAiPlanner` / `GenAiPromptTemplate` / `Bot` / `GenAiFunction` isimlerini canlı org'da teyit et
+8. Boş skeleton'ı commit et + `.gitignore` (secret script'ler, org_info)
 
-**Çıktı:** Bağlı org, deploy olan boş repo, doğrulanmış limit notları.
-**Bitti kriteri:** `sf project deploy start --target-org hansewatt` temiz geçiyor.
+**Çıktı:** Bağlı org, deploy olan boş repo, **ölçülmüş kota rakamları + burn-budget tablosu**.
+**Bitti kriteri:** `sf project deploy start --target-org hansewatt` temiz geçiyor **VE**
+Digital Wallet'tan 3 kota sayısı yazılmış (sert gate — bu olmadan P1 başlamaz).
 
 ---
 
@@ -198,8 +232,12 @@
 4. `hwAgentScorecard` LWC + Notion "Agent Quality Scorecard"
 5. Regresyon: agent değişince yeniden çalıştır → ADR-012
 
-**Çıktı:** Çalışan eval pipeline + scorecard.
-**Bitti kriteri:** Bir utterance suite üzerinde scorecard otomatik üretiliyor.
+> ⚠️ **Kota uyarısı (en pahalı faz):** suite'i **8-10 utterance** ile sınırla; judge'ı
+> (ikinci LLM) sadece **final koşuda** çalıştır, geliştirirken değil. Bir kez çalıştır,
+> sonucu kaydet (result rows + screenshot) — sergilenecek olan **sonuç**, canlı koşu değil.
+
+**Çıktı:** Çalışan eval pipeline + kaydedilmiş scorecard.
+**Bitti kriteri:** Küçük (8-10) utterance suite üzerinde scorecard bir kez üretilip kaydedildi.
 
 ---
 
