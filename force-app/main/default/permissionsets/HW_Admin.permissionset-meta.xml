@@ -105,4 +105,5 @@
     <fieldPermissions><field>Consent__c.Type__c</field><readable>true</readable><editable>true</editable></fieldPermissions>
     <fieldPermissions><field>Consent__c.Granted__c</field><readable>true</readable><editable>true</editable></fieldPermissions>
     <fieldPermissions><field>Consent__c.Granted_On__c</field><readable>true</readable><editable>true</editable></fieldPermissions>
+    <fieldPermissions><field>Case.HW_Topic__c</field><readable>true</readable><editable>true</editable></fieldPermissions>
 </PermissionSet>
