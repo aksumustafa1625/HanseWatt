@@ -59,7 +59,20 @@ Digital Wallet.
 **Access:** App Launcher → **Digital Wallet** → **Consumption Cards** tab (NOT the Data
 Cloud setup link).
 
-## ❓ STILL NEEDED — the 4 quota numbers (open Digital Wallet)
+## ✅ RESOLVED — Digital Wallet not available in Developer Edition
+Confirmed (in-org Agentforce + release notes): **Digital Wallet is Enterprise/Unlimited
+only** ("View Consumption" permission), so this Dev Edition does NOT surface the live
+balance. Exact free allotment is undocumented ("limited test credits"). **Decision:** stop
+chasing the balance; rely on consumption discipline + the known unit costs (see
+`burn-budget.md`) and watch empirically for any quota failure. Gate considered satisfied
+by due diligence + discipline.
+
+### Known unit costs (rate cards May + Sept 2025)
+- 1 Agentforce action = **20 Flex Credits** (~$0.10); 1 Standard prompt ≤2K tokens = **~4 credits** (~$0.02); $500 = 100,000 credits.
+- Flex Credits = single unified pool (Agentforce + Data 360).
+- **Salesforce CRM → Data 360 ingestion is FREE** (Internal Data Pipeline, since 2025-08-07).
+
+## (historical) the 4 quota numbers — not obtainable in Dev Edition
 ⚠️ **Digital Wallet requires Data Cloud to be provisioned first** — the link gives
 "Page doesn't exist" until "Get Started" (Data Cloud Setup) completes. So: provision
 Data Cloud → then open Digital Wallet → capture the 4 numbers **before Faz 2 ingestion**
