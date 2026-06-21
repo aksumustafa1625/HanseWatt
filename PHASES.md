@@ -25,7 +25,8 @@ bittiğinde reset beklersin. Aşağıdaki 7 kural her fazda uygulanır:
 4. **On-demand, schedule etme:** dev sırasında CI / Identity Resolution / Segment'i elle
    tetikle; otomatik nightly schedule'a bağlama (boşa kredi).
 5. **Eval/Red-team küçük + bir kez:** 8-10 utterance, bir kez çalıştır, sonucu kaydet
-   (`HW_Agent_Eval_Result__c` + screenshot). İkinci LLM judge sadece final koşuda.
+   (`HW_Agent_Eval_Result__c` + screenshot). Sıralama: **önce agent'ı dondur**, judge
+   rubric'ini **sahte transcript'lerle** ayarla, sonra gerçek pipeline'ı tek sefer koştur.
 6. **Artımlı kayıt:** her faz biter bitmez o parçanın video snippet'ini al; demo'yu
    snippet'lerden montajla. Tek büyük final canlı koşuya bağımlı kalma.
 7. **Digital Wallet'ı ritüel yap:** her agent-yoğun seansın başında kalan krediyi kontrol
@@ -48,9 +49,13 @@ bittiğinde reset beklersin. Aşağıdaki 7 kural her fazda uygulanır:
 3. `docs/` alt klasörleri: `adr/`, `architecture/`, `manual-setup/`, `security/`, `eval/`
 4. Base permission set'ler: `HW_Admin`, `HW_ServiceAgent`, `HW_ReadOnly` (boş iskelet)
 5. **D2 — SERT GATE: kota ölçümü.** Setup → **Digital Wallet** (Agentforce'un real-time
-   tüketim ekranı) aç ve şu 3 sayıyı `docs/manual-setup/limits.md`'ye yaz:
+   tüketim ekranı) aç ve şu **4 sayıyı** `docs/manual-setup/limits.md`'ye yaz:
    (a) aylık Agentforce action/credit tavanı, (b) Data 360 credit tavanı,
-   (c) reset periyodu (aylık mı/günlük mü). **Bu 3 sayı bilinmeden P1'e geçilmez.**
+   (c) reset periyodu (aylık mı/günlük mü), (d) **reset takvim günü** — "aylık" yetmez;
+   her ayın 1'i mi yoksa org aktivasyon tarihi mi? (En pahalı fazları P10/P11'i reset'in
+   hemen ardına denk getirmek için gerekli.) **Bu 4 sayı bilinmeden P1'e geçilmez.**
+   Ayrıca yaz: **"Hiçbir Data 360 objesinde otomatik refresh schedule'ı YOK — CI / Identity
+   Resolution / Segment hepsi elle tetiklenir."** (En sinsi kota sızıntısı scheduled refresh.)
 6. **Burn-budget tablosu kur:** `docs/manual-setup/burn-budget.md` — faz / işlem tipi /
    tahmini kredi / kümülatif. "P10'a geldiğimde kaç kredi kalır" sorusunu önceden cevapla.
 7. **D4 — Metadata isim kontrolü:** `GenAiPlanner` / `GenAiPromptTemplate` / `Bot` / `GenAiFunction` isimlerini canlı org'da teyit et
@@ -232,9 +237,15 @@ Digital Wallet'tan 3 kota sayısı yazılmış (sert gate — bu olmadan P1 baş
 4. `hwAgentScorecard` LWC + Notion "Agent Quality Scorecard"
 5. Regresyon: agent değişince yeniden çalıştır → ADR-012
 
-> ⚠️ **Kota uyarısı (en pahalı faz):** suite'i **8-10 utterance** ile sınırla; judge'ı
-> (ikinci LLM) sadece **final koşuda** çalıştır, geliştirirken değil. Bir kez çalıştır,
-> sonucu kaydet (result rows + screenshot) — sergilenecek olan **sonuç**, canlı koşu değil.
+> ⚠️ **Kota uyarısı (en pahalı faz) — "bir kez"in gerçekten bir kez kalması için sıralama:**
+> - **Önce agent'ı dondur.** Eval'i, agent'ın instruction/guardrail'lerini stabilize
+>   ettikten ("artık dokunmuyorum" dedikten) SONRA çalıştır. Aksi halde her agent ayarında
+>   "bir kez"i tekrar tekrar harcarsın.
+> - **Judge'ı agent'tan ayrı geliştir.** `HW_AgentJudge` rubric'ini ayarlarken canlı agent
+>   çıktısına değil, elle yazdığın **1-2 sahte transcript'e** karşı test et (agent
+>   çalıştırma → kredi yok). Rubric oturunca gerçek pipeline'ı **tek sefer** koştur.
+> - Suite'i **8-10 utterance** ile sınırla. Sergilenecek olan **sonuç** (result rows +
+>   screenshot), canlı koşu değil.
 
 **Çıktı:** Çalışan eval pipeline + kaydedilmiş scorecard.
 **Bitti kriteri:** Küçük (8-10) utterance suite üzerinde scorecard bir kez üretilip kaydedildi.
