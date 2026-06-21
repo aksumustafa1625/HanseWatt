@@ -52,8 +52,11 @@
 - Conversation Transcripts on Data Cloud: Disabled (enable later for engagement data).
 
 ## ❓ STILL NEEDED — the 4 quota numbers (open Digital Wallet)
-Digital Wallet not directly visible in Setup search; reach it via the **"Open Digital
-Wallet"** link on the Data Cloud setup page. Record:
+⚠️ **Digital Wallet requires Data Cloud to be provisioned first** — the link gives
+"Page doesn't exist" until "Get Started" (Data Cloud Setup) completes. So: provision
+Data Cloud → then open Digital Wallet → capture the 4 numbers **before Faz 2 ingestion**
+(the first credit-consuming step). Faz 1 is zero-consumption, safe to build meanwhile.
+Reach it via the **"Open Digital Wallet"** link on the Data Cloud setup page. Record:
 - [ ] (a) Agentforce action/credit ceiling (total + remaining)
 - [ ] (b) Data 360 credit ceiling (total + remaining)
 - [ ] (c) reset period (monthly / daily)
