@@ -51,6 +51,14 @@
   runs in background). Faz 2 prerequisite.
 - Conversation Transcripts on Data Cloud: Disabled (enable later for engagement data).
 
+## KEY FACT — unified "Flex Credits" pool
+Per the in-org Agentforce: **Agentforce and Data 360 credits are ONE shared pool called
+"Flex Credits"** (used interchangeably for Data 360 + agent actions/voice/prompts). So
+burn-budget tracks a single pool, not two. Reset period/date are contract-defined, in
+Digital Wallet.
+**Access:** App Launcher → **Digital Wallet** → **Consumption Cards** tab (NOT the Data
+Cloud setup link).
+
 ## ❓ STILL NEEDED — the 4 quota numbers (open Digital Wallet)
 ⚠️ **Digital Wallet requires Data Cloud to be provisioned first** — the link gives
 "Page doesn't exist" until "Get Started" (Data Cloud Setup) completes. So: provision
