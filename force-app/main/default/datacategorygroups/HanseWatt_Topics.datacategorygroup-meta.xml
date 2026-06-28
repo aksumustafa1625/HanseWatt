@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DataCategoryGroup xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HanseWatt_Topics</fullName>
+    <active>true</active>
+    <dataCategory>
+        <name>All</name>
+        <label>All Topics</label>
+        <dataCategory>
+            <name>Billing</name>
+            <label>Billing</label>
+        </dataCategory>
+        <dataCategory>
+            <name>Consumption</name>
+            <label>Consumption</label>
+        </dataCategory>
+        <dataCategory>
+            <name>Tariff</name>
+            <label>Tariff</label>
+        </dataCategory>
+        <dataCategory>
+            <name>Move</name>
+            <label>Move</label>
+        </dataCategory>
+        <dataCategory>
+            <name>Outage</name>
+            <label>Outage</label>
+        </dataCategory>
+        <dataCategory>
+            <name>Contract</name>
+            <label>Contract</label>
+        </dataCategory>
+    </dataCategory>
+    <description>HanseWatt service knowledge topics, aligned to the Agentforce agent topics.</description>
+    <label>HanseWatt Topics</label>
+    <objectUsage>
+        <object>KnowledgeArticleVersion</object>
+    </objectUsage>
+</DataCategoryGroup>
