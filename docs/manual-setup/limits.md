@@ -57,6 +57,22 @@
   (empty data space has no DMOs) — absence ≠ "not provisioned".
 - **Salesforce CRM ingestion is FREE** (Salesforce Core pipeline) — our whole Faz 2 ingest path.
 - Full setup playbook + credit model: `docs/research/data-cloud-setup-research.md`.
+
+### Data Cloud capacity (via `TenantUsageEntitlement` SOQL — CLI, 2026-06-29)
+Digital Wallet UI 404s in this Dev Edition, but these ceilings are queryable
+(`SELECT MasterLabel, AmountUsed, CurrentAmountAllowed FROM TenantUsageEntitlement`):
+
+| Data Cloud entitlement | Ceiling |
+|---|---|
+| Maximum Number of **Events** | **7,500,000,000** |
+| Maximum Number of **Known Profiles** | **45,000** |
+| Maximum Number of **Connections** | **3** (1 used) |
+| Maximum Number of **Segment Publishes** | **20,000** |
+
+`AmountUsed` is not populated on these rows, so the live **Flex Credit balance** is still
+not surfaced (Digital Wallet only) — we rely on these ceilings + the unit costs in the
+research doc + discipline. Our demo (24 readings / 4 accounts) is orders of magnitude under
+every ceiling.
 - Conversation Transcripts on Data Cloud: Disabled (enable later for engagement data).
 
 ## KEY FACT — unified "Flex Credits" pool
