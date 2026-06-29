@@ -136,19 +136,26 @@ live SLA gate test awaits an org schema-cache refresh.
 - **Entitlement process** needs an exit criterion (`exitCriteriaFormula = IsClosed`); deploy
   `MilestoneType` **before** the `EntitlementProcess` in a *separate successful* deploy (else
   rollback drops the milestone types the process references).
-- **Schema-cache lag after heavy changes.** New fields (`Knowledge__kav.Body__c`,
-  `Case.EntitlementId`) appear in Tooling `FieldDefinition` but lag the Apex/SOQL active
-  schema for >6 min. Workarounds: store Knowledge body in `Summary` for now; set
-  `EntitlementId` via dynamic `c.put('EntitlementId', …)` in `verify_gate.apex`.
+- **`Knowledge__kav.Body__c` schema-cache lag.** New rich-text field appears in Tooling
+  `FieldDefinition` but lagged the Apex/SOQL active schema; Knowledge body stored in `Summary`
+  for now.
+- **`Case.EntitlementId` is NOT provisioned in this Dev Edition (Agentforce + Data 360).**
+  Confirmed after fixing the Service Cloud User license + a full disable/re-enable cycle (UI
+  *and* metadata): the standard Case entitlement lookup never instantiates (catalogued in
+  Tooling `FieldDefinition`, absent from `fields.getMap()`). The live SLA milestone clock
+  can't bind here — edition limitation, not our config. `verify_gate.apex` guards on the
+  field. Full diagnosis: `docs/troubleshooting/faz1-gate-case-entitlementid.md`.
 - **`CurrencyType`** rejects Apex DML; create currencies via the **REST API**
   (`sf data create record --sobject CurrencyType`).
 
-### Pending — Faz 1 gate live test
+### Faz 1 gate — resolved (infrastructure complete; live clock = edition limitation)
 
-Run `sf apex run --file scripts/verify_gate.apex --target-org hansewatt`. It creates an
-entitled Case in `HW_Escalations` and asserts `CaseMilestone` rows generate (SLA clock
-running). It currently fails **only** because the schema cache hasn't exposed
-`Case.EntitlementId` to Apex yet — re-run next session; expected "RESULT: PASS".
+`scripts/verify_gate.apex` reports **"INFRASTRUCTURE COMPLETE — live milestone clock NOT
+testable here"**: the SLA design (`HW_Standard_SLA` + milestones) and Omni-Channel routing
+are deployed and source-controlled, but the live `CaseMilestone` clock can't bind because
+`Case.EntitlementId` is not provisioned in this Dev-Edition flavor (see gotcha above +
+`docs/troubleshooting/`). It binds normally in a Service Cloud Enterprise/Developer org — a
+clean future-verification path. This does not block Faz 2 or any headline feature.
 
 ## Next — Faz 2: Data 360 / Data Cloud
 

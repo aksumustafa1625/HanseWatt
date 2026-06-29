@@ -31,9 +31,14 @@ The live milestone clock is the visible SLA proof.
 **Negative / Trade-offs:** the routing **enum is `LEAST_ACTIVE`/`MOST_AVAILABLE`
 (SCREAMING_SNAKE) and `routingModel` is required** — discovered only against the live org
 schema, not the CLI's stale metadata; documented so future routing configs don't repeat the
-deploy cycle. After enabling Entitlements + Knowledge + multi-currency in one session, new
-fields (`Case.EntitlementId`) lag the Apex/SOQL schema cache though present in Tooling
-FieldDefinition — the gate script sets `EntitlementId` via dynamic `put()` to dodge it.
+deploy cycle. **The live SLA milestone clock could not be bound in this org:** the standard
+`Case.EntitlementId` lookup is **not provisioned** in this Developer Edition (Agentforce +
+Data 360) flavor — even with Entitlement Management on, a Service Cloud User license, and a
+full UI disable/re-enable cycle. It is catalogued in Tooling `FieldDefinition` but never
+instantiated on Case. So the gate is recorded as **infrastructure complete; live clock
+deferred (edition limitation)**; `scripts/verify_gate.apex` guards on the field and reports
+gracefully. Binds normally in a Service Cloud Enterprise/Developer org. Full diagnosis:
+`docs/troubleshooting/faz1-gate-case-entitlementid.md`.
 
 ## Alternatives Considered
 

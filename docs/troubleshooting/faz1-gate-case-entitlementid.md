@@ -5,7 +5,7 @@
 > though Entitlement Management is enabled. Everything needed to reason about the problem is
 > below — no prior context required.
 >
-> **Status:** OPEN · **Last updated:** 2026-06-29
+> **Status:** RESOLVED (confirmed edition limitation) · **Last updated:** 2026-06-29
 
 ---
 
@@ -191,3 +191,38 @@ by this field. It does **not** block Faz 2 (Data Cloud) or any later phase — c
 the project's honest-framing philosophy (some Dev-Edition features are config-limited). If
 unresolved, the gate is recorded as "infrastructure complete; live SLA clock = Dev-Edition
 limitation". See [ADR-017](../adr/ADR-017-sla-entitlement-omnichannel-routing.md).
+
+---
+
+## 12. RESOLUTION (2026-06-29) — confirmed edition limitation
+
+A second-opinion pass (multiple AIs) surfaced two real causes; we fixed what was fixable and
+confirmed the rest is a platform limit:
+
+1. **The running user was NOT a "Service Cloud User"** (`UserPermissionsSupportUser = false`)
+   — abnormal for an admin, and exactly the gate that hides Service-Cloud-licensed standard
+   fields even from `fields.getMap()`. **Fixed** (set to `true`).
+2. With the license fixed, we ran the **full clean re-provision** the experts prescribed:
+   deleted the `Entitlement` record → deleted the `EntitlementProcess` from the org →
+   **disabled** Entitlement Management → **re-enabled** it, via *both* metadata deploy *and*
+   the **Setup UI toggle** (the UI action normally triggers the async field-provisioning job).
+
+**Outcome:** `Case.EntitlementId` **still did not materialize** — confirmed by the relationship
+probe (`SELECT Entitlement.Name FROM Case` → "No such relation 'Entitlement'") after every
+step, plus a ~5-minute post-toggle poll.
+
+**Conclusion (H1 confirmed):** this **Developer Edition (Agentforce + Data 360) flavor does
+not provision the standard Case entitlement lookup fields** (`EntitlementId`, `SlaStartDate`,
+`SlaExitDate`, `MilestoneStatus`), even with the feature enabled, a Service Cloud User
+license, and a clean UI disable/re-enable cycle. The fields are catalogued in Tooling
+`FieldDefinition` but never instantiated on the Case object. This is **not** a metadata, FLS,
+cache, or skill gap.
+
+**Decision:** record the Faz 1 gate as **"SLA infrastructure complete + source-deployable;
+live milestone-clock binding deferred — edition limitation"**. `scripts/verify_gate.apex` now
+**guards on the field** and reports this gracefully instead of erroring. The binding works
+normally in a Service Cloud Enterprise/Unlimited org or a standard Service-Cloud Developer
+org — a clean future-verification path if ever needed.
+
+**Org left consistent:** Service Cloud User = true; Entitlement Management = on;
+`HW_Standard_SLA` + milestones redeployed; no orphaned Entitlement records.
