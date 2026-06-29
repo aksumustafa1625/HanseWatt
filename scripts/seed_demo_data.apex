@@ -76,6 +76,18 @@ for (Integer i = 0; i < muellMonthly.size(); i++) {
     reads.add(new Meter_Reading__c(Meter__c=mMuell.Id, Read_Date__c=DateTime.now().addMonths(-(muellMonthly.size()-1-i)),
         kWh__c=muellMonthly[i], Source__c='Smart', Is_Estimated__c=false));
 }
+// Huber (Wien, residential) — mild winter rise, all smart
+Integer[] huberMonthly = new Integer[]{180, 195, 210, 230, 205, 200};
+for (Integer i = 0; i < huberMonthly.size(); i++) {
+    reads.add(new Meter_Reading__c(Meter__c=mHuber.Id, Read_Date__c=DateTime.now().addMonths(-(huberMonthly.size()-1-i)),
+        kWh__c=huberMonthly[i], Source__c='Smart', Is_Estimated__c=false));
+}
+// Alpina (Zürich, residential) — steady; month 4 is an ESTIMATED reading (realism: gap-filled)
+Integer[] alpiMonthly = new Integer[]{150, 160, 175, 168, 170, 165};
+for (Integer i = 0; i < alpiMonthly.size(); i++) {
+    reads.add(new Meter_Reading__c(Meter__c=mAlpi.Id, Read_Date__c=DateTime.now().addMonths(-(alpiMonthly.size()-1-i)),
+        kWh__c=alpiMonthly[i], Source__c='Smart', Is_Estimated__c=(i == 3)));
+}
 insert reads;
 
 // ---- 7. Consent + a sample Outage -----------------------------------------------------
