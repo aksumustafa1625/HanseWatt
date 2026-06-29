@@ -46,9 +46,17 @@
 - Field Service (Dispatcher/Mobile/Scheduling/Standard): available → roadmap R1 feasible
 - CPQ, B2B/D2C Commerce, Payments, Order Mgmt, Scheduler, Voice: all available (unused)
 
-## Data 360 / Data Cloud — NOT provisioned yet ⚠️
-- "Welcome to Data Cloud" — instance must be created via **Get Started** (automated,
-  runs in background). Faz 2 prerequisite.
+## Data 360 / Data Cloud — PROVISIONED ✅ (confirmed 2026-06-29)
+- Instance **live** (Data Cloud Setup Home: "Your Data Cloud instance is live and connected
+  to your home org"). Home Org Instance `CDP2-AWS-PROD8-CACENTRAL1`; tenant endpoint
+  `mm2wcnbrhbrw0mrsm-...c360a.salesforce.com`. **1 Data Space**, **1 Connection** (`Home`,
+  Active — the Salesforce CRM home-org connector). "Get Started" already done.
+- Sales/Service Cloud **Standard Data Bundles NOT installed** (Installed Version `--`) — we
+  use targeted custom data streams instead (see research doc).
+- ⚠️ Caveat: SOQL/Tooling won't list `ssot__`/`__dlm` objects until streams/mappings are built
+  (empty data space has no DMOs) — absence ≠ "not provisioned".
+- **Salesforce CRM ingestion is FREE** (Salesforce Core pipeline) — our whole Faz 2 ingest path.
+- Full setup playbook + credit model: `docs/research/data-cloud-setup-research.md`.
 - Conversation Transcripts on Data Cloud: Disabled (enable later for engagement data).
 
 ## KEY FACT — unified "Flex Credits" pool
