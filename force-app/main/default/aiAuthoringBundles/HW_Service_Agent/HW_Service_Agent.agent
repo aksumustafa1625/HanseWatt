@@ -56,7 +56,7 @@ subagent billing_consumption:
             description: "Returns the customer's latest vs trailing-average kWh and a grounded, citable explanation of any consumption anomaly."
             target: "apex://HWExplainConsumptionAction"
             inputs:
-                accountId: string
+                accountId: object(lightning__recordIdType)
             outputs:
                 latestKwh: number
                 averageKwh: number
