@@ -6,7 +6,7 @@ system:
 
 config:
     developer_name: "HW_Service_Agent"
-    default_agent_user: "NEW AGENT USER"
+    default_agent_user: "hw-service-agent@example.com"
     agent_label: "HW Service Agent"
     description: "HanseWatt autonomous customer service agent — explains bills and consumption anomalies grounded in Data 360, and escalates safely."
 
@@ -74,7 +74,7 @@ subagent billing_consumption:
               If the customer's account id is not known yet, ask them to confirm their account before
               calling the action.
         actions:
-            explain_consumption: @actions.explain_consumption with accountId = @variables.CustomerAccountId
+            explain_consumption: @actions.explain_consumption with accountId = "001gK00001BTQ3VQAX"
 
 
 subagent escalation:
