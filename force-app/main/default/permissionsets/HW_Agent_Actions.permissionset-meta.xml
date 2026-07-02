@@ -12,6 +12,14 @@
         <apexClass>HWConsumptionService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <classAccesses>
+        <apexClass>HWIdentifyCustomerAction</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HWCustomerService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
 
     <objectPermissions>
         <object>Meter_Reading__c</object>
@@ -43,6 +51,18 @@
         <modifyAllRecords>false</modifyAllRecords>
     </objectPermissions>
 
+    <!-- Contact read: customer identification resolves an email to a Contact -> AccountId. -->
+    <objectPermissions>
+        <object>Contact</object>
+        <allowCreate>false</allowCreate>
+        <allowRead>true</allowRead>
+        <allowEdit>false</allowEdit>
+        <allowDelete>false</allowDelete>
+        <viewAllRecords>true</viewAllRecords>
+        <modifyAllRecords>false</modifyAllRecords>
+    </objectPermissions>
+
+    <fieldPermissions><field>Contact.Email</field><readable>true</readable><editable>false</editable></fieldPermissions>
     <fieldPermissions><field>Meter_Reading__c.kWh__c</field><readable>true</readable><editable>false</editable></fieldPermissions>
     <fieldPermissions><field>Meter_Reading__c.Read_Date__c</field><readable>true</readable><editable>false</editable></fieldPermissions>
     <fieldPermissions><field>Meter_Reading__c.Meter__c</field><readable>true</readable><editable>false</editable></fieldPermissions>

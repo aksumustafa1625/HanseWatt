@@ -77,6 +77,18 @@ private class HWConsumptionServiceTest {
     }
 
     @isTest
+    static void nullAccountAsksToIdentify() {
+        HWExplainConsumptionAction.Request req = new HWExplainConsumptionAction.Request();
+        req.accountId = null; // customer not identified yet
+        List<HWExplainConsumptionAction.Result> res =
+            HWExplainConsumptionAction.run(new List<HWExplainConsumptionAction.Request>{ req });
+        System.assertEquals(1, res.size());
+        System.assertEquals(null, res[0].latestKwh, 'no figure without an account');
+        System.assertEquals('', res[0].citation, 'no citation without an account');
+        System.assert(res[0].explanation.contains('identify'), 'should ask to identify first');
+    }
+
+    @isTest
     static void noDataHandledGracefully() {
         Account a = [SELECT Id FROM Account WHERE Name = 'Test No Data' LIMIT 1];
         HWExplainConsumptionAction.Request req = new HWExplainConsumptionAction.Request();

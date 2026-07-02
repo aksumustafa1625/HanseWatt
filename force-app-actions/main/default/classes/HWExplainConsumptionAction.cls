@@ -7,14 +7,8 @@
  */
 public with sharing class HWExplainConsumptionAction {
 
-    // DEMO binding: in this build there is no live authenticated-customer context in the
-    // agent preview surface, so an unsupplied accountId falls back to the demo customer
-    // (Lena, Hamburg) — the same account the NGA Agent Script hardcodes. In production this
-    // is replaced by real customer identification (messaging session / verified contact).
-    @TestVisible private static final Id DEMO_ACCOUNT_ID = '001gK00001BTQ3VQAX';
-
     public class Request {
-        @InvocableVariable(label='Account Id' description='The customer Account to explain (optional; defaults to the demo customer)')
+        @InvocableVariable(label='Account Id' description='The customer Account to explain, from HW Identify Customer. If unknown, identify the customer first.')
         public Id accountId;
     }
 
@@ -32,8 +26,7 @@ public with sharing class HWExplainConsumptionAction {
     public static List<Result> run(List<Request> requests) {
         Set<Id> accountIds = new Set<Id>();
         for (Request req : requests) {
-            Id effective = (req.accountId != null) ? req.accountId : DEMO_ACCOUNT_ID;
-            if (effective != null) accountIds.add(effective);
+            if (req.accountId != null) accountIds.add(req.accountId);
         }
         Map<Id, HWConsumptionService.Anomaly> byAccount =
             HWConsumptionService.anomaliesByAccount(accountIds);
@@ -41,8 +34,16 @@ public with sharing class HWExplainConsumptionAction {
         List<Result> results = new List<Result>();
         for (Request req : requests) {
             Result res = new Result();
-            Id effective = (req.accountId != null) ? req.accountId : DEMO_ACCOUNT_ID;
-            HWConsumptionService.Anomaly a = byAccount.get(effective);
+            if (req.accountId == null) {
+                // No account context yet — drive the agent to identify the customer first
+                // instead of guessing. Honest grounding: no account, no figure.
+                res.explanation = 'I need to identify your account before I can look up your '
+                    + 'usage. Could you share the email address on your account?';
+                res.citation = '';
+                results.add(res);
+                continue;
+            }
+            HWConsumptionService.Anomaly a = byAccount.get(req.accountId);
             if (a != null && a.latestKwh != null) {
                 res.latestKwh = a.latestKwh;
                 res.averageKwh = a.averageKwh;
