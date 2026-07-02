@@ -110,4 +110,5 @@
     <fieldPermissions><field>Case.HW_Topic__c</field><readable>true</readable><editable>true</editable></fieldPermissions>
     <fieldPermissions><field>Case.Subject</field><readable>true</readable><editable>true</editable></fieldPermissions>
     <fieldPermissions><field>Case.Description</field><readable>true</readable><editable>true</editable></fieldPermissions>
+    <fieldPermissions><field>Case.AccountId</field><readable>true</readable><editable>true</editable></fieldPermissions>
 </PermissionSet>
