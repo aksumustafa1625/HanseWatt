@@ -9,6 +9,14 @@
     <genAiFunctions>
         <functionName>EmployeeCopilot__AnswerQuestionsWithKnowledge</functionName>
     </genAiFunctions>
+    <!-- HWExplainConsumptionAction — the grounding bridge (Data 360 +64.6% anomaly).
+         Wired via Agent Builder "Add Action" (Apex → Invocable Method). The GenAiFunction
+         itself carries a system-generated suffix and is NOT source-retrievable/deployable in
+         this Dev Edition (Agentforce+Data360) — same edition boundary as NGA publish and
+         Case.EntitlementId. The hand-authored design lives in genAiFunctions/HW_Explain_Consumption/. -->
+    <genAiFunctions>
+        <functionName>HW_Explain_Consumption_Anomaly_179gK000001pK5l</functionName>
+    </genAiFunctions>
     <genAiPluginInstructions>
         <description>If the customer asks about high energy usage or increased bills, use the relevant actions to analyze and explain the reasons.</description>
         <developerName>instruction_0</developerName>

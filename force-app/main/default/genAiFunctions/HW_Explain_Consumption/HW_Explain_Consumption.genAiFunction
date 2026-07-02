@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Returns the customer's latest electricity usage versus their trailing average, the anomaly percentage, and a grounded, citable explanation sourced from Data 360 unified consumption data. Use this whenever a customer asks why their bill or usage is high.</description>
+    <invocationTarget>HWExplainConsumptionAction</invocationTarget>
+    <invocationTargetType>apex</invocationTargetType>
+    <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+    <language>en_US</language>
+    <masterLabel>HW Explain Consumption Anomaly</masterLabel>
+    <progressIndicatorMessage>Analyzing your energy consumption from unified meter data...</progressIndicatorMessage>
+    <mappingAttributes>
+        <description>The customer Account to explain (optional; defaults to the demo customer).</description>
+        <label>Account Id</label>
+        <name>accountId</name>
+        <parameterName>accountId</parameterName>
+        <parameterType>input</parameterType>
+    </mappingAttributes>
+    <mappingAttributes>
+        <description>The most recent monthly electricity usage in kWh.</description>
+        <label>Latest kWh</label>
+        <name>latestKwh</name>
+        <parameterName>latestKwh</parameterName>
+        <parameterType>output</parameterType>
+    </mappingAttributes>
+    <mappingAttributes>
+        <description>The trailing average monthly electricity usage in kWh.</description>
+        <label>Average kWh</label>
+        <name>averageKwh</name>
+        <parameterName>averageKwh</parameterName>
+        <parameterType>output</parameterType>
+    </mappingAttributes>
+    <mappingAttributes>
+        <description>The percentage by which the latest usage exceeds the trailing average.</description>
+        <label>Anomaly Percent</label>
+        <name>anomalyPercent</name>
+        <parameterName>anomalyPercent</parameterName>
+        <parameterType>output</parameterType>
+    </mappingAttributes>
+    <mappingAttributes>
+        <description>A grounded, human-readable explanation of the consumption anomaly.</description>
+        <label>Explanation</label>
+        <name>explanation</name>
+        <parameterName>explanation</parameterName>
+        <parameterType>output</parameterType>
+    </mappingAttributes>
+    <mappingAttributes>
+        <description>The data source citation for the figures.</description>
+        <label>Citation</label>
+        <name>citation</name>
+        <parameterName>citation</parameterName>
+        <parameterType>output</parameterType>
+    </mappingAttributes>
+</GenAiFunction>

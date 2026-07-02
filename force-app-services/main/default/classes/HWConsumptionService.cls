@@ -32,13 +32,18 @@ public with sharing class HWConsumptionService {
             return new Map<Id, Anomaly>();
         }
         // Newest reading first per account so index 0 = latest period.
-        for (Meter_Reading__c r : [
-                SELECT kWh__c, Read_Date__c, Meter__r.Account__c
-                FROM   Meter_Reading__c
-                WHERE  Meter__r.Account__c IN :accountIds
-                AND    kWh__c != null
-                WITH   USER_MODE
-                ORDER  BY Meter__r.Account__c, Read_Date__c DESC ]) {
+        // NOTE: uses Database.queryWithBinds (explicit bind map) rather than an inline
+        // `:accountIds` bind. When this class is invoked from the Agentforce action runtime
+        // the platform cannot resolve inline SOQL bind variables against the Apex stack frame
+        // and throws `System.QueryException: Variable does not exist: tmpVar1`. An explicit
+        // bind map resolves correctly in that context while preserving USER_MODE (ADR-006).
+        String query =
+            'SELECT kWh__c, Read_Date__c, Meter__r.Account__c ' +
+            'FROM Meter_Reading__c ' +
+            'WHERE Meter__r.Account__c IN :accIds AND kWh__c != null ' +
+            'ORDER BY Meter__r.Account__c, Read_Date__c DESC';
+        Map<String, Object> binds = new Map<String, Object>{ 'accIds' => accountIds };
+        for (Meter_Reading__c r : (List<Meter_Reading__c>) Database.queryWithBinds(query, binds, AccessLevel.USER_MODE)) {
             Id acc = r.Meter__r.Account__c;
             if (!kwhByAccount.containsKey(acc)) {
                 kwhByAccount.put(acc, new List<Decimal>());
