@@ -28,6 +28,14 @@
         <apexClass>HWBillingService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <classAccesses>
+        <apexClass>HWCreateCaseAction</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HWCaseService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
 
     <!-- Object reads. Meter_Reading__c/Meter__c/Energy_Bill__c/Contact use viewAll so the
          agent can read any customer's records; Account is read-only (no viewAll — the license
@@ -77,6 +85,16 @@
         <viewAllRecords>true</viewAllRecords>
         <modifyAllRecords>false</modifyAllRecords>
     </objectPermissions>
+    <!-- Case create: HW Create Case logs a support case for the customer. -->
+    <objectPermissions>
+        <object>Case</object>
+        <allowCreate>true</allowCreate>
+        <allowRead>true</allowRead>
+        <allowEdit>false</allowEdit>
+        <allowDelete>false</allowDelete>
+        <viewAllRecords>false</viewAllRecords>
+        <modifyAllRecords>false</modifyAllRecords>
+    </objectPermissions>
 
     <fieldPermissions><field>Meter_Reading__c.kWh__c</field><readable>true</readable><editable>false</editable></fieldPermissions>
     <fieldPermissions><field>Meter_Reading__c.Read_Date__c</field><readable>true</readable><editable>false</editable></fieldPermissions>
@@ -89,4 +107,7 @@
     <fieldPermissions><field>Energy_Bill__c.Period_End__c</field><readable>true</readable><editable>false</editable></fieldPermissions>
     <fieldPermissions><field>Energy_Bill__c.Status__c</field><readable>true</readable><editable>false</editable></fieldPermissions>
     <fieldPermissions><field>Contact.Email</field><readable>true</readable><editable>false</editable></fieldPermissions>
+    <fieldPermissions><field>Case.HW_Topic__c</field><readable>true</readable><editable>true</editable></fieldPermissions>
+    <fieldPermissions><field>Case.Subject</field><readable>true</readable><editable>true</editable></fieldPermissions>
+    <fieldPermissions><field>Case.Description</field><readable>true</readable><editable>true</editable></fieldPermissions>
 </PermissionSet>
