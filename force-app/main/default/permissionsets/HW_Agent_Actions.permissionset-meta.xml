@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <label>HW Agent Actions</label>
-    <description>Grants the Agentforce service-agent user runtime access for HWExplainConsumptionAction: execute the invocable + service class, and read the meter-reading data it queries (USER_MODE). The "Manage Permissions" grant the activation checklist expects.</description>
+    <description>Grants the Agentforce service-agent user runtime access for the HW agent actions: execute the invocables + service classes, and read the data they query (USER_MODE). The "Manage Permissions" grant the activation checklist expects.</description>
     <hasActivationRequired>false</hasActivationRequired>
 
     <classAccesses>
@@ -20,7 +20,18 @@
         <apexClass>HWCustomerService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <classAccesses>
+        <apexClass>HWGetLatestBillAction</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HWBillingService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
 
+    <!-- Object reads. Meter_Reading__c/Meter__c/Energy_Bill__c/Contact use viewAll so the
+         agent can read any customer's records; Account is read-only (no viewAll — the license
+         blocks View All Account) and is needed only to resolve the Meter__r.Account__c lookup. -->
     <objectPermissions>
         <object>Meter_Reading__c</object>
         <allowCreate>false</allowCreate>
@@ -39,8 +50,6 @@
         <viewAllRecords>true</viewAllRecords>
         <modifyAllRecords>false</modifyAllRecords>
     </objectPermissions>
-    <!-- Account read is required so USER_MODE can resolve the Meter__c.Account__c lookup
-         field (a reference to Account) when the query traverses Meter__r.Account__c. -->
     <objectPermissions>
         <object>Account</object>
         <allowCreate>false</allowCreate>
@@ -50,8 +59,15 @@
         <viewAllRecords>false</viewAllRecords>
         <modifyAllRecords>false</modifyAllRecords>
     </objectPermissions>
-
-    <!-- Contact read: customer identification resolves an email to a Contact -> AccountId. -->
+    <objectPermissions>
+        <object>Energy_Bill__c</object>
+        <allowCreate>false</allowCreate>
+        <allowRead>true</allowRead>
+        <allowEdit>false</allowEdit>
+        <allowDelete>false</allowDelete>
+        <viewAllRecords>true</viewAllRecords>
+        <modifyAllRecords>false</modifyAllRecords>
+    </objectPermissions>
     <objectPermissions>
         <object>Contact</object>
         <allowCreate>false</allowCreate>
@@ -62,9 +78,15 @@
         <modifyAllRecords>false</modifyAllRecords>
     </objectPermissions>
 
-    <fieldPermissions><field>Contact.Email</field><readable>true</readable><editable>false</editable></fieldPermissions>
     <fieldPermissions><field>Meter_Reading__c.kWh__c</field><readable>true</readable><editable>false</editable></fieldPermissions>
     <fieldPermissions><field>Meter_Reading__c.Read_Date__c</field><readable>true</readable><editable>false</editable></fieldPermissions>
     <fieldPermissions><field>Meter_Reading__c.Meter__c</field><readable>true</readable><editable>false</editable></fieldPermissions>
     <fieldPermissions><field>Meter__c.Account__c</field><readable>true</readable><editable>false</editable></fieldPermissions>
+    <fieldPermissions><field>Energy_Bill__c.Account__c</field><readable>true</readable><editable>false</editable></fieldPermissions>
+    <fieldPermissions><field>Energy_Bill__c.Amount__c</field><readable>true</readable><editable>false</editable></fieldPermissions>
+    <fieldPermissions><field>Energy_Bill__c.Consumption_kWh__c</field><readable>true</readable><editable>false</editable></fieldPermissions>
+    <fieldPermissions><field>Energy_Bill__c.Period_Start__c</field><readable>true</readable><editable>false</editable></fieldPermissions>
+    <fieldPermissions><field>Energy_Bill__c.Period_End__c</field><readable>true</readable><editable>false</editable></fieldPermissions>
+    <fieldPermissions><field>Energy_Bill__c.Status__c</field><readable>true</readable><editable>false</editable></fieldPermissions>
+    <fieldPermissions><field>Contact.Email</field><readable>true</readable><editable>false</editable></fieldPermissions>
 </PermissionSet>
