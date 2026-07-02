@@ -17,6 +17,27 @@ customer's **real unified consumption data**, with a citation.
 > appliances, that might explain the spike. Let me know if you'd like tips on managing
 > energy consumption!
 
+## Full multi-turn flow (2026-07-02) — identity → bill → why high
+
+The agent now runs the whole service conversation, grounded and tied to the identified
+customer (no hardcoded account):
+
+> **Customer:** I'm lena.bergmann@example.de. How much is my latest electricity bill?
+>
+> **Agent:** *(HW Identify Customer → HW Get Latest Bill)* Your latest electricity bill
+> (**BILL-000004**) covers May 1–31, 2026. The total amount is **€176.30** for **520.00 kWh**.
+> The bill status is currently **Open**.
+>
+> **Customer:** Why is my bill so high?
+>
+> **Agent:** *(HW Explain Consumption Anomaly)* Your latest usage was **520.00 kWh**, which is
+> **64.6% higher** than your trailing average of **316.0 kWh** — consistent with a new
+> high-energy appliance such as an EV charger or a heat pump.
+
+Three custom Apex actions (`HWIdentifyCustomerAction`, `HWGetLatestBillAction`,
+`HWExplainConsumptionAction`), each grounded in real Salesforce / Data 360 data, chained by
+the planner after resolving the customer from the email they gave.
+
 ## What the trace shows (why this is real, not a hallucination)
 
 1. **Subagent Selection** → routes to `High Energy Consumption Insights`.
