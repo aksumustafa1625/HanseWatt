@@ -18,6 +18,46 @@
 
 ---
 
+## 🎥 Live demo
+
+In one conversation the agent runs the whole service flow — grounded and in German —
+end to end: **identify the customer (email → Account) → quote the real bill → explain the
++64.6 % consumption anomaly → open a real support Case**, under the Einstein Trust Layer.
+
+[![Watch the 2-minute demo](https://img.youtube.com/vi/NhviJYO_874/hqdefault.jpg)](https://youtu.be/NhviJYO_874)
+
+▶ **[Watch the 2-minute demo on YouTube](https://youtu.be/NhviJYO_874)** _(spoken in German)_
+
+**Grounded, not hallucinated** — the reasoning trace shows the agent calling the Apex action,
+which returns the real figures (520 vs 316 kWh, +64.6 %, cited to Data 360), and Salesforce's
+own evaluator marks the reply **GROUNDED**:
+
+![Grounding trace — HW Explain Consumption Anomaly output + GROUNDED verdict](docs/demo/images/grounding-trace.png)
+
+**The full multi-turn flow** — two subagents, the ReAct reasoning trace, and the live
+conversation:
+
+![Agent architecture — subagents, reasoning trace, and conversation](docs/demo/images/agent-architecture.png)
+
+**It takes real action** — not just an answer: the agent opens a real Case (Created By the
+EinsteinServiceAgent User), linked to the customer's account, with a grounded description:
+
+![The support Case the agent created in Salesforce](docs/demo/images/case-record.png)
+
+**The numbers are real records** — every figure traces back to the system of record: the
+customer's `Energy_Bill__c` (BILL-000004: €176.30 / 520 kWh) and the `Meter_Reading__c`
+history (five months around 316 kWh, then the 520 kWh spike = +64.6 %):
+
+![Energy bill records](docs/demo/images/source-bill.png)
+
+![Meter reading records](docs/demo/images/source-readings.png)
+
+> More screenshots (bill answer, anomaly answer, case answer) are in
+> [`docs/demo/images/`](docs/demo/images/); the walkthrough write-up lives in
+> [`docs/demo/faz5-grounded-answer.md`](docs/demo/faz5-grounded-answer.md).
+
+---
+
 ## Sell vs Serve — where this fits
 
 | | TechnoStore (done) | **HanseWatt (this)** |
