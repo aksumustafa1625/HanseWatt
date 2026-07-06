@@ -1,6 +1,7 @@
 /**
- * Tests for HWCaseService + HWCreateCaseAction — logging a support case for a customer.
- * Free — no callouts, no credits.
+ * Tests for HWCaseService — inserting a categorized support Case for a customer (as user, with
+ * HW_Topic__c categorization). Free — no callouts, no credits. The Agentforce action is covered
+ * in HWCreateCaseActionTest.
  */
 @isTest
 private class HWCaseServiceTest {
@@ -13,21 +14,21 @@ private class HWCaseServiceTest {
     @isTest
     static void createsCategorizedCase() {
         Account a = [SELECT Id FROM Account WHERE Name='Test Case Account' LIMIT 1];
-        HWCreateCaseAction.Request req = new HWCreateCaseAction.Request();
-        req.accountId = a.Id;
-        req.topic = 'Billing';
-        req.subject = 'Bill too high';
-        req.description = 'Customer disputes the May bill.';
+        HWCaseService.NewCase nc = new HWCaseService.NewCase();
+        nc.accountId = a.Id;
+        nc.topic = 'Billing';
+        nc.subject = 'Bill too high';
+        nc.description = 'Customer disputes the May bill.';
+
         Test.startTest();
-        List<HWCreateCaseAction.Result> res =
-            HWCreateCaseAction.run(new List<HWCreateCaseAction.Request>{ req });
+        List<HWCaseService.Created> made =
+            HWCaseService.createCases(new List<HWCaseService.NewCase>{ nc });
         Test.stopTest();
 
-        System.assertEquals(1, res.size());
-        System.assertEquals(true, res[0].created, 'case created');
-        System.assertNotEquals(null, res[0].caseNumber, 'case number returned');
-
-        Case c = [SELECT AccountId, Subject, HW_Topic__c FROM Case WHERE AccountId = :a.Id LIMIT 1];
+        System.assertEquals(1, made.size());
+        System.assertNotEquals(null, made[0].caseNumber, 'case number returned');
+        Case c = [SELECT AccountId, Subject, HW_Topic__c FROM Case WHERE Id = :made[0].caseId];
+        System.assertEquals(a.Id, c.AccountId, 'linked to the customer');
         System.assertEquals('Billing', c.HW_Topic__c, 'topic categorized');
         System.assertEquals('Bill too high', c.Subject, 'subject set');
     }
@@ -39,6 +40,7 @@ private class HWCaseServiceTest {
         nc.accountId = a.Id;
         nc.topic = 'Nonsense';
         nc.subject = 'Something';
+
         Test.startTest();
         List<HWCaseService.Created> made =
             HWCaseService.createCases(new List<HWCaseService.NewCase>{ nc });
@@ -50,14 +52,11 @@ private class HWCaseServiceTest {
     }
 
     @isTest
-    static void nullAccountAsksToIdentify() {
-        HWCreateCaseAction.Request req = new HWCreateCaseAction.Request();
-        req.accountId = null;
-        req.topic = 'Billing';
-        List<HWCreateCaseAction.Result> res =
-            HWCreateCaseAction.run(new List<HWCreateCaseAction.Request>{ req });
-        System.assertEquals(1, res.size());
-        System.assertEquals(false, res[0].created, 'no case without an account');
-        System.assert(res[0].message.contains('identify'), 'asks to identify first');
+    static void emptyInputHandled() {
+        Test.startTest();
+        List<HWCaseService.Created> made =
+            HWCaseService.createCases(new List<HWCaseService.NewCase>());
+        Test.stopTest();
+        System.assertEquals(0, made.size(), 'empty input -> nothing created (guard branch)');
     }
 }

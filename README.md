@@ -135,7 +135,7 @@ Full, honest built-vs-planned matrix: **[`STATUS.md`](./STATUS.md)**. Summary:
 |------|-------|--------|
 | **Faz 1** | **Service Cloud core** (7 objects/37 fields, Case RTs, SLA design, Omni-Channel, 10 Knowledge articles, perms, multi-currency, seed) | ✅ **built** |
 | **Faz 2** | **Data 360** — 4 data streams → DLOs; anomaly grounded live via the Query API (**+64.6 %**) | ✅ **built** |
-| **Faz 5** | **Live agent** — `HW_Energy_Agent` + **4 grounded actions** (identify · bill · explain · create-case) + service layer + 14 tests; multi-turn flow, GROUNDED, incl. German | ✅ **built** |
+| **Faz 5** | **Live agent** — `HW_Energy_Agent` + **4 grounded actions** (identify · bill · explain · create-case) + service layer + 36 tests (**99 % coverage**); multi-turn flow, GROUNDED, incl. German | ✅ **built** |
 | 🟡 | Knowledge Data Library grounding · live SLA milestone clock | partial (see STATUS.md) |
 | ⬜ | Identity resolution · persisted CI + segments/closed loop · LWC UI · tariff-change/escalation actions · prompt templates · agent eval ⭐ · red-team ⭐ · employee agent · DSGVO automation · WhatsApp | planned (designed, not code) |
 
@@ -151,7 +151,7 @@ Full, honest built-vs-planned matrix: **[`STATUS.md`](./STATUS.md)**. Summary:
 |------|-----------|
 | Service Cloud core | 7 objects + 37 fields (`Meter__c`, `Meter_Reading__c`, `Tariff__c`, `Service_Contract__c`, `Energy_Bill__c`, `Outage__c`, `Consent__c`) + `Case.HW_Topic__c` · 5 Case record types + support process · `HW_Standard_SLA` entitlement + milestones · Omni-Channel (channel, queue, routing, presence, German + Billing skills) · 6-topic Knowledge with 10 published articles · `HW_Admin`/`HW_ServiceAgent`/`HW_ReadOnly` perms · EUR + CHF · 4 DACH seed accounts |
 | Data 360 | 4 DataStreamDefinitions (Account, Meter, Meter Reading, Energy Bill) → DLOs · anomaly proven live via the Data 360 Query API (SQL CI): **520 vs 316 kWh = +64.6 %** |
-| Live agent (Faz 5) | `HW_Energy_Agent` (Bot + ReAct planner + 2 topics) · 4 grounded `@InvocableMethod` actions (`HWIdentifyCustomerAction`, `HWGetLatestBillAction`, `HWExplainConsumptionAction`, `HWCreateCaseAction`) · 4 services (`with sharing`, `WITH USER_MODE`, bulk-safe) · `HW_Agent_Actions` perms · 4 test classes / 14 methods · NGA design bundle (`HW_Service_Agent.agent`, committed as design — runtime edition-blocked) |
+| Live agent (Faz 5) | `HW_Energy_Agent` (Bot + ReAct planner + 2 topics) · 4 grounded `@InvocableMethod` actions (`HWIdentifyCustomerAction`, `HWGetLatestBillAction`, `HWExplainConsumptionAction`, `HWCreateCaseAction`) · 4 services (`with sharing`, `WITH USER_MODE`, bulk-safe) · `HW_Agent_Actions` perms · 8 test classes / 36 methods (99 % org-wide coverage, every class ≥ 94 %) · NGA design bundle (`HW_Service_Agent.agent`, committed as design — runtime edition-blocked) |
 
 ## Documents
 
@@ -173,7 +173,7 @@ force-app/             ✅ core sObjects, Service Cloud config, perms, Knowledge
 force-app-services/    ✅ HWCustomerService, HWBillingService, HWConsumptionService, HWCaseService
 force-app-actions/     ✅ 4 @InvocableMethod agent actions (HW…Action)
 force-app-datacloud/   ✅ Data 360 DataStreamDefinitions (4)
-force-app-tests/       ✅ Apex tests (4 classes / 14 methods)
+force-app-tests/       ✅ Apex tests (8 classes / 36 methods · 99% coverage)
 force-app-handlers/    ⬜ trigger handlers (Kevin O'Hara) — reserved, empty
 force-app-agent/       ⬜ reserved package (agent metadata currently lives in force-app/)
 force-app-lwc/         ⬜ hwConsumptionChart, hwAgentConsole — reserved, empty
@@ -189,9 +189,15 @@ scripts/               anonymous Apex (seed_demo_data, seed_knowledge, datacloud
 
 ```bash
 sf org login web --alias hansewatt
-sf project deploy start --source-dir force-app --target-org hansewatt
+# deploy the built packages (core + services + actions + Data 360 + tests)
+sf project deploy start \
+  --source-dir force-app --source-dir force-app-services --source-dir force-app-actions \
+  --source-dir force-app-datacloud --source-dir force-app-tests --target-org hansewatt
 sf apex run --file scripts/seed_demo_data.apex --target-org hansewatt
 sf apex run --file scripts/seed_knowledge.apex --target-org hansewatt
+
+# verify the Apex layer (8 test classes, 36 methods, 99% org-wide coverage)
+sf apex run test --code-coverage --result-format human --wait 15 --target-org hansewatt
 ```
 
 ## License

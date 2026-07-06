@@ -51,7 +51,7 @@ and [`docs/demo/images/`](docs/demo/images/).
 | Grounded actions (4) | `HWIdentifyCustomerAction` (email→Account) · `HWGetLatestBillAction` · `HWExplainConsumptionAction` (+64.6 %) · `HWCreateCaseAction` (opens a real Case) | `force-app-actions/main/default/classes/` |
 | Service layer (4) | `HWCustomerService` · `HWBillingService` · `HWConsumptionService` · `HWCaseService` — `with sharing`, `WITH USER_MODE`, bulk-safe | `force-app-services/main/default/classes/` |
 | Agent-user perms | `HW_Agent_Actions` permission set (class access + USER_MODE FLS) | `force-app/main/default/permissionsets/` |
-| Tests | 4 test classes / 14 test methods; assert the grounded +64.6 % before any live agent run | `force-app-tests/main/default/classes/` |
+| Tests | 8 test classes / 36 test methods — one per service **and** one per action (1:1), all branches + 200-record bulk-safety tests; **99 % org-wide coverage**, every class ≥ 94 %; assert the grounded +64.6 % before any live agent run | `force-app-tests/main/default/classes/` |
 | Multi-turn flow | identify → bill → anomaly → create-case in one session, every reply GROUNDED; also runs fully in German | `docs/demo/faz5-grounded-answer.md` |
 | NGA design bundle | `HW_Service_Agent.agent` (modern Agent-Script) committed as **design documentation** — its runtime publish is edition-blocked here (see gotchas) | `force-app/main/default/aiAuthoringBundles/` |
 

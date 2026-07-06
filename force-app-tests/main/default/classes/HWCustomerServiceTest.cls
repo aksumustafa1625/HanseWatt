@@ -1,6 +1,7 @@
 /**
- * Tests for HWCustomerService + HWIdentifyCustomerAction — resolving a customer Account from
- * the email given in conversation. Free — no callouts, no credits.
+ * Tests for HWCustomerService — resolving a customer Account from an email (Contact → Account),
+ * trimmed + case-insensitive. Free — no callouts, no credits. The Agentforce action is covered
+ * in HWIdentifyCustomerActionTest.
  */
 @isTest
 private class HWCustomerServiceTest {
@@ -27,30 +28,13 @@ private class HWCustomerServiceTest {
     }
 
     @isTest
-    static void actionIdentifiesKnownCustomer() {
-        HWIdentifyCustomerAction.Request req = new HWIdentifyCustomerAction.Request();
-        req.email = 'test.customer@example.de';
-        Test.startTest();
-        List<HWIdentifyCustomerAction.Result> res =
-            HWIdentifyCustomerAction.run(new List<HWIdentifyCustomerAction.Request>{ req });
-        Test.stopTest();
-
-        System.assertEquals(1, res.size());
-        System.assertEquals(true, res[0].found, 'known customer found');
-        System.assertNotEquals(null, res[0].accountId, 'account id set');
-        System.assert(res[0].message.contains('Test Customer GmbH'), 'friendly message');
-    }
-
-    @isTest
-    static void actionHandlesUnknownEmail() {
-        HWIdentifyCustomerAction.Request req = new HWIdentifyCustomerAction.Request();
-        req.email = 'nobody@nowhere.de';
-        List<HWIdentifyCustomerAction.Result> res =
-            HWIdentifyCustomerAction.run(new List<HWIdentifyCustomerAction.Request>{ req });
-
-        System.assertEquals(1, res.size());
-        System.assertEquals(false, res[0].found, 'unknown email not found');
-        System.assertEquals(null, res[0].accountId, 'no account id');
-        System.assert(res[0].message.contains('No customer'), 'graceful not-found message');
+    static void unknownAndEmptyInputReturnEmpty() {
+        // Unknown email resolves to nothing...
+        Map<String, HWCustomerService.Customer> m =
+            HWCustomerService.byEmail(new Set<String>{ 'nobody@nowhere.de' });
+        System.assert(!m.containsKey('nobody@nowhere.de'), 'unknown email not resolved');
+        // ...and an empty input short-circuits to an empty map (guard branch).
+        System.assertEquals(0, HWCustomerService.byEmail(new Set<String>()).size(),
+            'empty input -> empty map');
     }
 }
