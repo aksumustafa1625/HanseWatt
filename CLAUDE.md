@@ -24,8 +24,8 @@ controlled localization step at the end**, paired with English glosses. See
 | Field | Value |
 |---|---|
 | Alias | `hansewatt` |
-| Username | `hw-service-agent@example.com` |
-| Instance | `your-org.develop.my.salesforce.com` |
+| Username | _(local `sf` auth — not committed)_ |
+| Instance | _(personal Dev Edition — not committed)_ |
 | Edition / API | Developer Edition (Agentforce + Data 360) · **API 67.0** |
 | Locale / Currency | English (US) UI · **multi-currency: EUR (corporate) + CHF** |
 
@@ -34,18 +34,21 @@ Single build org. **Never touch the TechnoStore / Configra orgs.**
 ## Repository layout (8-package SFDX)
 
 ```
-force-app/             core sObjects, Service Cloud config (record types, Omni-Channel,
-                       entitlements, data categories, Knowledge field), perms
-force-app-services/    HW...Service classes (billing, consumption, compliance)   [Faz 5+]
-force-app-actions/     Agentforce @InvocableMethod actions (HW...Action)         [Faz 5+]
-force-app-handlers/    trigger handlers (Kevin O'Hara framework)                 [Faz 5+]
-force-app-agent/       Agentforce metadata (Bot/GenAiPlanner/Topics/Functions)   [Faz 5+]
-force-app-datacloud/   Data 360 metadata (DataStream/DLO/DMO/CI/Segment)         [Faz 2+]
-force-app-lwc/         hwConsumptionChart, hwAgentConsole, hwComplianceActions   [Faz 4+]
-force-app-tests/       Apex tests                                                [Faz 5+]
-docs/                  adr · architecture · manual-setup · security · eval
-scripts/               anonymous Apex (seed + verification)
+force-app/             core sObjects + Service Cloud config + perms + Knowledge — AND the
+                       live agent metadata (bots/, genAiPlannerBundles/, genAiPlugins/,
+                       genAiFunctions/, aiAuthoringBundles/), where the CLI created it
+force-app-services/    ✅ HWCustomerService, HWBillingService, HWConsumptionService, HWCaseService
+force-app-actions/     ✅ 4 @InvocableMethod actions (HW...Action)
+force-app-datacloud/   ✅ Data 360 DataStreamDefinitions (4)
+force-app-tests/       ✅ Apex tests (4 classes / 14 methods)
+force-app-handlers/    ⬜ trigger handlers (Kevin O'Hara) — reserved, empty
+force-app-agent/       ⬜ reserved package (agent metadata currently in force-app/)
+force-app-lwc/         ⬜ hwConsumptionChart, hwAgentConsole — reserved, empty
+docs/                  adr · architecture · demo · manual-setup · research · troubleshooting
+scripts/               anonymous Apex (seed + Data 360 query + verification)
 ```
+
+Full built-vs-planned truth: **`STATUS.md`** (repo root).
 
 Planning docs: `PROJECT_BLUEPRINT.md` (design) · `ROADMAP.md` (triage + skeleton) ·
 `PHASES.md` (P0–P14 step-by-step checklist) · `TechnoStore.md` (reference patterns).
@@ -157,12 +160,24 @@ are deployed and source-controlled, but the live `CaseMilestone` clock can't bin
 `docs/troubleshooting/`). It binds normally in a Service Cloud Enterprise/Developer org — a
 clean future-verification path. This does not block Faz 2 or any headline feature.
 
-## Next — Faz 2: Data 360 / Data Cloud
+## Current status — Faz 1 + 2 + 5 built (see `STATUS.md`)
 
-The real Agentforce + Data Cloud work (and **first Flex-Credit consumption** — apply the
-quota discipline). First steps: provision Data Cloud ("Get Started"), build a synthetic
-smart-meter feed, then Data Streams → DLOs ([ADR-004](docs/adr/ADR-004-ingestion-api-vs-mulesoft.md),
-[ADR-003](docs/adr/ADR-003-data360-system-of-record-boundary.md)).
+Since the Faz 1 note above, **Faz 2 (Data 360)** and **Faz 5 (the live agent)** are also
+built and committed:
+
+- **Faz 2:** 4 DataStreamDefinitions → DLOs; the consumption anomaly is grounded live via
+  the Data 360 Query API (SQL CI over the Meter Reading DLO) — Lena **520 vs 316 kWh =
+  +64.6 %** (`scripts/datacloud_ci_anomaly.sql`, `scripts/datacloud_query.ps1`).
+- **Faz 5:** `HW_Energy_Agent` (Bot + ReAct planner + 2 topics) with **4 grounded actions**
+  — `HWIdentifyCustomerAction`, `HWGetLatestBillAction`, `HWExplainConsumptionAction`,
+  `HWCreateCaseAction` — over 4 services + `HW_Agent_Actions` perms + 14 tests. The
+  multi-turn flow (identify → bill → anomaly → create-case) runs grounded, including in
+  German. Wiring recipe + gotchas: `MEMORY.md` / memory `faz5-status`.
+
+**Next:** finish Knowledge Data Library grounding (RAG index for procedure answers). The
+full built-vs-planned matrix — and everything still designed-only (identity resolution,
+LWC UI, agent eval, red-team, employee agent, DSGVO automation, WhatsApp) — lives in
+**`STATUS.md`**.
 
 ## Memory
 

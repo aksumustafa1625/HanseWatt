@@ -11,8 +11,11 @@
 ![Agentforce](https://img.shields.io/badge/Agentforce-AI%20Agents-7f5af0)
 ![Data 360](https://img.shields.io/badge/Data%20360-Data%20Cloud-1798c1)
 ![API](https://img.shields.io/badge/API-67.0-informational)
-![Phase](https://img.shields.io/badge/Phase-1%20Service%20Cloud%20core%20%E2%9C%93-brightgreen)
+![Status](https://img.shields.io/badge/Status-Live%20grounded%20agent%20%E2%9C%93-brightgreen)
 ![ADRs](https://img.shields.io/badge/ADRs-19-blue)
+
+**What's real vs. planned:** see [`STATUS.md`](./STATUS.md) — one honest source of truth.
+Everything in the demo below is built, deployed, and committed.
 
 **Developer:** Mustafa Aksu · [mustafaaksu.dev](https://mustafaaksu.dev)
 
@@ -79,7 +82,7 @@ Lena (web chat, DE): "Warum ist meine Stromrechnung so hoch?"
 [Agentforce Service Agent] ── Einstein Trust Layer ──
   1. Identifies Lena (Data 360 Unified Individual)
   2. Action: GetLatestBill        → € amount + period
-  3. Action: ExplainConsumption   → Data 360 CI: "+62% vs 6-mo avg, evenings → EV charging"
+  3. Action: ExplainConsumption   → Data 360: "+64.6% vs avg (520 vs 316 kWh)"
   4. Grounds in a cited Knowledge article (no hallucinated numbers)
         ├── resolvable → ProposeTariff → InitiateTariffChange (creates Case + contract change)
         └── not resolvable → EscalateToHuman → Omni-Channel → rep agent case summary
@@ -89,6 +92,11 @@ Lena (web chat, DE): "Warum ist meine Stromrechnung so hoch?"
 
 Three beats that sell it: **grounded, not hallucinated** · **autonomous action** (creates
 records) · **closed loop** (service data drives proactive prevention).
+
+> **Built vs. planned in that diagram:** the flow that is **built and demoed today** is
+> _identify → GetLatestBill → ExplainConsumption (+64.6 %) → CreateCase_. The tariff-change
+> path (`ProposeTariff` / `InitiateTariffChange`), `EscalateToHuman`, and the Data 360
+> closed-loop segment are the **designed next step, not yet code** — see [`STATUS.md`](./STATUS.md).
 
 ## Architecture
 
@@ -121,30 +129,29 @@ records) · **closed loop** (service data drives proactive prevention).
 
 ## Build status
 
+Full, honest built-vs-planned matrix: **[`STATUS.md`](./STATUS.md)**. Summary:
+
 | Phase | Theme | Status |
 |------|-------|--------|
-| **P0** | Org + foundations | ✅ done |
-| **P1** | **Service Cloud core** | ✅ **done** (1 live gate test pending schema refresh) |
-| P2 | Data 360 ingestion | ⏭ next |
-| P3 | Identity resolution | ▫ planned |
-| P4 | Calculated Insights + chart | ▫ planned |
-| P5 | Agentforce agent (grounded) | ▫ planned |
-| P6 | Prompt templates + Trust Layer | ▫ planned |
-| P7 | Escalation + employee agent | ▫ planned |
-| 🎬 | **Minimum Wow Demo recording** | ▫ gate |
-| P8–P14 | Closed loop · DSGVO · **agent eval** ⭐ · **red-team** ⭐ · ROI · WhatsApp · docs | ▫ second wave |
+| **Faz 1** | **Service Cloud core** (7 objects/37 fields, Case RTs, SLA design, Omni-Channel, 10 Knowledge articles, perms, multi-currency, seed) | ✅ **built** |
+| **Faz 2** | **Data 360** — 4 data streams → DLOs; anomaly grounded live via the Query API (**+64.6 %**) | ✅ **built** |
+| **Faz 5** | **Live agent** — `HW_Energy_Agent` + **4 grounded actions** (identify · bill · explain · create-case) + service layer + 14 tests; multi-turn flow, GROUNDED, incl. German | ✅ **built** |
+| 🟡 | Knowledge Data Library grounding · live SLA milestone clock | partial (see STATUS.md) |
+| ⬜ | Identity resolution · persisted CI + segments/closed loop · LWC UI · tariff-change/escalation actions · prompt templates · agent eval ⭐ · red-team ⭐ · employee agent · DSGVO automation · WhatsApp | planned (designed, not code) |
 
-### Faz 1 — what's built (this repo, deployed + committed)
+> Two things are honestly **partial**: the Knowledge Data Library RAG index was still
+> provisioning at last check (figure-grounding via Data 360 **is** live), and the live SLA
+> milestone clock can't bind because `Case.EntitlementId` isn't provisioned in this
+> Dev-Edition flavour (edition limitation — see
+> [`docs/troubleshooting/`](./docs/troubleshooting/faz1-gate-case-entitlementid.md)).
 
-| Area | Components |
+### What's built (this repo, deployed + committed)
+
+| Layer | Components |
 |------|-----------|
-| Data model | 7 objects + 37 fields (`Meter__c`, `Meter_Reading__c`, `Tariff__c`, `Service_Contract__c`, `Energy_Bill__c`, `Outage__c`, `Consent__c`) + `Case.HW_Topic__c` |
-| Case + SLA | 5 record types + support process · `HW_Standard_SLA` entitlement (First Response 4h, Resolution 2 business days) |
-| Omni-Channel | service channel · escalation queue · routing config · presence statuses · German + Billing skills |
-| Knowledge | 6-topic data-category group + **10 published, categorized articles** |
-| Security | `HW_Admin` · `HW_ServiceAgent` (bill/reading read-only = system-of-record) · `HW_ReadOnly` |
-| Multi-currency | EUR (corporate) + CHF |
-| Seed data | 4 DACH accounts + meters, contracts, bills, readings, consent, outage |
+| Service Cloud core | 7 objects + 37 fields (`Meter__c`, `Meter_Reading__c`, `Tariff__c`, `Service_Contract__c`, `Energy_Bill__c`, `Outage__c`, `Consent__c`) + `Case.HW_Topic__c` · 5 Case record types + support process · `HW_Standard_SLA` entitlement + milestones · Omni-Channel (channel, queue, routing, presence, German + Billing skills) · 6-topic Knowledge with 10 published articles · `HW_Admin`/`HW_ServiceAgent`/`HW_ReadOnly` perms · EUR + CHF · 4 DACH seed accounts |
+| Data 360 | 4 DataStreamDefinitions (Account, Meter, Meter Reading, Energy Bill) → DLOs · anomaly proven live via the Data 360 Query API (SQL CI): **520 vs 316 kWh = +64.6 %** |
+| Live agent (Faz 5) | `HW_Energy_Agent` (Bot + ReAct planner + 2 topics) · 4 grounded `@InvocableMethod` actions (`HWIdentifyCustomerAction`, `HWGetLatestBillAction`, `HWExplainConsumptionAction`, `HWCreateCaseAction`) · 4 services (`with sharing`, `WITH USER_MODE`, bulk-safe) · `HW_Agent_Actions` perms · 4 test classes / 14 methods · NGA design bundle (`HW_Service_Agent.agent`, committed as design — runtime edition-blocked) |
 
 ## Documents
 
@@ -159,17 +166,24 @@ records) · **closed loop** (service data drives proactive prevention).
 ## Repository layout (SFDX, 8 packages)
 
 ```
-force-app/             core sObjects, Service Cloud config, perms, Knowledge, data categories
-force-app-services/    HWBillingService, HWConsumptionService, HWComplianceService …   [P5+]
-force-app-actions/     Agentforce @InvocableMethod actions (HW…Action)                 [P5+]
-force-app-handlers/    trigger handlers (Kevin O'Hara framework)                       [P5+]
-force-app-agent/       Agentforce metadata (Bot/GenAiPlanner/Topics/Functions)         [P5+]
-force-app-datacloud/   Data 360 metadata (DataStream/DLO/DMO/CI/Segment)               [P2+]
-force-app-lwc/         hwConsumptionChart, hwAgentConsole, hwComplianceActions …       [P4+]
-force-app-tests/       Apex tests                                                      [P5+]
-docs/                  adr · architecture · manual-setup · security · eval
-scripts/               anonymous Apex (seed_demo_data, seed_knowledge, verify_gate)
+force-app/             ✅ core sObjects, Service Cloud config, perms, Knowledge, data
+                          categories — AND the live agent metadata (bots/,
+                          genAiPlannerBundles/, genAiPlugins/, genAiFunctions/,
+                          aiAuthoringBundles/), where the CLI created it
+force-app-services/    ✅ HWCustomerService, HWBillingService, HWConsumptionService, HWCaseService
+force-app-actions/     ✅ 4 @InvocableMethod agent actions (HW…Action)
+force-app-datacloud/   ✅ Data 360 DataStreamDefinitions (4)
+force-app-tests/       ✅ Apex tests (4 classes / 14 methods)
+force-app-handlers/    ⬜ trigger handlers (Kevin O'Hara) — reserved, empty
+force-app-agent/       ⬜ reserved package (agent metadata currently lives in force-app/)
+force-app-lwc/         ⬜ hwConsumptionChart, hwAgentConsole — reserved, empty
+docs/                  adr · architecture · demo · manual-setup · research · troubleshooting
+scripts/               anonymous Apex (seed_demo_data, seed_knowledge, datacloud_query, verify_gate)
 ```
+
+> The "8 packages" is a deliberate forward-looking layout; three packages
+> (`handlers`, `agent`, `lwc`) are reserved scaffolding for the planned work in
+> [`STATUS.md`](./STATUS.md), not claimed as built.
 
 ## Run it
 
