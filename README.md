@@ -111,10 +111,19 @@ Agent [HW Propose Tariff Change]:
    DAUERHAFT ist (z. B. eine Wallbox). Andernfalls bleibt Ihr aktueller Tarif die
    beste Wahl. Können Sie das bestätigen?"          <- it asks instead of guessing
 
-Lena: "Ja, ich habe eine Wallbox."
+Lena: "Ja, ich habe eine Wallbox. Bitte wechseln Sie mich."
 
-Agent [HW Confirm Tariff Change  <- only against the proposal number it was issued]:
-  "Der Wechsel wurde durchgeführt. Referenz: Fall 00001031."
+Agent [HW Confirm Tariff Change #1  <- this call CANNOT apply anything]:
+  "Bevor wir abschließen, die VERBINDLICHEN BEDINGUNGEN:
+   - Neuer Tarif: EV-Tarif · Wirksam ab der nächsten Abrechnungsperiode
+   - Ersparnis: 69,60 EUR/Jahr
+   - ANNAHME: Ihr höherer Verbrauch von 520 kWh ist dauerhaft.
+   Bitte bestätigen Sie."                            <- nothing has changed yet
+
+Lena: "Ja, ich bestätige den Wechsel verbindlich."
+
+Agent [HW Confirm Tariff Change #2  <- only now, and only against its own proposal number]:
+  "Der Wechsel wurde durchgeführt. Referenz: Fall 00001033."
   -> Service_Contract__c really switched · Tariff_Change_Request__c marked Applied
   -> Case opened by the EinsteinServiceAgent User · Tariff_Change_Requested__e published
 ```
@@ -127,7 +136,16 @@ over real `Tariff__c` rows at the customer's real meter readings; no model can i
 **And consent is not a Boolean the model fills in.** It is a server-issued, expiring,
 account-scoped request number (`TCR-00001`) that exists only in the propose step's output. A
 model that skipped the step, invented a number, or replayed *another customer's* number is
-refused — and **zero DML runs**. See [ADR-020](docs/adr/ADR-020-tariff-advisory-consent-handshake.md).
+refused — and **zero DML runs**.
+
+**The double confirmation is a state machine, not a prompt convention.** `Proposed
+--confirm#1--> Terms_Presented --confirm#2--> Applied`. The **first** confirmation is
+*structurally incapable* of changing the contract: it advances the proposal and returns the
+binding terms — including the **assumption the saving rests on** — so the customer is
+*guaranteed* to see them. Not because the agent was asked nicely; because there is no code
+path that skips them. (Caught in the first recording, where the agent *did* apply on the
+first "Ja" while the instruction said "ask twice" — the exact trap this design exists to
+close.) See [ADR-020](docs/adr/ADR-020-tariff-advisory-consent-handshake.md).
 
 ## Architecture
 
