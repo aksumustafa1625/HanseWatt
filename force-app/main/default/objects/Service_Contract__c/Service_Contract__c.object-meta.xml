@@ -13,5 +13,5 @@
         <label>Contract Number</label>
         <type>AutoNumber</type>
     </nameField>
-    <sharingModel>Private</sharingModel>
+    <sharingModel>ReadWrite</sharingModel>
 </CustomObject>
