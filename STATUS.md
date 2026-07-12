@@ -81,7 +81,7 @@ scaffolding for them.
 | Persisted Calculated Insight + Segments + closed-loop proactive outreach | anomaly proven as ad-hoc SQL, not a persisted CI/segment | — |
 | LWC UI (`hwConsumptionChart`, `hwAgentConsole`) | `force-app-lwc/` is empty scaffolding | ADR-016 |
 | Trigger handlers (Kevin O'Hara framework) | `force-app-handlers/` is empty scaffolding | — |
-| Additional agent actions: ProposeTariff · InitiateTariffChange · EscalateToHuman | only identify / bill / explain / create-case are built | — |
+| `EscalateToHuman` — Omni-Channel handoff with an LLM-written case summary | the tariff-change actions are now **built** (ADR-020); escalation is the last unbuilt action, and the Omni-Channel queue + German/Billing skills it would use are already configured | — |
 | Prompt templates | agent uses topic instructions today | — |
 | Agent evaluation / LLM-as-judge (`HW_AgentJudge`) | design only | ADR-012 |
 | Adversarial red-team suite | design only | ADR-013 |
