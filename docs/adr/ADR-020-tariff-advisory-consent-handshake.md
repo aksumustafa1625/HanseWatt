@@ -105,6 +105,33 @@ The change is split into a two-step handshake across two actions:
   4. has **not expired**.
 - Otherwise it refuses with a machine-readable `refusalReason` and **runs zero DML**.
 
+#### 2b. The SECOND confirmation is a state, not an instruction
+
+Splitting propose from confirm proves the customer's *intent* came from a real proposal. It
+does **not** prove they were told the change is **binding**. An instruction that says *"ask
+twice"* is the same trap as the Boolean: nothing in the code stops the model from acting on
+the first "Ja" — and in the first live run, that is exactly what it did. The narrative
+promised deliberate friction; the behaviour delivered none.
+
+So the second confirmation is enforced as a state machine too:
+
+```
+Proposed  --confirm #1-->  Terms_Presented  --confirm #2-->  Applied
+          (applies NOTHING;                 (applies)
+           returns the binding terms)
+```
+
+`HWConfirmTariffChangeAction`'s **first** call is *incapable* of changing the contract. It
+advances the proposal to `Terms_Presented` and hands the agent the binding terms — this is a
+binding contract change, it takes effect next billing period, here is the saving, **and here
+is the assumption the saving rests on** — with an explicit instruction not to claim anything
+changed. Only a **second** call, after the customer has seen those terms and confirmed them,
+applies the change.
+
+The customer is therefore *guaranteed* to see the binding terms. Not because the agent was
+asked nicely — because there is no code path that skips them. Verified live: the first "Ja"
+produced the terms and left the contract untouched; only the second applied it.
+
 **Why this is structural and the Boolean was not:** the request number exists *only* in the
 output of step 1. A model that skipped the proposal has nothing to present. A model that
 hallucinates consent and invents `TCR-99999` is refused because no such row exists. A model that
@@ -188,6 +215,8 @@ Proven in **free Apex tests** before a single Flex Credit was spent (25 tests; f
 | No consumption / no contract → refuses, does not guess | `noReadingsIsRefusedNotGuessed`, `noContractIsRefusedNotGuessed` |
 | The proposal number is issued by the platform, not the model | `mintsAServerIssuedRequestNumber` |
 | Already on the cheapest tariff → no switch is manufactured | `doesNotInventASwitchForACustomerAlreadyOnTheCheapestTariff` |
+| **The FIRST confirmation applies NOTHING; it presents the binding terms** | `firstConfirmationPresentsTermsAndChangesNothing` |
+| Only the **second** confirmation applies the change + opens the Case | `secondConfirmationAppliesAndOpensACase` |
 | **Invented number → refused, contract UNCHANGED** | `refusesAnInventedRequestNumber` |
 | **Another customer's number → refused, contract UNCHANGED** | `refusesAnotherCustomersRequestNumber` |
 | **Expired proposal → refused, marked Expired, UNCHANGED** | `refusesAnExpiredProposal` |

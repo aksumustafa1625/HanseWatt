@@ -9,6 +9,7 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value><fullName>Proposed</fullName><default>true</default><label>Proposed</label></value>
+            <value><fullName>Terms_Presented</fullName><default>false</default><label>Binding Terms Presented</label></value>
             <value><fullName>Applied</fullName><default>false</default><label>Applied</label></value>
             <value><fullName>Expired</fullName><default>false</default><label>Expired</label></value>
             <value><fullName>Cancelled</fullName><default>false</default><label>Cancelled</label></value>
