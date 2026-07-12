@@ -37,10 +37,10 @@ Single build org. **Never touch the TechnoStore / Configra orgs.**
 force-app/             core sObjects + Service Cloud config + perms + Knowledge — AND the
                        live agent metadata (bots/, genAiPlannerBundles/, genAiPlugins/,
                        genAiFunctions/, aiAuthoringBundles/), where the CLI created it
-force-app-services/    ✅ HWCustomerService, HWBillingService, HWConsumptionService, HWCaseService, HWKnowledgeService
-force-app-actions/     ✅ 5 @InvocableMethod actions (HW...Action)
+force-app-services/    ✅ 6 HW…Service classes (customer, billing, consumption, case, knowledge, tariff)
+force-app-actions/     ✅ 7 @InvocableMethod actions (HW...Action)
 force-app-datacloud/   ✅ Data 360 DataStreamDefinitions (4)
-force-app-tests/       ✅ Apex tests (10 classes / 49 methods · 99% coverage)
+force-app-tests/       ✅ Apex tests (13 classes / 74 methods · 97% coverage)
 force-app-handlers/    ⬜ trigger handlers (Kevin O'Hara) — reserved, empty
 force-app-agent/       ⬜ reserved package (agent metadata currently in force-app/)
 force-app-lwc/         ⬜ hwConsumptionChart, hwAgentConsole — reserved, empty

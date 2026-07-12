@@ -93,10 +93,41 @@ Lena (web chat, DE): "Warum ist meine Stromrechnung so hoch?"
 Three beats that sell it: **grounded, not hallucinated** · **autonomous action** (creates
 records) · **closed loop** (service data drives proactive prevention).
 
-> **Built vs. planned in that diagram:** the flow that is **built and demoed today** is
-> _identify → GetLatestBill → ExplainConsumption (+64.6 %) → CreateCase_. The tariff-change
-> path (`ProposeTariff` / `InitiateTariffChange`), `EscalateToHuman`, and the Data 360
-> closed-loop segment are the **designed next step, not yet code** — see [`STATUS.md`](./STATUS.md).
+> **Built vs. planned in that diagram:** built and demoed today —
+> _identify → GetLatestBill → ExplainConsumption (+64.6 %) → AnswerFromKnowledge (cited) →
+> **ProposeTariffChange → ConfirmTariffChange** → CreateCase_. Still **designed, not yet code**:
+> `EscalateToHuman` (Omni-Channel handoff) and the Data 360 closed-loop segment — see
+> [`STATUS.md`](./STATUS.md).
+
+### The agent doesn't just explain the high bill — it solves it, and refuses to guess
+
+```
+Lena: "Meine Rechnung ist zu hoch. Wechseln Sie mich in einen günstigeren Tarif."
+
+Agent [HW Propose Tariff Change]:
+  "Sie könnten jährlich 69,60 EUR sparen mit dem EV-Tarif. Der hat einen niedrigeren
+   kWh-Preis, ABER eine höhere Grundgebühr.
+   Allerdings hängt die Empfehlung davon ab, ob Ihr höherer Verbrauch von 520 kWh
+   DAUERHAFT ist (z. B. eine Wallbox). Andernfalls bleibt Ihr aktueller Tarif die
+   beste Wahl. Können Sie das bestätigen?"          <- it asks instead of guessing
+
+Lena: "Ja, ich habe eine Wallbox."
+
+Agent [HW Confirm Tariff Change  <- only against the proposal number it was issued]:
+  "Der Wechsel wurde durchgeführt. Referenz: Fall 00001031."
+  -> Service_Contract__c really switched · Tariff_Change_Request__c marked Applied
+  -> Case opened by the EinsteinServiceAgent User · Tariff_Change_Requested__e published
+```
+
+**Same question, a different customer, the opposite answer.** Studio Alpina (165 kWh/month)
+is told to switch to **Strom Basis**, *not* the EV tariff — because below the 375 kWh/month
+break-even the EV tariff's higher base fee makes it more expensive. The € figure is arithmetic
+over real `Tariff__c` rows at the customer's real meter readings; no model can invent it.
+
+**And consent is not a Boolean the model fills in.** It is a server-issued, expiring,
+account-scoped request number (`TCR-00001`) that exists only in the propose step's output. A
+model that skipped the step, invented a number, or replayed *another customer's* number is
+refused — and **zero DML runs**. See [ADR-020](docs/adr/ADR-020-tariff-advisory-consent-handshake.md).
 
 ## Architecture
 
@@ -135,10 +166,10 @@ Full, honest built-vs-planned matrix: **[`STATUS.md`](./STATUS.md)**. Summary:
 |------|-------|--------|
 | **Faz 1** | **Service Cloud core** (7 objects/37 fields, Case RTs, SLA design, Omni-Channel, 10 Knowledge articles, perms, multi-currency, seed) | ✅ **built** |
 | **Faz 2** | **Data 360** — 4 data streams → DLOs; anomaly grounded live via the Query API (**+64.6 %**) | ✅ **built** |
-| **Faz 5** | **Live agent** — `HW_Energy_Agent` + **5 grounded actions** (identify · bill · explain · create-case · **answer-from-Knowledge**) + service layer + 49 tests (**99 % coverage**); multi-turn flow, GROUNDED, incl. German | ✅ **built** |
+| **Faz 5** | **Live agent** — `HW_Energy_Agent` + **7 grounded actions** (identify · bill · explain · create-case · answer-from-Knowledge · **propose-tariff** · **confirm-tariff**) + service layer + 74 tests (**97 % coverage**); multi-turn flow, GROUNDED, incl. German | ✅ **built** |
 | **Grounding split (ADR-007)** | *figures* → Data 360 (**+64.6 %**) · *procedure* → a **cited Knowledge article** (deterministic Apex retriever; live-verified: "I'm moving house" → Umzug article + citation) | ✅ **built** |
 | 🟡 | live SLA milestone clock (edition-blocked) | partial (see STATUS.md) |
-| ⬜ | Identity resolution · persisted CI + segments/closed loop · LWC UI · tariff-change/escalation actions · prompt templates · agent eval ⭐ · red-team ⭐ · employee agent · DSGVO automation · WhatsApp | planned (designed, not code) |
+| ⬜ | Identity resolution · persisted CI + segments/closed loop · LWC UI · escalation action (Omni-Channel handoff) · prompt templates · agent eval ⭐ · red-team ⭐ · employee agent · DSGVO automation · WhatsApp | planned (designed, not code) |
 
 > Honestly **partial**: the live SLA milestone clock can't bind because `Case.EntitlementId`
 > isn't provisioned in this Dev-Edition flavour (edition limitation — see
@@ -178,10 +209,10 @@ force-app/             ✅ core sObjects, Service Cloud config, perms, Knowledge
                           categories — AND the live agent metadata (bots/,
                           genAiPlannerBundles/, genAiPlugins/, genAiFunctions/,
                           aiAuthoringBundles/), where the CLI created it
-force-app-services/    ✅ HWCustomerService, HWBillingService, HWConsumptionService, HWCaseService, HWKnowledgeService
-force-app-actions/     ✅ 5 @InvocableMethod agent actions (HW…Action)
+force-app-services/    ✅ 6 HW…Service classes (customer, billing, consumption, case, knowledge, tariff)
+force-app-actions/     ✅ 7 @InvocableMethod agent actions (HW…Action)
 force-app-datacloud/   ✅ Data 360 DataStreamDefinitions (4)
-force-app-tests/       ✅ Apex tests (10 classes / 49 methods · 99% coverage)
+force-app-tests/       ✅ Apex tests (13 classes / 74 methods · 97% coverage)
 force-app-handlers/    ⬜ trigger handlers (Kevin O'Hara) — reserved, empty
 force-app-agent/       ⬜ reserved package (agent metadata currently lives in force-app/)
 force-app-lwc/         ⬜ hwConsumptionChart, hwAgentConsole — reserved, empty
