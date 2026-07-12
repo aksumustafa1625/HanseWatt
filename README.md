@@ -135,15 +135,24 @@ Full, honest built-vs-planned matrix: **[`STATUS.md`](./STATUS.md)**. Summary:
 |------|-------|--------|
 | **Faz 1** | **Service Cloud core** (7 objects/37 fields, Case RTs, SLA design, Omni-Channel, 10 Knowledge articles, perms, multi-currency, seed) | ✅ **built** |
 | **Faz 2** | **Data 360** — 4 data streams → DLOs; anomaly grounded live via the Query API (**+64.6 %**) | ✅ **built** |
-| **Faz 5** | **Live agent** — `HW_Energy_Agent` + **4 grounded actions** (identify · bill · explain · create-case) + service layer + 36 tests (**99 % coverage**); multi-turn flow, GROUNDED, incl. German | ✅ **built** |
-| 🟡 | Knowledge Data Library grounding · live SLA milestone clock | partial (see STATUS.md) |
+| **Faz 5** | **Live agent** — `HW_Energy_Agent` + **5 grounded actions** (identify · bill · explain · create-case · **answer-from-Knowledge**) + service layer + 49 tests (**99 % coverage**); multi-turn flow, GROUNDED, incl. German | ✅ **built** |
+| **Grounding split (ADR-007)** | *figures* → Data 360 (**+64.6 %**) · *procedure* → a **cited Knowledge article** (deterministic Apex retriever; live-verified: "I'm moving house" → Umzug article + citation) | ✅ **built** |
+| 🟡 | live SLA milestone clock · German reply language | partial (see STATUS.md) |
 | ⬜ | Identity resolution · persisted CI + segments/closed loop · LWC UI · tariff-change/escalation actions · prompt templates · agent eval ⭐ · red-team ⭐ · employee agent · DSGVO automation · WhatsApp | planned (designed, not code) |
 
-> Two things are honestly **partial**: the Knowledge Data Library RAG index was still
-> provisioning at last check (figure-grounding via Data 360 **is** live), and the live SLA
-> milestone clock can't bind because `Case.EntitlementId` isn't provisioned in this
-> Dev-Edition flavour (edition limitation — see
-> [`docs/troubleshooting/`](./docs/troubleshooting/faz1-gate-case-entitlementid.md)).
+> Honestly **partial**: the live SLA milestone clock can't bind because `Case.EntitlementId`
+> isn't provisioned in this Dev-Edition flavour (edition limitation — see
+> [`docs/troubleshooting/`](./docs/troubleshooting/faz1-gate-case-entitlementid.md)), and the
+> agent's allowed-language list is English, so German questions are understood and correctly
+> routed but answered in English until German is enabled in Agent Builder → Language.
+>
+> **On the Knowledge side:** the Agentforce Data Library (Data Cloud RAG index) is not usable
+> in this org — the `AiRetriever` metadata type doesn't exist and the index never leaves
+> "Not Started". Procedure grounding is therefore delivered by a **deterministic Apex
+> retriever** (`HWKnowledgeService`): one query over the 10-article corpus, in-memory scoring
+> with a German→English alias map, and **no result rather than a wrong article** below the
+> threshold. It is free, unit-tested, source-controlled, and cannot hallucinate a citation.
+> A vector Data Library remains the production path for a large corpus (ADR-007).
 
 ### What's built (this repo, deployed + committed)
 
@@ -151,7 +160,8 @@ Full, honest built-vs-planned matrix: **[`STATUS.md`](./STATUS.md)**. Summary:
 |------|-----------|
 | Service Cloud core | 7 objects + 37 fields (`Meter__c`, `Meter_Reading__c`, `Tariff__c`, `Service_Contract__c`, `Energy_Bill__c`, `Outage__c`, `Consent__c`) + `Case.HW_Topic__c` · 5 Case record types + support process · `HW_Standard_SLA` entitlement + milestones · Omni-Channel (channel, queue, routing, presence, German + Billing skills) · 6-topic Knowledge with 10 published articles · `HW_Admin`/`HW_ServiceAgent`/`HW_ReadOnly` perms · EUR + CHF · 4 DACH seed accounts |
 | Data 360 | 4 DataStreamDefinitions (Account, Meter, Meter Reading, Energy Bill) → DLOs · anomaly proven live via the Data 360 Query API (SQL CI): **520 vs 316 kWh = +64.6 %** |
-| Live agent (Faz 5) | `HW_Energy_Agent` (Bot + ReAct planner + 2 topics) · 4 grounded `@InvocableMethod` actions (`HWIdentifyCustomerAction`, `HWGetLatestBillAction`, `HWExplainConsumptionAction`, `HWCreateCaseAction`) · 4 services (`with sharing`, `WITH USER_MODE`, bulk-safe) · `HW_Agent_Actions` perms · 8 test classes / 36 methods (99 % org-wide coverage, every class ≥ 94 %) · NGA design bundle (`HW_Service_Agent.agent`, committed as design — runtime edition-blocked) |
+| Live agent (Faz 5) | `HW_Energy_Agent` (Bot + ReAct planner + 2 topics) · **5** grounded `@InvocableMethod` actions (`HWIdentifyCustomerAction`, `HWGetLatestBillAction`, `HWExplainConsumptionAction`, `HWCreateCaseAction`, `HWAnswerFromKnowledgeAction`) · **5** services (`with sharing`, `WITH USER_MODE`, bulk-safe) · `HW_Agent_Actions` perms · 10 test classes / 49 methods (99 % org-wide coverage, every class ≥ 94 %) · NGA design bundle (`HW_Service_Agent.agent`, committed as design — runtime edition-blocked) |
+| Procedure grounding | `HWKnowledgeService` + `HWAnswerFromKnowledgeAction` — deterministic Knowledge retriever with a DE→EN alias map; the agent answers how-to questions **only** from the article text and quotes a real citation (`… (000001008)`), or says it doesn't know and offers a case |
 
 ## Documents
 
@@ -170,10 +180,10 @@ force-app/             ✅ core sObjects, Service Cloud config, perms, Knowledge
                           categories — AND the live agent metadata (bots/,
                           genAiPlannerBundles/, genAiPlugins/, genAiFunctions/,
                           aiAuthoringBundles/), where the CLI created it
-force-app-services/    ✅ HWCustomerService, HWBillingService, HWConsumptionService, HWCaseService
-force-app-actions/     ✅ 4 @InvocableMethod agent actions (HW…Action)
+force-app-services/    ✅ HWCustomerService, HWBillingService, HWConsumptionService, HWCaseService, HWKnowledgeService
+force-app-actions/     ✅ 5 @InvocableMethod agent actions (HW…Action)
 force-app-datacloud/   ✅ Data 360 DataStreamDefinitions (4)
-force-app-tests/       ✅ Apex tests (8 classes / 36 methods · 99% coverage)
+force-app-tests/       ✅ Apex tests (10 classes / 49 methods · 99% coverage)
 force-app-handlers/    ⬜ trigger handlers (Kevin O'Hara) — reserved, empty
 force-app-agent/       ⬜ reserved package (agent metadata currently lives in force-app/)
 force-app-lwc/         ⬜ hwConsumptionChart, hwAgentConsole — reserved, empty
@@ -196,7 +206,7 @@ sf project deploy start \
 sf apex run --file scripts/seed_demo_data.apex --target-org hansewatt
 sf apex run --file scripts/seed_knowledge.apex --target-org hansewatt
 
-# verify the Apex layer (8 test classes, 36 methods, 99% org-wide coverage)
+# verify the Apex layer (10 test classes, 49 methods, 99% org-wide coverage)
 sf apex run test --code-coverage --result-format human --wait 15 --target-org hansewatt
 ```
 

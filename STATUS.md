@@ -48,10 +48,11 @@ and [`docs/demo/images/`](docs/demo/images/).
 | Area | What | Where |
 |------|------|-------|
 | Live agent | `HW_Energy_Agent` (Bot + ReAct planner bundle + 2 topics) — deployed, previewable, source-controlled | `force-app/main/default/bots/`, `genAiPlannerBundles/`, `genAiPlugins/` |
-| Grounded actions (4) | `HWIdentifyCustomerAction` (email→Account) · `HWGetLatestBillAction` · `HWExplainConsumptionAction` (+64.6 %) · `HWCreateCaseAction` (opens a real Case) | `force-app-actions/main/default/classes/` |
-| Service layer (4) | `HWCustomerService` · `HWBillingService` · `HWConsumptionService` · `HWCaseService` — `with sharing`, `WITH USER_MODE`, bulk-safe | `force-app-services/main/default/classes/` |
+| Grounded actions (5) | `HWIdentifyCustomerAction` (email→Account) · `HWGetLatestBillAction` · `HWExplainConsumptionAction` (+64.6 %) · `HWCreateCaseAction` (opens a real Case) · **`HWAnswerFromKnowledgeAction`** (cited help article) | `force-app-actions/main/default/classes/` |
+| Service layer (5) | `HWCustomerService` · `HWBillingService` · `HWConsumptionService` · `HWCaseService` · **`HWKnowledgeService`** — `with sharing`, `WITH USER_MODE`, bulk-safe | `force-app-services/main/default/classes/` |
+| **Procedure grounding (ADR-007)** | The other half of the grounding split: *figures* come from Data 360, *procedure* comes from a **cited Knowledge article**. `HWKnowledgeService` is a deterministic retriever — ONE query loads the 10-article corpus, then in-memory scoring (title hits ×3, body ×1) with a **German→English alias map** (umzug→moving, störung→outage, rechnung→bill …) so a German question lands on the English corpus. Below the score threshold it returns **nothing** rather than a bad article, and the action tells the agent *"do not guess the policy — offer to open a case."* **Verified live:** "I'm moving house next month" → the Umzug article + citation `HanseWatt Knowledge — Moving House: Start or Stop Service (Umzug) (000001008)`; "power outage" → the Störung article (000001004); an off-topic question → no invented policy. | `force-app-services/`, `force-app-actions/` |
 | Agent-user perms | `HW_Agent_Actions` permission set (class access + USER_MODE FLS) | `force-app/main/default/permissionsets/` |
-| Tests | 8 test classes / 36 test methods — one per service **and** one per action (1:1), all branches + 200-record bulk-safety tests; **99 % org-wide coverage**, every class ≥ 94 %; assert the grounded +64.6 % before any live agent run | `force-app-tests/main/default/classes/` |
+| Tests | 10 test classes / 49 test methods — one per service **and** one per action (1:1), all branches + 200-record bulk-safety tests; **99 % org-wide coverage**, every class ≥ 94 %; assert the grounded +64.6 % and the cited article before any live agent run | `force-app-tests/main/default/classes/` |
 | Multi-turn flow | identify → bill → anomaly → create-case in one session, every reply GROUNDED; also runs fully in German | `docs/demo/faz5-grounded-answer.md` |
 | NGA design bundle | `HW_Service_Agent.agent` (modern Agent-Script) committed as **design documentation** — its runtime publish is edition-blocked here (see gotchas) | `force-app/main/default/aiAuthoringBundles/` |
 
@@ -61,8 +62,9 @@ and [`docs/demo/images/`](docs/demo/images/).
 
 | Item | State |
 |------|-------|
-| Knowledge Data Library grounding | Library created over the 10 articles + assigned to the agent; the Data Cloud RAG index was still provisioning at last check. Procedure answers (e.g. "I'm moving house") are wired but not yet live end-to-end. Figures grounding (Data 360) **is** live. |
 | SLA live milestone clock | Entitlement + milestones are deployed and source-controlled, but the live clock can't bind because `Case.EntitlementId` is **not provisioned in this Dev-Edition flavour** (edition limitation, not a config gap — see `docs/troubleshooting/faz1-gate-case-entitlementid.md`). Binds normally in a Service Cloud Enterprise/Developer org. |
+| Agent reply language | The agent's allowed-language list is English (US); German questions are understood and correctly routed (the retriever has a DE→EN alias map), but the reply comes back in English unless German is added in Agent Builder → Language. |
+| Data Cloud RAG Data Library | Not usable here: the `AiRetriever` metadata type does not exist in this org and the Data Library index never leaves "Not Started" (edition limitation). Procedure grounding is delivered instead by a deterministic Apex retriever — see below. |
 
 ---
 

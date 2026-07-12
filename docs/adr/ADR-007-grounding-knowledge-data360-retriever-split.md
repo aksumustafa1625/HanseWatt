@@ -48,3 +48,54 @@ compliance and trust failure.
 
 - `ROADMAP.md` §1 (C4 retriever split), `PROJECT_BLUEPRINT.md` §9.4
 - Related: [ADR-003](ADR-003-data360-system-of-record-boundary.md), [ADR-018](ADR-018-knowledge-category-topic-alignment.md)
+
+---
+
+## Update (2026-07-12) — how the Knowledge retriever was actually implemented
+
+**Status: implemented, with a deliberate deviation.**
+
+The intended Knowledge retriever was the **Agentforce Data Library** (a Data Cloud RAG /
+vector index over `Knowledge__kav`, consumed by the standard
+`AnswerQuestionsWithKnowledge` action). That is **not usable in this org**:
+
+- The `AiRetriever` metadata type does not exist here (`INVALID_TYPE` from the Metadata API),
+  so the library/retriever can neither be inspected nor managed from source.
+- The Data Library's Data Cloud index never leaves **"Not Started"**, and without an indexed
+  library the standard Knowledge action fails at runtime — while still *greedily* winning
+  action selection and stealing billing questions from the custom actions.
+
+This is the fourth edition boundary in this Dev Edition (after the NGA publish 404,
+`Case.EntitlementId`, and the read-only `IsLocal` flag).
+
+**Decision:** deliver the procedure side with a **deterministic Apex retriever** instead:
+
+- `HWKnowledgeService` — **one** SOQL loads the published corpus (10 articles), then scores
+  each article in memory against the question's tokens (title hit ×3, body hit ×1). It is
+  bulk-safe by construction: SOQL does not scale with the number of questions.
+- A **German → English alias map** (umzug→moving, störung→outage, rechnung→bill, zähler→meter,
+  kündigung→cancellation, …) lets a German question land on the English corpus deterministically,
+  rather than relying on the model to translate.
+- Below a score threshold it returns **nothing**. `HWAnswerFromKnowledgeAction` then tells the
+  agent: *"do not guess the policy — offer to open a case."* The retriever cannot invent a
+  source; the citation is the real `ArticleNumber`.
+- The two greedy standard Knowledge actions were removed from the topics (Tooling API), and the
+  topic **description** was widened so the classifier routes how-to questions to the topic that
+  owns the new action (before this, "I'm moving house" was classified `Off_Topic` → Actions: 0).
+
+**Why this is defensible, not a workaround:** for a 10-article corpus, one query plus explainable
+scoring beats a vector index on cost, latency, and auditability — and unlike RAG it is
+**unit-testable for free** (13 tests, incl. German input, wrong-article discrimination, and the
+"no match → no answer" case). A vector Data Library remains the right production path for a
+large, multilingual corpus.
+
+**Verified live (2026-07-12):**
+- *"I'm moving house next month. What do I need to do?"* → the Umzug article, cited
+  `HanseWatt Knowledge — Moving House: Start or Stop Service (Umzug) (000001008)`.
+- *"What should I do during a power outage?"* → the Störung article (000001004) — the scorer
+  discriminates between articles.
+- *"Does HanseWatt also offer internet and mobile contracts?"* → **no article, no invented
+  policy.**
+
+The figure side is unchanged and still grounded in Data 360 (+64.6 %). The split now holds
+end to end: **figures → Data 360 · procedure → a cited Knowledge article.**

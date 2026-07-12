@@ -37,10 +37,10 @@ Single build org. **Never touch the TechnoStore / Configra orgs.**
 force-app/             core sObjects + Service Cloud config + perms + Knowledge — AND the
                        live agent metadata (bots/, genAiPlannerBundles/, genAiPlugins/,
                        genAiFunctions/, aiAuthoringBundles/), where the CLI created it
-force-app-services/    ✅ HWCustomerService, HWBillingService, HWConsumptionService, HWCaseService
-force-app-actions/     ✅ 4 @InvocableMethod actions (HW...Action)
+force-app-services/    ✅ HWCustomerService, HWBillingService, HWConsumptionService, HWCaseService, HWKnowledgeService
+force-app-actions/     ✅ 5 @InvocableMethod actions (HW...Action)
 force-app-datacloud/   ✅ Data 360 DataStreamDefinitions (4)
-force-app-tests/       ✅ Apex tests (8 classes / 36 methods · 99% coverage)
+force-app-tests/       ✅ Apex tests (10 classes / 49 methods · 99% coverage)
 force-app-handlers/    ⬜ trigger handlers (Kevin O'Hara) — reserved, empty
 force-app-agent/       ⬜ reserved package (agent metadata currently in force-app/)
 force-app-lwc/         ⬜ hwConsumptionChart, hwAgentConsole — reserved, empty
@@ -170,7 +170,7 @@ built and committed:
   +64.6 %** (`scripts/datacloud_ci_anomaly.sql`, `scripts/datacloud_query.ps1`).
 - **Faz 5:** `HW_Energy_Agent` (Bot + ReAct planner + 2 topics) with **4 grounded actions**
   — `HWIdentifyCustomerAction`, `HWGetLatestBillAction`, `HWExplainConsumptionAction`,
-  `HWCreateCaseAction` — over 4 services + `HW_Agent_Actions` perms + 36 tests (99% cov). The
+  `HWCreateCaseAction`, `HWAnswerFromKnowledgeAction` — over 5 services + `HW_Agent_Actions` perms + 49 tests (99% cov). The
   multi-turn flow (identify → bill → anomaly → create-case) runs grounded, including in
   German. Wiring recipe + gotchas: `MEMORY.md` / memory `faz5-status`.
 

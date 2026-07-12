@@ -36,6 +36,30 @@
         <apexClass>HWCaseService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <classAccesses>
+        <apexClass>HWAnswerFromKnowledgeAction</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HWKnowledgeService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+
+    <!-- Knowledge (procedure-side grounding, ADR-007): the agent reads published articles to
+         answer how-to questions with a citation. Read-only — it can never edit an article. -->
+    <userPermissions>
+        <name>AllowViewKnowledge</name>
+        <enabled>true</enabled>
+    </userPermissions>
+    <objectPermissions>
+        <object>Knowledge__kav</object>
+        <allowCreate>false</allowCreate>
+        <allowRead>true</allowRead>
+        <allowEdit>false</allowEdit>
+        <allowDelete>false</allowDelete>
+        <viewAllRecords>true</viewAllRecords>
+        <modifyAllRecords>false</modifyAllRecords>
+    </objectPermissions>
 
     <!-- Object reads. Meter_Reading__c/Meter__c/Energy_Bill__c/Contact use viewAll so the
          agent can read any customer's records; Account is read-only (no viewAll — the license
