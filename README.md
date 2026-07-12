@@ -137,14 +137,12 @@ Full, honest built-vs-planned matrix: **[`STATUS.md`](./STATUS.md)**. Summary:
 | **Faz 2** | **Data 360** — 4 data streams → DLOs; anomaly grounded live via the Query API (**+64.6 %**) | ✅ **built** |
 | **Faz 5** | **Live agent** — `HW_Energy_Agent` + **5 grounded actions** (identify · bill · explain · create-case · **answer-from-Knowledge**) + service layer + 49 tests (**99 % coverage**); multi-turn flow, GROUNDED, incl. German | ✅ **built** |
 | **Grounding split (ADR-007)** | *figures* → Data 360 (**+64.6 %**) · *procedure* → a **cited Knowledge article** (deterministic Apex retriever; live-verified: "I'm moving house" → Umzug article + citation) | ✅ **built** |
-| 🟡 | live SLA milestone clock · German reply language | partial (see STATUS.md) |
+| 🟡 | live SLA milestone clock (edition-blocked) | partial (see STATUS.md) |
 | ⬜ | Identity resolution · persisted CI + segments/closed loop · LWC UI · tariff-change/escalation actions · prompt templates · agent eval ⭐ · red-team ⭐ · employee agent · DSGVO automation · WhatsApp | planned (designed, not code) |
 
 > Honestly **partial**: the live SLA milestone clock can't bind because `Case.EntitlementId`
 > isn't provisioned in this Dev-Edition flavour (edition limitation — see
-> [`docs/troubleshooting/`](./docs/troubleshooting/faz1-gate-case-entitlementid.md)), and the
-> agent's allowed-language list is English, so German questions are understood and correctly
-> routed but answered in English until German is enabled in Agent Builder → Language.
+> [`docs/troubleshooting/`](./docs/troubleshooting/faz1-gate-case-entitlementid.md)).
 >
 > **On the Knowledge side:** the Agentforce Data Library (Data Cloud RAG index) is not usable
 > in this org — the `AiRetriever` metadata type doesn't exist and the index never leaves

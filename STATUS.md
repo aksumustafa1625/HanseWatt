@@ -63,8 +63,7 @@ and [`docs/demo/images/`](docs/demo/images/).
 | Item | State |
 |------|-------|
 | SLA live milestone clock | Entitlement + milestones are deployed and source-controlled, but the live clock can't bind because `Case.EntitlementId` is **not provisioned in this Dev-Edition flavour** (edition limitation, not a config gap — see `docs/troubleshooting/faz1-gate-case-entitlementid.md`). Binds normally in a Service Cloud Enterprise/Developer org. |
-| Agent reply language | The agent's allowed-language list is English (US); German questions are understood and correctly routed (the retriever has a DE→EN alias map), but the reply comes back in English unless German is added in Agent Builder → Language. |
-| Data Cloud RAG Data Library | Not usable here: the `AiRetriever` metadata type does not exist in this org and the Data Library index never leaves "Not Started" (edition limitation). Procedure grounding is delivered instead by a deterministic Apex retriever — see below. |
+| Data Cloud RAG Data Library | Not usable here: the `AiRetriever` metadata type does not exist in this org and the Data Library index never leaves "Not Started" (edition limitation). Procedure grounding is delivered instead by a deterministic Apex retriever — see the Faz 5 table above. |
 
 ---
 
