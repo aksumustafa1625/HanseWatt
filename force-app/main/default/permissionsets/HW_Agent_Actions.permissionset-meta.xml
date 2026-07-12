@@ -44,13 +44,65 @@
         <apexClass>HWKnowledgeService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <classAccesses>
+        <apexClass>HWTariffService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HWProposeTariffChangeAction</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HWConfirmTariffChangeAction</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+
+    <!-- Tariff advisory (ADR-020). The agent may READ the tariff catalogue, MINT a proposal,
+         and — only against a valid, unexpired, own-account proposal — switch the contract's
+         tariff. It can never edit a tariff's price, and it can never touch a bill or a
+         meter reading (those stay the read-only external System of Record). -->
 
     <!-- Knowledge (procedure-side grounding, ADR-007): the agent reads published articles to
          answer how-to questions with a citation. Read-only — it can never edit an article. -->
+
+    <!-- Object reads. Meter_Reading__c/Meter__c/Energy_Bill__c/Contact use viewAll so the
+         agent can read any customer's records; Account is read-only (no viewAll — the license
+         blocks View All Account) and is needed only to resolve the Meter__r.Account__c lookup. -->
+    <!-- Case create: HW Create Case logs a support case for the customer. -->
+
+
     <userPermissions>
         <name>AllowViewKnowledge</name>
         <enabled>true</enabled>
     </userPermissions>
+
+    <objectPermissions>
+        <object>Tariff__c</object>
+        <allowCreate>false</allowCreate>
+        <allowRead>true</allowRead>
+        <allowEdit>false</allowEdit>
+        <allowDelete>false</allowDelete>
+        <viewAllRecords>true</viewAllRecords>
+        <modifyAllRecords>false</modifyAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <object>Service_Contract__c</object>
+        <allowCreate>false</allowCreate>
+        <allowRead>true</allowRead>
+        <allowEdit>true</allowEdit>
+        <allowDelete>false</allowDelete>
+        <viewAllRecords>true</viewAllRecords>
+        <modifyAllRecords>false</modifyAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <object>Tariff_Change_Request__c</object>
+        <allowCreate>true</allowCreate>
+        <allowRead>true</allowRead>
+        <allowEdit>true</allowEdit>
+        <allowDelete>false</allowDelete>
+        <viewAllRecords>true</viewAllRecords>
+        <modifyAllRecords>false</modifyAllRecords>
+    </objectPermissions>
     <objectPermissions>
         <object>Knowledge__kav</object>
         <allowCreate>false</allowCreate>
@@ -60,10 +112,6 @@
         <viewAllRecords>true</viewAllRecords>
         <modifyAllRecords>false</modifyAllRecords>
     </objectPermissions>
-
-    <!-- Object reads. Meter_Reading__c/Meter__c/Energy_Bill__c/Contact use viewAll so the
-         agent can read any customer's records; Account is read-only (no viewAll — the license
-         blocks View All Account) and is needed only to resolve the Meter__r.Account__c lookup. -->
     <objectPermissions>
         <object>Meter_Reading__c</object>
         <allowCreate>false</allowCreate>
@@ -109,7 +157,6 @@
         <viewAllRecords>true</viewAllRecords>
         <modifyAllRecords>false</modifyAllRecords>
     </objectPermissions>
-    <!-- Case create: HW Create Case logs a support case for the customer. -->
     <objectPermissions>
         <object>Case</object>
         <allowCreate>true</allowCreate>
@@ -120,6 +167,20 @@
         <modifyAllRecords>false</modifyAllRecords>
     </objectPermissions>
 
+    <fieldPermissions><field>Tariff__c.Price_per_kWh__c</field><editable>false</editable><readable>true</readable></fieldPermissions>
+    <fieldPermissions><field>Tariff__c.Base_Fee__c</field><editable>false</editable><readable>true</readable></fieldPermissions>
+    <fieldPermissions><field>Tariff__c.Type__c</field><editable>false</editable><readable>true</readable></fieldPermissions>
+    <fieldPermissions><field>Tariff__c.Green__c</field><editable>false</editable><readable>true</readable></fieldPermissions>
+    <fieldPermissions><field>Service_Contract__c.Account__c</field><editable>true</editable><readable>true</readable></fieldPermissions>
+    <fieldPermissions><field>Service_Contract__c.Tariff__c</field><editable>true</editable><readable>true</readable></fieldPermissions>
+    <fieldPermissions><field>Service_Contract__c.Meter__c</field><editable>true</editable><readable>true</readable></fieldPermissions>
+    <fieldPermissions><field>Service_Contract__c.Status__c</field><editable>true</editable><readable>true</readable></fieldPermissions>
+    <fieldPermissions><field>Service_Contract__c.Start__c</field><editable>true</editable><readable>true</readable></fieldPermissions>
+    <fieldPermissions><field>Service_Contract__c.End__c</field><editable>true</editable><readable>true</readable></fieldPermissions>
+    <fieldPermissions><field>Tariff_Change_Request__c.Service_Contract_Ref__c</field><editable>true</editable><readable>true</readable></fieldPermissions>
+    <fieldPermissions><field>Tariff_Change_Request__c.Annual_Saving__c</field><editable>true</editable><readable>true</readable></fieldPermissions>
+    <fieldPermissions><field>Tariff_Change_Request__c.Assumption_Basis__c</field><editable>true</editable><readable>true</readable></fieldPermissions>
+    <fieldPermissions><field>Tariff_Change_Request__c.Applied_At__c</field><editable>true</editable><readable>true</readable></fieldPermissions>
     <fieldPermissions><field>Meter_Reading__c.kWh__c</field><readable>true</readable><editable>false</editable></fieldPermissions>
     <fieldPermissions><field>Meter_Reading__c.Read_Date__c</field><readable>true</readable><editable>false</editable></fieldPermissions>
     <fieldPermissions><field>Meter_Reading__c.Meter__c</field><readable>true</readable><editable>false</editable></fieldPermissions>

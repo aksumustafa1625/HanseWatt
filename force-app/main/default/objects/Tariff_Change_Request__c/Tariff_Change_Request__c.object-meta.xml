@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Tariff Change Request</label>
+    <pluralLabel>Tariff Change Requests</pluralLabel>
+    <description>A server-issued, expiring proposal to change a customer's tariff (ADR-020). The agent can PROPOSE one (which mints the request number) but can only APPLY one by presenting that request number back. Because the number exists only in the output of the propose step, the model cannot fabricate consent: the handshake is enforced by the data flow, not by the prompt.</description>
+    <nameField>
+        <label>Request Number</label>
+        <type>AutoNumber</type>
+        <displayFormat>TCR-{00000}</displayFormat>
+        <trackHistory>false</trackHistory>
+    </nameField>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <sharingModel>ReadWrite</sharingModel>
+    <enableActivities>false</enableActivities>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+</CustomObject>
