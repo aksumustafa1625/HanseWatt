@@ -9,5 +9,13 @@
   "[apex]": {
     "editor.defaultFormatter": "salesforce.salesforcedx-vscode-apex"
   },
-  "xml.preferences.showSchemaDocumentationType": "none"
+  "xml.preferences.showSchemaDocumentationType": "none",
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    ".mule": true
+  }
 }

@@ -167,6 +167,9 @@
         <modifyAllRecords>false</modifyAllRecords>
     </objectPermissions>
 
+    <!-- The Kundennummer: read-only. The agent must be able to COMPARE it, never to change it,
+         and it is never surfaced in an action's output — only matched against server-side. -->
+    <fieldPermissions><field>Account.Customer_Number__c</field><editable>false</editable><readable>true</readable></fieldPermissions>
     <fieldPermissions><field>Tariff__c.Price_per_kWh__c</field><editable>false</editable><readable>true</readable></fieldPermissions>
     <fieldPermissions><field>Tariff__c.Base_Fee__c</field><editable>false</editable><readable>true</readable></fieldPermissions>
     <fieldPermissions><field>Tariff__c.Type__c</field><editable>false</editable><readable>true</readable></fieldPermissions>
