@@ -160,6 +160,26 @@ are deployed and source-controlled, but the live `CaseMilestone` clock can't bin
 `docs/troubleshooting/`). It binds normally in a Service Cloud Enterprise/Developer org — a
 clean future-verification path. This does not block Faz 2 or any headline feature.
 
+## Agent gotchas (Faz 5 — learned live, don't relearn)
+
+- **New agent functions are UI-only.** A function created via the API has `IsLocal=false` and the
+  planner **silently drops it**. Create actions in Agent Builder; the Tooling API can only link /
+  unlink existing ones, PATCH a topic's `Description`/`Scope`, and create/delete instructions.
+- **Tooling API cannot delete `GenAiPluginFunctionDef` links.** The DELETE returns no error and
+  the link survives. Remove actions from a subagent in Agent Builder (agent must be deactivated).
+- **Standard OOTB actions are back doors.** The agent shipped with `Identify Customer By Email`,
+  `Update Verified Contact` and `Get All Cases For Contact` in a topic — the first resolves an
+  Account from an **email alone**, bypassing our two-factor check entirely. Removed (ADR-021).
+  *A guarantee is only as strong as the weakest path the planner may take.*
+- **Changing an Apex action's inputs requires re-creating the agent action** in Builder — the
+  GenAiFunction captures the input schema at creation and does not refresh.
+- **An `@InvocableVariable` typed `Id` will crash.** The value is chosen by the LLM; it happily
+  puts an email address in an Account Id slot, and Apex throws on coercion *before your code runs*.
+  Take `String` and parse through `HWIds` (ADR-021).
+- **Builder preview sessions cap at ~9 customer turns**, then error. Split long demos.
+- **Reset before every recording** (`scripts/reset_tariff_demo.apex`) — a tariff change is
+  persistent, so a second take finds the customer "already on the cheapest tariff".
+
 ## Current status — Faz 1 + 2 + 5 built (see `STATUS.md`)
 
 Since the Faz 1 note above, **Faz 2 (Data 360)** and **Faz 5 (the live agent)** are also
