@@ -45,7 +45,7 @@ private class HWCreateCaseActionTest {
 
         System.assertEquals(1, res.size());
         System.assertEquals(false, res[0].created, 'no case without an account');
-        System.assert(res[0].message.contains('identify'), 'asks to identify first');
+        System.assert(res[0].message.contains('No verified customer'), res[0].message);
     }
 
     @isTest
@@ -70,4 +70,22 @@ private class HWCreateCaseActionTest {
         System.assertEquals(200, [SELECT COUNT() FROM Case WHERE AccountId = :a.Id],
             '200 cases inserted for the customer');
     }
+
+    /** An email in the Account Id slot opens NO case. */
+    @isTest
+    static void anEmailInTheAccountIdSlotIsRefusedNotThrown() {
+        HWCreateCaseAction.Request req = new HWCreateCaseAction.Request();
+        req.accountId = 'j.huber@example.at';
+        req.topic = 'Billing';
+        req.subject = 'should never exist';
+
+        Test.startTest();
+        HWCreateCaseAction.Result res =
+            HWCreateCaseAction.run(new List<HWCreateCaseAction.Request>{ req })[0];
+        Test.stopTest();
+
+        System.assertEquals(false, res.created);
+        System.assertEquals(0, [SELECT COUNT() FROM Case WHERE Subject = 'should never exist']);
+    }
+
 }

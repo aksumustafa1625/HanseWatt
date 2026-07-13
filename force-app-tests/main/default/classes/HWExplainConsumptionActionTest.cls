@@ -56,7 +56,7 @@ private class HWExplainConsumptionActionTest {
         System.assertEquals(1, res.size());
         System.assertEquals(null, res[0].latestKwh, 'no figure without an account');
         System.assertEquals('', res[0].citation, 'no citation without an account');
-        System.assert(res[0].explanation.contains('identify'), 'should ask to identify first');
+        System.assert(res[0].explanation.contains('No verified customer'), res[0].explanation);
     }
 
     @isTest
@@ -110,4 +110,20 @@ private class HWExplainConsumptionActionTest {
             'bulk-safe: SOQL must not scale with input, used ' + Limits.getQueries());
         System.assertEquals(450, res[0].latestKwh, 'each result grounded on its own customer');
     }
+
+    /** An email in the Account Id slot is a refusal, not an exception. See HWIds. */
+    @isTest
+    static void anEmailInTheAccountIdSlotIsRefusedNotThrown() {
+        HWExplainConsumptionAction.Request req = new HWExplainConsumptionAction.Request();
+        req.accountId = 'j.huber@example.at';
+
+        Test.startTest();
+        HWExplainConsumptionAction.Result res =
+            HWExplainConsumptionAction.run(new List<HWExplainConsumptionAction.Request>{ req })[0];
+        Test.stopTest();
+
+        System.assertEquals(null, res.latestKwh, 'no figure may leak');
+        System.assert(res.explanation.contains('No verified customer'), res.explanation);
+    }
+
 }

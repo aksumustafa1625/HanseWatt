@@ -8,8 +8,10 @@
 public with sharing class HWExplainConsumptionAction {
 
     public class Request {
-        @InvocableVariable(label='Account Id' description='The customer Account to explain, from HW Identify Customer. If unknown, identify the customer first.')
-        public Id accountId;
+        // String, not Id — the value comes from the LLM and may be anything. HWIds maps a bad
+        // value to null, which lands in the refusal below instead of an Apex coercion exception.
+        @InvocableVariable(label='Account Id' description='The VERIFIED customer Account Id, from HW Verify Customer. Never put an email address or a guessed value here.')
+        public String accountId;
     }
 
     public class Result {
@@ -24,26 +26,30 @@ public with sharing class HWExplainConsumptionAction {
         label='HW Explain Consumption Anomaly'
         description='Returns the latest usage vs trailing average for a customer and a grounded, citable explanation.')
     public static List<Result> run(List<Request> requests) {
+        List<Id> parsed = new List<Id>();
         Set<Id> accountIds = new Set<Id>();
         for (Request req : requests) {
-            if (req.accountId != null) accountIds.add(req.accountId);
+            Id acc = HWIds.accountId(req.accountId);
+            parsed.add(acc);
+            if (acc != null) accountIds.add(acc);
         }
         Map<Id, HWConsumptionService.Anomaly> byAccount =
             HWConsumptionService.anomaliesByAccount(accountIds);
 
         List<Result> results = new List<Result>();
-        for (Request req : requests) {
+        for (Integer i = 0; i < requests.size(); i++) {
             Result res = new Result();
-            if (req.accountId == null) {
-                // No account context yet — drive the agent to identify the customer first
-                // instead of guessing. Honest grounding: no account, no figure.
-                res.explanation = 'I need to identify your account before I can look up your '
-                    + 'usage. Could you share the email address on your account?';
+            if (parsed[i] == null) {
+                // No verified account — drive the agent to verify the customer first instead of
+                // guessing. Honest grounding: no account, no figure. And no other customer's.
+                res.explanation = 'No verified customer. I cannot look up usage without one, and '
+                    + 'I must not look up anyone else\'s. Verify the customer with their email '
+                    + 'AND their customer number first.';
                 res.citation = '';
                 results.add(res);
                 continue;
             }
-            HWConsumptionService.Anomaly a = byAccount.get(req.accountId);
+            HWConsumptionService.Anomaly a = byAccount.get(parsed[i]);
             if (a != null && a.latestKwh != null) {
                 res.latestKwh = a.latestKwh;
                 res.averageKwh = a.averageKwh;

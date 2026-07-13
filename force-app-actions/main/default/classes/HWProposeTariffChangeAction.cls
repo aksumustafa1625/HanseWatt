@@ -26,9 +26,14 @@ public with sharing class HWProposeTariffChangeAction {
     public class Request {
         @InvocableVariable(
             label='Account Id'
-            description='The VERIFIED customer Account, from HW Identify Customer. Never pass an account the customer has not been identified as.'
+            description='The VERIFIED customer Account Id, from HW Verify Customer. Never pass an email address, a guessed value, or an account the customer has not been verified as.'
             required=true)
-        public Id accountId;
+        public String accountId;   // String, not Id: the LLM fills it — see HWIds
+    }
+
+    /** The only way an Account Id enters this action. A bad value becomes null, not an exception. */
+    private static Id acc(Request req) {
+        return HWIds.accountId(req.accountId);
     }
 
     public class Result {
@@ -51,7 +56,7 @@ public with sharing class HWProposeTariffChangeAction {
     public static List<Result> run(List<Request> requests) {
         Set<Id> accountIds = new Set<Id>();
         for (Request req : requests) {
-            if (req.accountId != null) accountIds.add(req.accountId);
+            if (acc(req) != null) accountIds.add(acc(req));
         }
         Map<Id, HWTariffService.Recommendation> byAccount =
             HWTariffService.recommendByAccount(accountIds);
@@ -63,15 +68,15 @@ public with sharing class HWProposeTariffChangeAction {
 
         for (Request req : requests) {
             HWTariffService.Recommendation r =
-                (req.accountId != null) ? byAccount.get(req.accountId) : null;
+                (acc(req) != null) ? byAccount.get(acc(req)) : null;
             if (r == null || r.found != true) continue;
             // Only mint a proposal when there is actually something to switch TO.
             if (r.bestAtCurrentId == null || r.bestAtCurrentId == r.currentTariffId) continue;
 
             Tariff_Change_Request__c tcr = new Tariff_Change_Request__c();
-            tcr.Account__c              = req.accountId;
+            tcr.Account__c              = acc(req);
             tcr.Proposed_Tariff__c      = r.bestAtCurrentId;
-            tcr.Service_Contract_Ref__c = contractByAccount.get(req.accountId);
+            tcr.Service_Contract_Ref__c = contractByAccount.get(acc(req));
             tcr.Annual_Saving__c        = r.savingAtCurrent;
             tcr.Assumption_Basis__c     = r.assumptionBasis;
             tcr.Status__c               = 'Proposed';
@@ -96,20 +101,21 @@ public with sharing class HWProposeTariffChangeAction {
         }
         Map<Id, String> numberByAccount = new Map<Id, String>();
         for (Integer i = 0; i < toInsert.size(); i++) {
-            numberByAccount.put(minted[i].accountId, numberById.get(toInsert[i].Id));
+            numberByAccount.put(acc(minted[i]), numberById.get(toInsert[i].Id));
         }
 
         List<Result> results = new List<Result>();
         for (Request req : requests) {
             Result res = new Result();
-            if (req.accountId == null) {
+            if (acc(req) == null) {
                 res.found = false;
-                res.message = 'I need to identify your account before I can compare tariffs. '
-                    + 'Could you share the email address on your account?';
+                res.message = 'No verified customer. I cannot compare tariffs without one, and I '
+                    + 'must not do it for anyone else. Verify the customer with their email AND '
+                    + 'their customer number first.';
                 results.add(res);
                 continue;
             }
-            HWTariffService.Recommendation r = byAccount.get(req.accountId);
+            HWTariffService.Recommendation r = byAccount.get(acc(req));
             if (r == null || r.found != true) {
                 res.found = false;
                 res.message = (r == null) ? 'No tariff comparison is available for this customer.'
@@ -127,7 +133,7 @@ public with sharing class HWProposeTariffChangeAction {
             res.citation         = r.citation;
             res.recommendedTariff = r.bestAtCurrentName;
             res.annualSaving      = r.savingAtCurrent;
-            res.requestNumber     = numberByAccount.get(req.accountId);
+            res.requestNumber     = numberByAccount.get(acc(req));
 
             if (res.requestNumber == null) {
                 // Already on the cheapest tariff — say so honestly, do not invent a switch.

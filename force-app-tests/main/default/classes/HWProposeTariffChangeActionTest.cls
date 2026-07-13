@@ -106,7 +106,7 @@ private class HWProposeTariffChangeActionTest {
     static void nullAccountAsksToIdentify() {
         HWProposeTariffChangeAction.Result r = run(null)[0];
         System.assertEquals(false, r.found);
-        System.assert(r.message.contains('identify'), 'asks to identify first');
+        System.assert(r.message.contains('No verified customer'), r.message);
     }
 
     @isTest

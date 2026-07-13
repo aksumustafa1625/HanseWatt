@@ -59,7 +59,7 @@ public with sharing class HWRegisterMoveAction {
         List<HWMoveService.MoveRequest> moves = new List<HWMoveService.MoveRequest>();
         for (Request req : requests) {
             HWMoveService.MoveRequest m = new HWMoveService.MoveRequest();
-            m.accountId = String.isNotBlank(req.accountId) ? (Id) req.accountId : null;
+            m.accountId = HWIds.accountId(req.accountId);   // a bad id is a refusal, not a crash
             m.moveOutDate       = req.moveOutDate;
             m.finalMeterReading = req.finalMeterReading;
             m.staysCustomer     = req.staysCustomer;

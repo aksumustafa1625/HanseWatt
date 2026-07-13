@@ -116,4 +116,20 @@ private class HWRegisterMoveActionTest {
         System.assert(Limits.getQueries() <= 5,
             'SOQL must not scale with input, used ' + Limits.getQueries());
     }
+
+    /** An email in the Account Id slot files NO move. */
+    @isTest
+    static void anEmailInTheAccountIdSlotIsRefusedNotThrown() {
+        HWRegisterMoveAction.Request r = validRequest();
+        r.accountId = 'j.huber@example.at';
+
+        Test.startTest();
+        HWRegisterMoveAction.Result res = run(r);
+        Test.stopTest();
+
+        System.assertEquals(false, res.registered);
+        System.assertEquals('NO_IDENTITY', res.refusalReason);
+        System.assertEquals(0, [SELECT COUNT() FROM Case]);
+    }
+
 }

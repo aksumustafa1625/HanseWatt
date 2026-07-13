@@ -46,9 +46,9 @@ public with sharing class HWConfirmTariffChangeAction {
     public class Request {
         @InvocableVariable(
             label='Account Id'
-            description='The VERIFIED customer Account, from HW Identify Customer.'
+            description='The VERIFIED customer Account Id, from HW Verify Customer. Never pass an email address or a guessed value.'
             required=true)
-        public Id accountId;
+        public String accountId;   // String, not Id: the LLM fills it — see HWIds
 
         @InvocableVariable(
             label='Request Number'
@@ -79,7 +79,8 @@ public with sharing class HWConfirmTariffChangeAction {
         Set<Id> accountIds = new Set<Id>();
         for (Request req : requests) {
             if (String.isNotBlank(req.requestNumber)) numbers.add(req.requestNumber.trim().toUpperCase());
-            if (req.accountId != null) accountIds.add(req.accountId);
+            Id acc = HWIds.accountId(req.accountId);
+            if (acc != null) accountIds.add(acc);
         }
 
         Map<String, Tariff_Change_Request__c> byNumber = new Map<String, Tariff_Change_Request__c>();
@@ -113,7 +114,7 @@ public with sharing class HWConfirmTariffChangeAction {
             caseSlotByResult.add(-1);
 
             // ---- Refusal gates. Any one of these means ZERO DML for this request. ----
-            if (req.accountId == null) {
+            if (HWIds.accountId(req.accountId) == null) {
                 res.refusalReason = 'NO_IDENTITY';
                 res.message = 'I need to identify your account first before I can change anything.';
                 results.add(res);

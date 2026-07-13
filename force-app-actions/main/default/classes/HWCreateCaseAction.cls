@@ -8,8 +8,10 @@
 public with sharing class HWCreateCaseAction {
 
     public class Request {
-        @InvocableVariable(label='Account Id' description='The customer Account, from HW Identify Customer. If unknown, identify the customer first.')
-        public Id accountId;
+        // String, not Id — the value comes from the LLM. HWIds maps a bad value to null, which
+        // lands in the refusal below instead of an Apex coercion exception.
+        @InvocableVariable(label='Account Id' description='The VERIFIED customer Account Id, from HW Verify Customer. Never put an email address or a guessed value here.')
+        public String accountId;
         @InvocableVariable(label='Topic' description='Category: Billing, Consumption, TariffChange, Move, Outage, Complaint, or Other.')
         public String topic;
         @InvocableVariable(label='Subject' description='A short subject line for the case.')
@@ -33,16 +35,18 @@ public with sharing class HWCreateCaseAction {
         List<Result> results = new List<Result>();
 
         for (Request req : requests) {
-            if (req.accountId == null) {
+            Id acc = HWIds.accountId(req.accountId);
+            if (acc == null) {
                 Result res = new Result();
                 res.created = false;
-                res.message = 'I need to identify your account before I can open a case. '
-                    + 'Could you share the email address on your account?';
+                res.message = 'No verified customer. I cannot open a case without one, and I must '
+                    + 'not open one against someone else\'s account. Verify the customer with their '
+                    + 'email AND their customer number first.';
                 results.add(res);
                 continue;
             }
             HWCaseService.NewCase nc = new HWCaseService.NewCase();
-            nc.accountId = req.accountId;
+            nc.accountId = acc;
             nc.topic = req.topic;
             nc.subject = req.subject;
             nc.description = req.description;

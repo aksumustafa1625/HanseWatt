@@ -8,8 +8,12 @@
 public with sharing class HWGetLatestBillAction {
 
     public class Request {
-        @InvocableVariable(label='Account Id' description='The customer Account, from HW Identify Customer. If unknown, identify the customer first.')
-        public Id accountId;
+        // String, not Id, on purpose: the value comes from the LLM and may be anything at all
+        // (an email address, "unknown", a hallucinated id). HWIds turns that into null, which
+        // lands in the "not identified" refusal below — instead of an Apex coercion exception
+        // thrown before our code even runs. See HWIds.
+        @InvocableVariable(label='Account Id' description='The VERIFIED customer Account Id, from HW Verify Customer. Never put an email address or a guessed value here — if the customer is not verified, verify them first.')
+        public String accountId;
     }
 
     public class Result {
@@ -28,23 +32,27 @@ public with sharing class HWGetLatestBillAction {
         label='HW Get Latest Bill'
         description='Returns the most recent energy bill for a customer (amount, period, usage, status) from the billing record.')
     public static List<Result> run(List<Request> requests) {
+        List<Id> parsed = new List<Id>();
         Set<Id> accountIds = new Set<Id>();
         for (Request req : requests) {
-            if (req.accountId != null) accountIds.add(req.accountId);
+            Id acc = HWIds.accountId(req.accountId);
+            parsed.add(acc);
+            if (acc != null) accountIds.add(acc);
         }
         Map<Id, HWBillingService.Bill> byAccount = HWBillingService.latestByAccount(accountIds);
 
         List<Result> results = new List<Result>();
-        for (Request req : requests) {
+        for (Integer i = 0; i < requests.size(); i++) {
             Result res = new Result();
-            if (req.accountId == null) {
-                res.summary = 'I need to identify your account before I can look up your bill. '
-                    + 'Could you share the email address on your account?';
+            if (parsed[i] == null) {
+                res.summary = 'No verified customer. I cannot look up a bill without one, and I '
+                    + 'must not look up a bill for anyone else. Verify the customer with their '
+                    + 'email AND their customer number first.';
                 res.citation = '';
                 results.add(res);
                 continue;
             }
-            HWBillingService.Bill b = byAccount.get(req.accountId);
+            HWBillingService.Bill b = byAccount.get(parsed[i]);
             if (b != null) {
                 res.billNumber     = b.billNumber;
                 res.periodStart    = b.periodStart != null ? String.valueOf(b.periodStart) : null;

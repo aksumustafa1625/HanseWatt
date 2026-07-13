@@ -50,7 +50,7 @@ private class HWGetLatestBillActionTest {
 
         System.assertEquals(1, res.size());
         System.assertEquals(null, res[0].amount, 'no amount without an account');
-        System.assert(res[0].summary.contains('identify'), 'should ask to identify first');
+        System.assert(res[0].summary.contains('No verified customer'), res[0].summary);
     }
 
     @isTest
@@ -94,4 +94,25 @@ private class HWGetLatestBillActionTest {
         System.assert(Limits.getQueries() <= 5,
             'bulk-safe: SOQL must not scale with input, used ' + Limits.getQueries());
     }
+
+    /**
+     * The demo bug: asked for another customer's bill, the planner put an EMAIL in the Account Id
+     * slot. That must be a refusal, not an exception — the customer sees a privacy answer, not a
+     * stack trace.
+     */
+    @isTest
+    static void anEmailInTheAccountIdSlotIsRefusedNotThrown() {
+        HWGetLatestBillAction.Request req = new HWGetLatestBillAction.Request();
+        req.accountId = 'j.huber@example.at';
+
+        Test.startTest();
+        HWGetLatestBillAction.Result res =
+            HWGetLatestBillAction.run(new List<HWGetLatestBillAction.Request>{ req })[0];
+        Test.stopTest();
+
+        System.assertEquals(null, res.billNumber, 'no bill may leak');
+        System.assertEquals(null, res.amount);
+        System.assert(res.summary.contains('No verified customer'), res.summary);
+    }
+
 }
