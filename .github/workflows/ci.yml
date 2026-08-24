@@ -1,0 +1,81 @@
+name: CI
+
+# The deterministic half. Everything here runs without an org, without an agent
+# and without spending a generation, so it can run on every push.
+#
+# What it deliberately does NOT do: deploy, run Apex tests, or exercise the
+# agent. Those need a live org with a published agent — see docs/adr/ for why
+# that is a separate, on-demand concern rather than a per-push one.
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  static:
+    name: Format, lint, LWC tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Formatting is not a matter of taste here
+        run: npm run prettier:verify
+
+      - name: Lint Lightning Web Components
+        run: npm run lint
+
+      - name: LWC unit tests
+        run: npm test
+
+  metadata:
+    name: Metadata sanity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Eight package directories are declared. If one is renamed or removed
+      # without updating sfdx-project.json, every later deploy fails with a
+      # message that points at the wrong thing.
+      - name: Every declared package directory exists
+        run: |
+          python3 - <<'PY'
+          import json, os, sys
+          dirs = [p['path'] for p in json.load(open('sfdx-project.json'))['packageDirectories']]
+          missing = [d for d in dirs if not os.path.isdir(d)]
+          for d in dirs:
+              print(('  ok      ' if d not in missing else '  MISSING ') + d)
+          if missing:
+              sys.exit('sfdx-project.json declares directories that do not exist: %s' % ', '.join(missing))
+          PY
+
+      # An ADR index that has fallen behind its own folder is worse than none,
+      # because it reads as complete. This caught three missing entries.
+      - name: The ADR index lists every ADR
+        run: |
+          python3 - <<'PY'
+          import os, re, sys
+          files = sorted(f for f in os.listdir('docs/adr') if re.match(r'ADR-\d{3}-', f))
+          index = open('docs/adr/README.md', encoding='utf-8').read()
+          missing = [f for f in files if f not in index]
+          dupes = [n for n in {f[:7] for f in files} if sum(1 for f in files if f.startswith(n)) > 1]
+          for f in files:
+              print(('  listed    ' if f not in missing else '  UNLISTED  ') + f)
+          if dupes:
+              sys.exit('Duplicate ADR numbers: %s' % ', '.join(sorted(dupes)))
+          if missing:
+              sys.exit('ADRs missing from docs/adr/README.md: %s' % ', '.join(missing))
+          PY

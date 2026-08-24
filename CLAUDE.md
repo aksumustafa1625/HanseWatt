@@ -51,7 +51,7 @@ scripts/               anonymous Apex (seed + Data 360 query + verification)
 Full built-vs-planned truth: **`STATUS.md`** (repo root).
 
 Planning docs: `PROJECT_BLUEPRINT.md` (design) · `ROADMAP.md` (triage + skeleton) ·
-`PHASES.md` (P0–P14 step-by-step checklist) · `TechnoStore.md` (reference patterns).
+`PHASES.md` (P0–P14 step-by-step checklist) · `docs/TechnoStore-reference-project.md` (reference patterns).
 
 ## Common commands
 

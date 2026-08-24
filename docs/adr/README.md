@@ -54,6 +54,9 @@ deletion flow accumulates non-obvious decisions fast. ADRs solve four problems:
 | [017](ADR-017-sla-entitlement-omnichannel-routing.md) | SLA via Entitlement + Milestones, Omni-Channel routing | **Accepted (built)** | 2026-06-28 | P1 |
 | [018](ADR-018-knowledge-category-topic-alignment.md) | Knowledge data-categories aligned to agent topics | **Accepted (built)** | 2026-06-28 | P1 |
 | [019](ADR-019-build-language-english.md) | Build in English; German as a final localization step | Accepted | 2026-06-28 | — |
+| [020](ADR-020-tariff-advisory-consent-handshake.md) | Tariff advisory — a conditional recommendation, and consent as a state machine | **Accepted** (built, live-verified 2026-07-12) | 2026-07-12 | P12 |
+| [021](ADR-021-identity-is-two-factor.md) | Identity is two-factor — the privacy refusal must be a missing code path, not a polite model | **Accepted** (built, live-verified 2026-07-12) | 2026-07-12 | P12 |
+| [022](ADR-022-identity-is-a-token-not-a-claim.md) | Identity is a token, not a claim — and a guardrail that crashes is not a guardrail | **Accepted** (built, live-verified 2026-07-13) | 2026-07-13 | P12 |
 
 ⭐ = headline differentiators (agent evaluation + red-team — rare in portfolios).
 

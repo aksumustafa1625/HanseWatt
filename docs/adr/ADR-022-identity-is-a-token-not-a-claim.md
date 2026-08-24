@@ -1,4 +1,4 @@
-# ADR-021: Identity is a token, not a claim — and a guardrail that crashes is not a guardrail
+# ADR-022: Identity is a token, not a claim — and a guardrail that crashes is not a guardrail
 
 - Status: **Accepted** (built, live-verified 2026-07-13)
 - Date: 2026-07-13

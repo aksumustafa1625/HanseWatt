@@ -40,4 +40,4 @@ click-heavy (capture in `docs/manual-setup/`).
 ## References
 
 - `ROADMAP.md` §5.3 (Data 360 artifacts)
-- TechnoStore Mule-vs-Apex decision matrix (`TechnoStore.md`)
+- TechnoStore Mule-vs-Apex decision matrix (`docs/TechnoStore-reference-project.md`)

@@ -124,7 +124,7 @@ Worse still, when the planner put the *email address* into the `Account Id` slot
 coercion and the customer saw *"Ein Fehler ist aufgetreten"* — a stack trace where the privacy
 refusal belonged.
 
-[ADR-021](docs/adr/ADR-021-identity-is-a-token-not-a-claim.md) closes all three:
+[ADR-022](docs/adr/ADR-022-identity-is-a-token-not-a-claim.md) closes all three:
 
 - **Two factors, server-side.** Email **and** the *Kundennummer* from the bill — the way a German
   utility hotline actually authenticates. To see Johann Huber's data you need Johann Huber's
@@ -330,7 +330,7 @@ Full, honest built-vs-planned matrix: **[`STATUS.md`](./STATUS.md)**. Summary:
 - [`ROADMAP.md`](./ROADMAP.md) — feedback triage + gated roadmap + full skeleton
 - [`PHASES.md`](./PHASES.md) — step-by-step build checklist (P0–P14)
 - [`docs/manual-setup/`](./docs/manual-setup/) — org limits + Flex-Credit burn budget
-- [`TechnoStore.md`](./TechnoStore.md) — the completed reference project + reused patterns
+- [`docs/TechnoStore-reference-project.md`](./TechnoStore.md) — the completed reference project + reused patterns
 
 ## Repository layout (SFDX, 8 packages)
 
