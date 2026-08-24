@@ -6,7 +6,7 @@
 > project can reuse the hard-won discipline without repeating the scope.
 >
 > **Status:** ✅ COMPLETE — demo-verified, recording-ready. Must NOT be touched further.
-> **Org:** `technostore-admin@example.com` (separate from HanseWatt / Configra orgs).
+> **Org:** `hansewatt-demo@example.com` (separate from HanseWatt / Configra orgs).
 > **Created (this summary):** 2026-06-20
 
 ---
