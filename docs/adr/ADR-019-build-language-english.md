@@ -8,7 +8,7 @@
 HanseWatt is a German DACH energy retailer, and the original blueprint says "Agent +
 Knowledge in **German**". But the builder's German proficiency is low and they must be able
 to read and review every artifact as it is created. There is a tension between the project's
-German *premise* and the need for a comprehensible *build language*.
+German _premise_ and the need for a comprehensible _build language_.
 
 ## Decision
 
@@ -32,9 +32,11 @@ signal).
 ## Alternatives Considered
 
 ### German content from the start (per original blueprint)
+
 Rejected: the builder cannot review German prose, breaking the trust/verification loop.
 
 ### Switch the org Locale/Language to German
+
 Rejected: makes the whole admin surface unreadable to the builder for zero functional gain;
 content language ≠ org UI language.
 

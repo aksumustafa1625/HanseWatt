@@ -58,7 +58,7 @@ Und jetzt kommt der wichtigste Moment.
 
 ---
 
-## 5 (danach)  ⭐ langsam lesen, mit Pausen
+## 5 (danach) ⭐ langsam lesen, mit Pausen
 
 Der Agent hat den Tarif nicht gewechselt.
 

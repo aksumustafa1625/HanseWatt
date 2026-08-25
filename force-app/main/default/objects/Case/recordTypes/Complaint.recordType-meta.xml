@@ -1,19 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Complaint</fullName>
-    <active>true</active>
-    <businessProcess>HW_Support_Process</businessProcess>
-    <description>Complaint / escalation — dissatisfaction, human handoff.</description>
-    <label>Complaint</label>
-    <picklistValues>
-        <picklist>HW_Topic__c</picklist>
-        <values>
-            <fullName>Complaint</fullName>
-            <default>true</default>
-        </values>
-        <values>
-            <fullName>Other</fullName>
-            <default>false</default>
-        </values>
-    </picklistValues>
+  <fullName>Complaint</fullName>
+  <active>true</active>
+  <businessProcess>HW_Support_Process</businessProcess>
+  <description>
+    Complaint / escalation — dissatisfaction, human handoff.
+  </description>
+  <label>Complaint</label>
+  <picklistValues>
+    <picklist>HW_Topic__c</picklist>
+    <values>
+      <fullName>Complaint</fullName>
+      <default>true</default>
+    </values>
+    <values>
+      <fullName>Other</fullName>
+      <default>false</default>
+    </values>
+  </picklistValues>
 </RecordType>

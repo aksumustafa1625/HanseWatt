@@ -24,25 +24,25 @@ customer (no hardcoded account):
 
 > **Customer:** I'm lena.bergmann@example.de. How much is my latest electricity bill?
 >
-> **Agent:** *(HW Identify Customer → HW Get Latest Bill)* Your latest electricity bill
+> **Agent:** _(HW Identify Customer → HW Get Latest Bill)_ Your latest electricity bill
 > (**BILL-000004**) covers May 1–31, 2026. The total amount is **€176.30** for **520.00 kWh**.
 > The bill status is currently **Open**.
 >
 > **Customer:** Yes, please open a complaint case about it.
 >
-> **Agent:** *(HW Create Case)* I've opened a complaint case for you. The case number is
+> **Agent:** _(HW Create Case)_ I've opened a complaint case for you. The case number is
 > **00001026**. A HanseWatt specialist will review your bill and follow up with you shortly.
 >
 > **Customer:** Why is it so high?
 >
-> **Agent:** *(HW Explain Consumption Anomaly)* Your latest usage was **520.00 kWh**, which is
+> **Agent:** _(HW Explain Consumption Anomaly)_ Your latest usage was **520.00 kWh**, which is
 > **64.6% higher** than your trailing average of **316.0 kWh** — consistent with a new
 > high-energy appliance such as an EV charger or a heat pump.
 
 Four custom Apex actions (`HWIdentifyCustomerAction`, `HWGetLatestBillAction`,
 `HWCreateCaseAction`, `HWExplainConsumptionAction`), each grounded in / writing to real
 Salesforce & Data 360 data, chained by the planner after resolving the customer from the
-email they gave. The agent doesn't just *explain* — it *acts*: the complaint above created a
+email they gave. The agent doesn't just _explain_ — it _acts_: the complaint above created a
 real Case in the org — **"Billing Dispute for BILL-000004", #00001026, Created By
 EinsteinServiceAgent User**, description grounded in the customer's actual bill — which then
 flows into the Faz 1 SLA + Omni-Channel routing for a human specialist.

@@ -30,10 +30,12 @@ delivery + replay limits to respect; another moving part to document.
 ## Alternatives Considered
 
 ### Synchronous Apex calls between subsystems
+
 Rejected: tight coupling, transaction-boundary problems (DML-then-callout), and no natural
 fan-out for proactive journeys.
 
 ### Change Data Capture only
+
 Rejected: CDC is record-change-shaped; bespoke domain events (anomaly, escalation) model the
 business signal more clearly.
 

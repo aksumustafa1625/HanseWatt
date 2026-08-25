@@ -6,7 +6,7 @@
 ## Context
 
 In energy + personal data, security maturity is the headline. A grounded agent must also be
-*provably* resistant to abuse: prompt injection, cross-customer data fishing, social-
+_provably_ resistant to abuse: prompt injection, cross-customer data fishing, social-
 engineered deletion, "reset my bill", toxicity, off-topic. This needs to be documented, not
 claimed.
 
@@ -32,9 +32,11 @@ is frozen; red-team coverage is illustrative, not exhaustive (noted honestly).
 ## Alternatives Considered
 
 ### "The Trust Layer handles it" (no explicit red-team)
-Rejected: an unproven claim; the evidence *is* the differentiator.
+
+Rejected: an unproven claim; the evidence _is_ the differentiator.
 
 ### Exhaustive fuzzing
+
 Rejected: credit-prohibitive and unnecessary for portfolio evidence; a curated 8–10 attack
 set run once is the disciplined choice.
 

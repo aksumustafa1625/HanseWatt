@@ -1,46 +1,70 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <canEscalate>false</canEscalate>
-    <description>Use this topic when customers inquire about reasons for increased energy usage or higher-than-expected bills. This topic focuses on providing data-driven insights into energy consumption patterns.</description>
-    <developerName>p_16jgK000001hSV7_High_Energy_Consumption_Insights</developerName>
-    <genAiFunctions>
-        <functionName>KnowledgeSpaceAgent__KnowledgeSpaceDeepResearch</functionName>
-    </genAiFunctions>
-    <genAiFunctions>
-        <functionName>EmployeeCopilot__AnswerQuestionsWithKnowledge</functionName>
-    </genAiFunctions>
-    <!-- HWExplainConsumptionAction — the grounding bridge (Data 360 +64.6% anomaly).
+<?xml version="1.0" encoding="UTF-8" ?>
+<GenAiPlugin
+  xmlns="http://soap.sforce.com/2006/04/metadata"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+>
+  <canEscalate>false</canEscalate>
+  <description>
+    Use this topic when customers inquire about reasons for increased energy
+    usage or higher-than-expected bills. This topic focuses on providing
+    data-driven insights into energy consumption patterns.
+  </description>
+  <developerName>
+    p_16jgK000001hSV7_High_Energy_Consumption_Insights
+  </developerName>
+  <genAiFunctions>
+    <functionName>KnowledgeSpaceAgent__KnowledgeSpaceDeepResearch</functionName>
+  </genAiFunctions>
+  <genAiFunctions>
+    <functionName>EmployeeCopilot__AnswerQuestionsWithKnowledge</functionName>
+  </genAiFunctions>
+  <!-- HWExplainConsumptionAction — the grounding bridge (Data 360 +64.6% anomaly).
          Wired via Agent Builder "Add Action" (Apex → Invocable Method). The GenAiFunction
          itself carries a system-generated suffix and is NOT source-retrievable/deployable in
          this Dev Edition (Agentforce+Data360) — same edition boundary as NGA publish and
          Case.EntitlementId. The hand-authored design lives in genAiFunctions/HW_Explain_Consumption/. -->
-    <genAiFunctions>
-        <functionName>HW_Explain_Consumption_Anomaly_179gK000001pK5l</functionName>
-    </genAiFunctions>
-    <genAiPluginInstructions>
-        <description>If the customer asks about high energy usage or increased bills, use the relevant actions to analyze and explain the reasons.</description>
-        <developerName>instruction_0</developerName>
-        <language xsi:nil="true"/>
-        <masterLabel>instruction_0</masterLabel>
-        <sortOrder>0</sortOrder>
-    </genAiPluginInstructions>
-    <genAiPluginInstructions>
-        <description>Use historical and real-time data to identify potential causes for increased consumption.</description>
-        <developerName>instruction_1</developerName>
-        <language xsi:nil="true"/>
-        <masterLabel>instruction_1</masterLabel>
-        <sortOrder>0</sortOrder>
-    </genAiPluginInstructions>
-    <genAiPluginInstructions>
-        <description>If the customer asks about account or billing information, redirect them to the appropriate topic.</description>
-        <developerName>instruction_2</developerName>
-        <language xsi:nil="true"/>
-        <masterLabel>instruction_2</masterLabel>
-        <sortOrder>0</sortOrder>
-    </genAiPluginInstructions>
-    <language>en_US</language>
-    <localDeveloperName>p_16jgK000001hSV7_High_Energy_Consumption_Insights</localDeveloperName>
-    <masterLabel>High Energy Consumption Insights</masterLabel>
-    <pluginType>Topic</pluginType>
-    <scope>Your job is to only analyze and explain reasons for increased energy usage using real-time and historical data. You are not able to handle account or billing-specific queries under this topic.</scope>
+  <genAiFunctions>
+    <functionName>HW_Explain_Consumption_Anomaly_179gK000001pK5l</functionName>
+  </genAiFunctions>
+  <genAiPluginInstructions>
+    <description>
+      If the customer asks about high energy usage or increased bills, use the
+      relevant actions to analyze and explain the reasons.
+    </description>
+    <developerName>instruction_0</developerName>
+    <language xsi:nil="true" />
+    <masterLabel>instruction_0</masterLabel>
+    <sortOrder>0</sortOrder>
+  </genAiPluginInstructions>
+  <genAiPluginInstructions>
+    <description>
+      Use historical and real-time data to identify potential causes for
+      increased consumption.
+    </description>
+    <developerName>instruction_1</developerName>
+    <language xsi:nil="true" />
+    <masterLabel>instruction_1</masterLabel>
+    <sortOrder>0</sortOrder>
+  </genAiPluginInstructions>
+  <genAiPluginInstructions>
+    <description>
+      If the customer asks about account or billing information, redirect them
+      to the appropriate topic.
+    </description>
+    <developerName>instruction_2</developerName>
+    <language xsi:nil="true" />
+    <masterLabel>instruction_2</masterLabel>
+    <sortOrder>0</sortOrder>
+  </genAiPluginInstructions>
+  <language>en_US</language>
+  <localDeveloperName>
+    p_16jgK000001hSV7_High_Energy_Consumption_Insights
+  </localDeveloperName>
+  <masterLabel>High Energy Consumption Insights</masterLabel>
+  <pluginType>Topic</pluginType>
+  <scope>
+    Your job is to only analyze and explain reasons for increased energy usage
+    using real-time and historical data. You are not able to handle account or
+    billing-specific queries under this topic.
+  </scope>
 </GenAiPlugin>

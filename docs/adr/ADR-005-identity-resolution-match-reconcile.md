@@ -8,7 +8,7 @@
 The same customer arrives from three sources with no shared key: CRM (Account/Contact, e.g.
 "Lena Bergmann"), SAP IS-U billing ("L. Bergmann", a billing customer id), and web/
 engagement ("lena.b@gmx"). Data 360 must resolve them into one **Unified Individual** the
-agent can ground on — and identity resolution only *impresses* when the data is messy.
+agent can ground on — and identity resolution only _impresses_ when the data is messy.
 
 ## Decision
 
@@ -33,10 +33,12 @@ per the quota discipline.
 ## Alternatives Considered
 
 ### Exact-key join only
+
 Rejected: there is no shared key across SAP/CRM/web — the whole point is reconciling without
 one.
 
 ### Deterministic email-only matching
+
 Rejected: misses the SAP billing record (different id, abbreviated name) — the most
 interesting reconciliation.
 

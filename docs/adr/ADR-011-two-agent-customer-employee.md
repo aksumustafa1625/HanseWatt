@@ -33,9 +33,11 @@ reps).
 ## Alternatives Considered
 
 ### Single agent
+
 Rejected: no multi-agent signal; no rep-side handoff story.
 
 ### Four-agent fleet (Billing/Outage/Retention/Employee)
+
 Rejected: over-engineered for a portfolio demo; 4× the config, testing, and Flex-Credit
 burn for marginal narrative gain. Revisit only via roadmap R4.
 

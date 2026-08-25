@@ -66,33 +66,33 @@ history (five months around 316 kWh, then the 520 kWh spike = +64.6 %):
 
 > **A prompt is not a security mechanism. Only code is.**
 
-Three times I believed I had *built* a guarantee, and three times I found I had only *hoped* for
+Three times I believed I had _built_ a guarantee, and three times I found I had only _hoped_ for
 one. Each time the fix was to replace the hope with a code path that cannot be skipped. That is
 the whole project, and every screenshot below is one of those three.
 
 ### 1. The second confirmation is a state machine, not an instruction — `applied: false`
 
-The topic instruction said *"ask twice"*. In the first recording the agent applied the change on
+The topic instruction said _"ask twice"_. In the first recording the agent applied the change on
 the **first** "Ja" — because nothing stopped it. An instruction is exactly the trap
 [ADR-020](docs/adr/ADR-020-tariff-advisory-consent-handshake.md) exists to name.
 
 Now: `Proposed --confirm#1--> Terms_Presented --confirm#2--> Applied`. The **first** call is
-*structurally incapable* of changing the contract. Here is the agent calling it — and the code
+_structurally incapable_ of changing the contract. Here is the agent calling it — and the code
 refusing:
 
 ![First confirmation: applied=false, awaitingFinalConfirmation=true, "NOTHING HAS BEEN CHANGED YET"](docs/demo/images/tariff-binding-terms.png)
 
-**`"applied": false`.** The model *wanted* to switch. The code did not let it. It returned the
+**`"applied": false`.** The model _wanted_ to switch. The code did not let it. It returned the
 binding terms instead — the tariff, the effective date, the saving, **and the assumption the
-saving rests on** — so the customer is *guaranteed* to see them. Not because the agent was asked
+saving rests on** — so the customer is _guaranteed_ to see them. Not because the agent was asked
 nicely; because there is no code path that skips them. Only the **second** call applies it:
 
 ![Second confirmation: applied=true, case 00001046](docs/demo/images/tariff-applied.png)
 
-### 2. The agent knows when it is *allowed* to be sure — `isConditional`
+### 2. The agent knows when it is _allowed_ to be sure — `isConditional`
 
 German tariffs are **Arbeitspreis** (per kWh) **+ Grundpreis** (a fixed monthly fee), so the
-cheaper headline price can be the more expensive tariff. Lena's usage *straddles* the break-even
+cheaper headline price can be the more expensive tariff. Lena's usage _straddles_ the break-even
 (375 kWh/month), so the honest answer depends on a fact the agent **does not know**:
 
 ![Lena: isConditional=true, the full Grundgebühr comparison at both consumption levels](docs/demo/images/tariff-conditional-lena-trace.png)
@@ -109,8 +109,8 @@ Same question, different customer — Studio Alpina at 165 kWh/month — and the
 
 ![Studio Alpina: isConditional=false, recommended Strom Basis, saving 103.20](docs/demo/images/tariff-persona-flip.png)
 
-`"isConditional": false` → *"Basis is cheapest in **both** scenarios; the recommendation does not
-depend on whether the higher usage persists."* **Opposite tariff, opposite epistemic stance.**
+`"isConditional": false` → _"Basis is cheapest in **both** scenarios; the recommendation does not
+depend on whether the higher usage persists."_ **Opposite tariff, opposite epistemic stance.**
 That is not a turn of phrase — it is a field the Apex computes and the agent reads. No
 hallucination produces it.
 
@@ -120,19 +120,19 @@ A verified customer asked for **another customer's** bill. The agent refused —
 code was stopping it: `HWIdentifyCustomerAction` resolved an Account from an **email alone**, and
 the customer had just supplied the neighbour's email. Worse, three out-of-the-box Salesforce
 actions (`Identify Customer By Email` among them) sat in the topic as an **ungoverned back door**.
-Worse still, when the planner put the *email address* into the `Account Id` slot, Apex threw on
-coercion and the customer saw *"Ein Fehler ist aufgetreten"* — a stack trace where the privacy
+Worse still, when the planner put the _email address_ into the `Account Id` slot, Apex threw on
+coercion and the customer saw _"Ein Fehler ist aufgetreten"_ — a stack trace where the privacy
 refusal belonged.
 
 [ADR-022](docs/adr/ADR-022-identity-is-a-token-not-a-claim.md) closes all three:
 
-- **Two factors, server-side.** Email **and** the *Kundennummer* from the bill — the way a German
+- **Two factors, server-side.** Email **and** the _Kundennummer_ from the bill — the way a German
   utility hotline actually authenticates. To see Johann Huber's data you need Johann Huber's
   customer number. The neighbour does not have it; the model cannot invent it.
 - **The back doors are removed**, not out-competed. A guarantee is only as strong as the weakest
   path the planner may take.
 - **`HWIds` guards the boundary.** An `@InvocableVariable` is not a parameter from a colleague's
-  code — it is *a string a language model chose*. Every id is parsed; a bad one becomes `null`,
+  code — it is _a string a language model chose_. Every id is parsed; a bad one becomes `null`,
   which already means "not identified". **A bad id is a refusal, never an exception.**
 
 ![Identity verified with both factors](docs/demo/images/identity-trace.png)
@@ -141,17 +141,17 @@ refusal belonged.
 
 Read that second trace carefully: the classifier picked the **right** topic, the agent had
 **7 actions** available including `HW Get Latest Bill` — and it called **none of them**. Salesforce's
-own Output Evaluation marks the refusal **GROUNDED**: *"account data for other customers cannot be
-shared due to data protection policies."* The refusal isn't politeness. There is no path.
+own Output Evaluation marks the refusal **GROUNDED**: _"account data for other customers cannot be
+shared due to data protection policies."_ The refusal isn't politeness. There is no path.
 
 ### And it really happened — the records prove it
 
-| | Vorher | Nachher |
-|---|---|---|
+|                                | Vorher                                    | Nachher                                         |
+| ------------------------------ | ----------------------------------------- | ----------------------------------------------- |
 | **Lena Bergmann** (520 kWh/mo) | ![](docs/demo/images/contract-before.png) | ![](docs/demo/images/tariff-contract-after.png) |
 
-Same record (`SC-000004`), **Strom Basis → EV-Tarif**, *last modified by the EinsteinServiceAgent
-User*. The consent that authorised it is a real, expiring, auditable row:
+Same record (`SC-000004`), **Strom Basis → EV-Tarif**, _last modified by the EinsteinServiceAgent
+User_. The consent that authorised it is a real, expiring, auditable row:
 
 ![TCR-00012: Applied, EUR 69.60, with the assumption the quote depends on](docs/demo/images/tariff-request-record.png)
 
@@ -161,11 +161,11 @@ forward to SAP IS-U:
 
 ![Case 00001044 — created by the EinsteinServiceAgent User](docs/demo/images/tariff-case-1.png)
 
-### Moving house is *filed*, not narrated
+### Moving house is _filed_, not narrated
 
 The agent used to explain a move from a cited Knowledge article and then had nowhere to put the
 customer's answer. Now it files one — but only once the customer supplies the facts **only they**
-have. *"Ich ziehe **nächsten Monat** um"* is **not a date**, and the agent does not turn it into
+have. _"Ich ziehe **nächsten Monat** um"_ is **not a date**, and the agent does not turn it into
 one: a missing move-out date or final meter reading is a **refusal with zero DML**, because an
 estimated reading becomes an estimated final bill.
 
@@ -175,11 +175,11 @@ estimated reading becomes an estimated final bill.
 
 ## Sell vs Serve — where this fits
 
-| | TechnoStore (done) | **HanseWatt (this)** |
-|---|---|---|
-| Cloud | Revenue Cloud (RLM/CLM/CPQ) | **Service Cloud + Agentforce + Data 360** |
-| Theme | Quote-to-Cash (sell) | **Customer service + AI (serve)** |
-| AI | rule-based | **autonomous agent + grounded LLM** |
+|        | TechnoStore (done)                                                  | **HanseWatt (this)**                      |
+| ------ | ------------------------------------------------------------------- | ----------------------------------------- |
+| Cloud  | Revenue Cloud (RLM/CLM/CPQ)                                         | **Service Cloud + Agentforce + Data 360** |
+| Theme  | Quote-to-Cash (sell)                                                | **Customer service + AI (serve)**         |
+| AI     | rule-based                                                          | **autonomous agent + grounded LLM**       |
 | Shared | DACH · German · GDPR · MuleSoft · O'Hara framework · honest framing |
 
 Together: the two halves of the enterprise — **sell** and **serve** — with the 2026 AI +
@@ -241,21 +241,21 @@ Agent [HW Confirm Tariff Change #2  <- only now, and only against its own propos
 ```
 
 **Same question, a different customer, the opposite answer.** Studio Alpina (165 kWh/month)
-is told to switch to **Strom Basis**, *not* the EV tariff — because below the 375 kWh/month
+is told to switch to **Strom Basis**, _not_ the EV tariff — because below the 375 kWh/month
 break-even the EV tariff's higher base fee makes it more expensive. The € figure is arithmetic
 over real `Tariff__c` rows at the customer's real meter readings; no model can invent it.
 
 **And consent is not a Boolean the model fills in.** It is a server-issued, expiring,
 account-scoped request number (`TCR-00001`) that exists only in the propose step's output. A
-model that skipped the step, invented a number, or replayed *another customer's* number is
+model that skipped the step, invented a number, or replayed _another customer's_ number is
 refused — and **zero DML runs**.
 
 **The double confirmation is a state machine, not a prompt convention.** `Proposed
 --confirm#1--> Terms_Presented --confirm#2--> Applied`. The **first** confirmation is
-*structurally incapable* of changing the contract: it advances the proposal and returns the
+_structurally incapable_ of changing the contract: it advances the proposal and returns the
 binding terms — including the **assumption the saving rests on** — so the customer is
-*guaranteed* to see them. Not because the agent was asked nicely; because there is no code
-path that skips them. (Caught in the first recording, where the agent *did* apply on the
+_guaranteed_ to see them. Not because the agent was asked nicely; because there is no code
+path that skips them. (Caught in the first recording, where the agent _did_ apply on the
 first "Ja" while the instruction said "ask twice" — the exact trap this design exists to
 close.) See [ADR-020](docs/adr/ADR-020-tariff-advisory-consent-handshake.md).
 
@@ -292,14 +292,14 @@ close.) See [ADR-020](docs/adr/ADR-020-tariff-advisory-consent-handshake.md).
 
 Full, honest built-vs-planned matrix: **[`STATUS.md`](./STATUS.md)**. Summary:
 
-| Phase | Theme | Status |
-|------|-------|--------|
-| **Faz 1** | **Service Cloud core** (7 objects/37 fields, Case RTs, SLA design, Omni-Channel, 10 Knowledge articles, perms, multi-currency, seed) | ✅ **built** |
-| **Faz 2** | **Data 360** — 4 data streams → DLOs; anomaly grounded live via the Query API (**+64.6 %**) | ✅ **built** |
-| **Faz 5** | **Live agent** — `HW_Energy_Agent` + **8 grounded actions** (verify-customer · bill · explain · create-case · answer-from-Knowledge · **propose-tariff** · **confirm-tariff** · **register-move**) + service layer + 115 tests (**97 % coverage**); multi-turn flow, GROUNDED, incl. German | ✅ **built** |
-| **Grounding split (ADR-007)** | *figures* → Data 360 (**+64.6 %**) · *procedure* → a **cited Knowledge article** (deterministic Apex retriever; live-verified: "I'm moving house" → Umzug article + citation) | ✅ **built** |
-| 🟡 | live SLA milestone clock (edition-blocked) | partial (see STATUS.md) |
-| ⬜ | Identity resolution · persisted CI + segments/closed loop · LWC UI · escalation action (Omni-Channel handoff) · prompt templates · agent eval ⭐ · red-team ⭐ · employee agent · DSGVO automation · WhatsApp | planned (designed, not code) |
+| Phase                         | Theme                                                                                                                                                                                                                                                                                       | Status                       |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| **Faz 1**                     | **Service Cloud core** (7 objects/37 fields, Case RTs, SLA design, Omni-Channel, 10 Knowledge articles, perms, multi-currency, seed)                                                                                                                                                        | ✅ **built**                 |
+| **Faz 2**                     | **Data 360** — 4 data streams → DLOs; anomaly grounded live via the Query API (**+64.6 %**)                                                                                                                                                                                                 | ✅ **built**                 |
+| **Faz 5**                     | **Live agent** — `HW_Energy_Agent` + **8 grounded actions** (verify-customer · bill · explain · create-case · answer-from-Knowledge · **propose-tariff** · **confirm-tariff** · **register-move**) + service layer + 115 tests (**97 % coverage**); multi-turn flow, GROUNDED, incl. German | ✅ **built**                 |
+| **Grounding split (ADR-007)** | _figures_ → Data 360 (**+64.6 %**) · _procedure_ → a **cited Knowledge article** (deterministic Apex retriever; live-verified: "I'm moving house" → Umzug article + citation)                                                                                                               | ✅ **built**                 |
+| 🟡                            | live SLA milestone clock (edition-blocked)                                                                                                                                                                                                                                                  | partial (see STATUS.md)      |
+| ⬜                            | Identity resolution · persisted CI + segments/closed loop · LWC UI · escalation action (Omni-Channel handoff) · prompt templates · agent eval ⭐ · red-team ⭐ · employee agent · DSGVO automation · WhatsApp                                                                               | planned (designed, not code) |
 
 > Honestly **partial**: the live SLA milestone clock can't bind because `Case.EntitlementId`
 > isn't provisioned in this Dev-Edition flavour (edition limitation — see
@@ -315,12 +315,12 @@ Full, honest built-vs-planned matrix: **[`STATUS.md`](./STATUS.md)**. Summary:
 
 ### What's built (this repo, deployed + committed)
 
-| Layer | Components |
-|------|-----------|
-| Service Cloud core | 7 objects + 37 fields (`Meter__c`, `Meter_Reading__c`, `Tariff__c`, `Service_Contract__c`, `Energy_Bill__c`, `Outage__c`, `Consent__c`) + `Case.HW_Topic__c` · 5 Case record types + support process · `HW_Standard_SLA` entitlement + milestones · Omni-Channel (channel, queue, routing, presence, German + Billing skills) · 6-topic Knowledge with 10 published articles · `HW_Admin`/`HW_ServiceAgent`/`HW_ReadOnly` perms · EUR + CHF · 4 DACH seed accounts |
-| Data 360 | 4 DataStreamDefinitions (Account, Meter, Meter Reading, Energy Bill) → DLOs · anomaly proven live via the Data 360 Query API (SQL CI): **520 vs 316 kWh = +64.6 %** |
-| Live agent (Faz 5) | `HW_Energy_Agent` (Bot + ReAct planner + 2 topics) · **5** grounded `@InvocableMethod` actions (`HWIdentifyCustomerAction`, `HWGetLatestBillAction`, `HWExplainConsumptionAction`, `HWCreateCaseAction`, `HWAnswerFromKnowledgeAction`) · **5** services (`with sharing`, `WITH USER_MODE`, bulk-safe) · `HW_Agent_Actions` perms · 10 test classes / 49 methods (99 % org-wide coverage, every class ≥ 94 %) · NGA design bundle (`HW_Service_Agent.agent`, committed as design — runtime edition-blocked) |
-| Procedure grounding | `HWKnowledgeService` + `HWAnswerFromKnowledgeAction` — deterministic Knowledge retriever with a DE→EN alias map; the agent answers how-to questions **only** from the article text and quotes a real citation (`… (000001008)`), or says it doesn't know and offers a case |
+| Layer               | Components                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Service Cloud core  | 7 objects + 37 fields (`Meter__c`, `Meter_Reading__c`, `Tariff__c`, `Service_Contract__c`, `Energy_Bill__c`, `Outage__c`, `Consent__c`) + `Case.HW_Topic__c` · 5 Case record types + support process · `HW_Standard_SLA` entitlement + milestones · Omni-Channel (channel, queue, routing, presence, German + Billing skills) · 6-topic Knowledge with 10 published articles · `HW_Admin`/`HW_ServiceAgent`/`HW_ReadOnly` perms · EUR + CHF · 4 DACH seed accounts                                          |
+| Data 360            | 4 DataStreamDefinitions (Account, Meter, Meter Reading, Energy Bill) → DLOs · anomaly proven live via the Data 360 Query API (SQL CI): **520 vs 316 kWh = +64.6 %**                                                                                                                                                                                                                                                                                                                                         |
+| Live agent (Faz 5)  | `HW_Energy_Agent` (Bot + ReAct planner + 2 topics) · **5** grounded `@InvocableMethod` actions (`HWIdentifyCustomerAction`, `HWGetLatestBillAction`, `HWExplainConsumptionAction`, `HWCreateCaseAction`, `HWAnswerFromKnowledgeAction`) · **5** services (`with sharing`, `WITH USER_MODE`, bulk-safe) · `HW_Agent_Actions` perms · 10 test classes / 49 methods (99 % org-wide coverage, every class ≥ 94 %) · NGA design bundle (`HW_Service_Agent.agent`, committed as design — runtime edition-blocked) |
+| Procedure grounding | `HWKnowledgeService` + `HWAnswerFromKnowledgeAction` — deterministic Knowledge retriever with a DE→EN alias map; the agent answers how-to questions **only** from the article text and quotes a real citation (`… (000001008)`), or says it doesn't know and offers a case                                                                                                                                                                                                                                  |
 
 ## Documents
 

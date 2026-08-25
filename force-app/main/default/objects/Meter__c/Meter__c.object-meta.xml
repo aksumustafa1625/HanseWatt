@@ -1,16 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
-    <deploymentStatus>Deployed</deploymentStatus>
-    <description>Smart meter device registered to a customer Account.</description>
-    <enableActivities>true</enableActivities>
-    <enableHistory>false</enableHistory>
-    <enableReports>true</enableReports>
-    <enableSearch>true</enableSearch>
-    <label>Meter</label>
-    <pluralLabel>Meters</pluralLabel>
-    <nameField>
-        <label>Meter Name</label>
-        <type>Text</type>
-    </nameField>
-    <sharingModel>Private</sharingModel>
+  <deploymentStatus>Deployed</deploymentStatus>
+  <description>
+    Smart meter device registered to a customer Account.
+  </description>
+  <enableActivities>true</enableActivities>
+  <enableHistory>false</enableHistory>
+  <enableReports>true</enableReports>
+  <enableSearch>true</enableSearch>
+  <label>Meter</label>
+  <pluralLabel>Meters</pluralLabel>
+  <nameField>
+    <label>Meter Name</label>
+    <type>Text</type>
+  </nameField>
+  <sharingModel>Private</sharingModel>
 </CustomObject>

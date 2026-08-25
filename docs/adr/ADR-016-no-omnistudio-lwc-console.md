@@ -29,6 +29,7 @@ is small and the components are reused across pages).
 ## Alternatives Considered
 
 ### OmniStudio FlexCards for the agent console
+
 Rejected: contradicts the project's pure-LWC stance, adds licensing + a non-source-trackable
 runtime, and weakens the "everything in git" story.
 

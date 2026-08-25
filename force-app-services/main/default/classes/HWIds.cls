@@ -16,21 +16,20 @@
  * answer. A bad id is a refusal, never an exception.
  */
 public with sharing class HWIds {
-
-    /**
-     * @param raw whatever the model put in the Account Id slot
-     * @return a real Account Id, or null if it was blank, unparseable, or an id of another object
-     */
-    public static Id accountId(String raw) {
-        if (String.isBlank(raw)) {
-            return null;
-        }
-        try {
-            Id parsed = Id.valueOf(raw.trim());
-            // An Opportunity id is not an Account id. Reject it rather than query on it.
-            return (parsed.getSObjectType() == Account.SObjectType) ? parsed : null;
-        } catch (Exception e) {
-            return null;   // "j.huber@example.at", "unknown", "" — all just mean: not identified
-        }
+  /**
+   * @param raw whatever the model put in the Account Id slot
+   * @return a real Account Id, or null if it was blank, unparseable, or an id of another object
+   */
+  public static Id accountId(String raw) {
+    if (String.isBlank(raw)) {
+      return null;
     }
+    try {
+      Id parsed = Id.valueOf(raw.trim());
+      // An Opportunity id is not an Account id. Reject it rather than query on it.
+      return (parsed.getSObjectType() == Account.SObjectType) ? parsed : null;
+    } catch (Exception e) {
+      return null; // "j.huber@example.at", "unknown", "" — all just mean: not identified
+    }
+  }
 }

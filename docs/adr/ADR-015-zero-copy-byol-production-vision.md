@@ -29,9 +29,11 @@ explicitly labelled as not-built.
 ## Alternatives Considered
 
 ### Build Zero-Copy in the Dev Edition
+
 Rejected: impossible — there is no external lake; attempting it would be dishonest framing.
 
 ### Omit it entirely
+
 Rejected: it's a relevant, expected production consideration; naming it (and why it's not
 built) is itself a senior signal.
 

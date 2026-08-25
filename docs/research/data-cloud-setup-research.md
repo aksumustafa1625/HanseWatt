@@ -39,17 +39,17 @@
 
 ## 1. Terminology (so the rest reads cleanly)
 
-| Term | What it is |
-|---|---|
-| **Connection** | An auth'd link to a source (e.g. the Salesforce CRM "home org"). We have **1 live** (`Home`, Active). |
-| **Data Stream** | The configured flow of one source object's records into Data 360. One per object (e.g. one for `Meter_Reading__c`). |
-| **DSO** | Data *Source* Object — the raw landing shape of a stream (often glossed over). |
-| **DLO** (`__dll`) | **Data Lake Object** — raw, untransformed ingested data. Can't power segmentation/identity/CI on its own. ([medium-mapping], [jthathapudi]) |
-| **DMO** (`__dlm`) | **Data Model Object** — the *harmonized* canonical model. You **map DLO → DMO**; downstream tools (identity res, CI, segments, retrievers) consume DMOs. ([medium-mapping]) |
-| **Identity Resolution** | Match + reconciliation rules that merge source profiles into one **Unified Individual**. ([sf-help]) |
-| **Calculated Insight (CI)** | A derived metric/aggregation over DMOs (e.g. avg kWh, anomaly score). Batch or streaming. |
-| **Retriever** | The RAG component that returns relevant DMO/CI rows (or search-index chunks) to ground a prompt/agent. ([salesforceben-rag]) |
-| **Data Space** | A partition for data governance. We have **1**. |
+| Term                        | What it is                                                                                                                                                                  |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Connection**              | An auth'd link to a source (e.g. the Salesforce CRM "home org"). We have **1 live** (`Home`, Active).                                                                       |
+| **Data Stream**             | The configured flow of one source object's records into Data 360. One per object (e.g. one for `Meter_Reading__c`).                                                         |
+| **DSO**                     | Data _Source_ Object — the raw landing shape of a stream (often glossed over).                                                                                              |
+| **DLO** (`__dll`)           | **Data Lake Object** — raw, untransformed ingested data. Can't power segmentation/identity/CI on its own. ([medium-mapping], [jthathapudi])                                 |
+| **DMO** (`__dlm`)           | **Data Model Object** — the _harmonized_ canonical model. You **map DLO → DMO**; downstream tools (identity res, CI, segments, retrievers) consume DMOs. ([medium-mapping]) |
+| **Identity Resolution**     | Match + reconciliation rules that merge source profiles into one **Unified Individual**. ([sf-help])                                                                        |
+| **Calculated Insight (CI)** | A derived metric/aggregation over DMOs (e.g. avg kWh, anomaly score). Batch or streaming.                                                                                   |
+| **Retriever**               | The RAG component that returns relevant DMO/CI rows (or search-index chunks) to ground a prompt/agent. ([salesforceben-rag])                                                |
+| **Data Space**              | A partition for data governance. We have **1**.                                                                                                                             |
 
 ---
 
@@ -59,7 +59,7 @@ From the Salesforce Break roadmap and Salesforce Help, the canonical order is:
 ([salesforcebreak], [sf-help-dataobjects])
 
 1. **Plan / start small** — one or two use cases. (Ours: "explain a high bill from consumption.")
-2. **Connection** — pick the connector (Salesforce CRM for us; Ingestion API / Zero-Copy for external). *Done — home-org CRM connection is live.*
+2. **Connection** — pick the connector (Salesforce CRM for us; Ingestion API / Zero-Copy for external). _Done — home-org CRM connection is live._
 3. **Data Stream** — define schema + format for each object ingested.
 4. **DLO** — raw data lands as Data Lake Objects on stream creation.
 5. **DMO mapping** — transform/map DLOs onto standard or custom DMOs (the canonical model).
@@ -79,6 +79,7 @@ From the Salesforce Break roadmap and Salesforce Help, the canonical order is:
 ## 3. Ingesting our data — CRM connector + custom objects (the FREE path)
 
 ### 3.1 Salesforce CRM ingestion is free
+
 Salesforce made **structured ingestion from its own clouds free**: **Salesforce Core (Sales +
 Service Cloud)**, **Marketing Cloud Engagement**, **Marketing Cloud Personalization**, and
 **Commerce Cloud**. Syncing our Account/Contact/Case/Knowledge **and our custom objects**
@@ -87,11 +88,12 @@ credits**. ([sf-pricing-blog], [salesforceben-pricing])
 
 > Implication for HanseWatt: **do the whole Faz 2 ingestion via the Salesforce CRM connector**,
 > not the Ingestion API. The "external smart-meter feed via Ingestion API" stays an honest
-> *narrative* (ADR-004) — but for the actual build, our seeded Salesforce data is the source,
-> and it's free. The Ingestion API would be the path for genuinely external data and *can*
+> _narrative_ (ADR-004) — but for the actual build, our seeded Salesforce data is the source,
+> and it's free. The Ingestion API would be the path for genuinely external data and _can_
 > cost credits (external ingestion ≈ 2,000 credits/M rows). ([jitendrazaa])
 
 ### 3.2 Bundles vs. custom data streams
+
 - **Standard Data Bundles** (Sales Cloud, Service Cloud) ship **pre-mapped** data streams +
   DMO mappings for standard objects — "everything comes mapped, minimal setup." Installing the
   **Service Cloud bundle** would auto-bring Account/Contact/Case/etc. mapped to standard DMOs.
@@ -106,11 +108,13 @@ credits**. ([sf-pricing-blog], [salesforceben-pricing])
 > Tariff). Small, intentional, easy to reason about — matches our quota discipline.
 
 ### 3.3 ⚠️ The #1 gotcha — field permissions
+
 Fields **won't appear in Data Cloud** unless the integration/running user has **Read + "View
 All"** on the object and **Read** on each field. Grant FLS first or the data stream shows no
 fields. ([sfdcgym])
 
 ### 3.4 Unique key
+
 Every stream needs a **primary/unique key** (the record Id works) and an **event/date field**
 for time-series (`Read_Date__c` for readings) so DMO/CI time logic works. ([salesforcebreak])
 
@@ -166,14 +170,14 @@ for time-series (`Read_Date__c` for readings) so DMO/CI time logic works. ([sale
   - **Unstructured** — over a **Search Index** (PDFs, Knowledge, transcripts) — the **Knowledge**
     half. ([salesforceben-rag])
 - **No-code setup:** **Data Cloud → Einstein Studio → Retrievers → New Retriever** → pick
-  *Individual Retriever*, source = DMO/Search Index, set #results (default 20), choose return
+  _Individual Retriever_, source = DMO/Search Index, set #results (default 20), choose return
   fields + the **Chunk** field, optionally SourceRecordId/DataSource for **citations**. Filters:
   up to **10 conditions**. ([salesforceben-rag])
 - **Wire to the agent:** test the retriever in **Prompt Builder** (swap the default dynamic
   retriever for yours), then attach it to the agent via a **custom data library** in agent
   setup. CIs can also drive **Flow**-based automation/triggers. ([salesforceben-rag])
 - **Other read paths** for validation: the **Query API** / Data 360 APIs let you query DMOs +
-  CIs directly (we'll use this to *verify* CI values before wiring the agent — mock-first).
+  CIs directly (we'll use this to _verify_ CI values before wiring the agent — mock-first).
   ([salesforceben-extract])
 
 ---
@@ -182,21 +186,22 @@ for time-series (`Read_Date__c` for readings) so DMO/CI time logic works. ([sale
 
 Unit costs (community-sourced, directional — confirm in Digital Wallet): ([jitendrazaa])
 
-| Operation | Rough cost | Notes |
-|---|---|---|
-| **Salesforce-native ingestion** (Sales/Service Cloud, MC, Commerce) | **FREE** | Our whole Faz 2 ingestion path. ([sf-pricing-blog]) |
-| External ingestion (Ingestion API, etc.) | ~2,000 credits / M rows | Only if we ingest truly external data. |
-| **Identity Resolution** | **~100,000 credits / M rows** | Most expensive; ~50× external ingest. On-demand, tiny data. |
-| Calculated Insight — **batch** | ~15 credits | Default. |
-| Calculated Insight — **streaming** | ~800 credits | ~53× batch — avoid. |
-| Data query | ~2 credits / M rows | Cheap, but **always filter + LIMIT** (unfiltered 100M scan ≈ 200 credits). |
-| Storage | priced separately | Pay for what you store → keep datasets tiny. |
+| Operation                                                           | Rough cost                    | Notes                                                                      |
+| ------------------------------------------------------------------- | ----------------------------- | -------------------------------------------------------------------------- |
+| **Salesforce-native ingestion** (Sales/Service Cloud, MC, Commerce) | **FREE**                      | Our whole Faz 2 ingestion path. ([sf-pricing-blog])                        |
+| External ingestion (Ingestion API, etc.)                            | ~2,000 credits / M rows       | Only if we ingest truly external data.                                     |
+| **Identity Resolution**                                             | **~100,000 credits / M rows** | Most expensive; ~50× external ingest. On-demand, tiny data.                |
+| Calculated Insight — **batch**                                      | ~15 credits                   | Default.                                                                   |
+| Calculated Insight — **streaming**                                  | ~800 credits                  | ~53× batch — avoid.                                                        |
+| Data query                                                          | ~2 credits / M rows           | Cheap, but **always filter + LIMIT** (unfiltered 100M scan ≈ 200 credits). |
+| Storage                                                             | priced separately             | Pay for what you store → keep datasets tiny.                               |
 
 **Reference points:** the **Data 360 Starter SKU** lists ~**$60k/yr for 10M credits + 5 TB**;
 **sandbox credits are ~20% discounted** vs production. (Context only — our Dev Edition has a
 small undocumented allotment.) ([sf-pricing-blog], [cube84])
 
 **Credit-frugal tactics (apply all):** ([jitendrazaa], [salesforcebreak])
+
 - Ingest **only via the free Salesforce connector**; keep row counts tiny (validate on ~10–50 rows).
 - **Batch** everything; **manual/daily** refresh, **never hourly/scheduled** during dev.
 - Run **Identity Resolution on-demand, once**, after the model is right.
@@ -229,6 +234,7 @@ small undocumented allotment.) ([sf-pricing-blog], [cube84])
 
 **Deployable as metadata** (via **DevOps Data Kits** + SFDX CLI / package.xml):
 ([salesforceblogger], [sf-dev-datakit], [metazoa])
+
 - `DataStreamDefinition` (streams), **DLOs**, **custom DMOs** (`MktDataModelObject`),
   **Calculated Insights**, **Identity Resolution rules**, **Data Transforms**, **Segments**,
   **Data Actions**, **Data Graphs**.
@@ -248,25 +254,25 @@ hand and re-authenticated. ([salesforceblogger])
 
 Mapped to our phases/ADRs; every step here is **free or near-zero credits**:
 
-1. **Assign Data Cloud permissions** to the builder (Setup Home → Assign Permissions). *(free)*
-2. **Capture credit balance** in Digital Wallet → record in `docs/manual-setup/burn-budget.md`. *(free)*
+1. **Assign Data Cloud permissions** to the builder (Setup Home → Assign Permissions). _(free)_
+2. **Capture credit balance** in Digital Wallet → record in `docs/manual-setup/burn-budget.md`. _(free)_
 3. **(Optional) Enrich the seed** — extend `scripts/seed_demo_data.apex` to 6 months of
-   `Meter_Reading__c` (Lena's EV evening spike, Müller steady, holiday dips). Apex = free. *(free)*
+   `Meter_Reading__c` (Lena's EV evening spike, Müller steady, holiday dips). Apex = free. _(free)_
 4. **Create targeted Salesforce CRM data streams** (free connector) for: Account, Contact,
    `Meter__c`, `Meter_Reading__c`, `Energy_Bill__c`, `Service_Contract__c`, `Tariff__c` — after
-   granting FLS (§3.3). Lands DLOs. *(free)*
+   granting FLS (§3.3). Lands DLOs. _(free)_
 5. **Map DLOs → DMOs:** Account/Contact → **Individual + Contact Point**; create custom
-   **`Energy Usage`** (from readings) and **`Billing`** (from bills) DMOs. *(free)*
+   **`Energy Usage`** (from readings) and **`Billing`** (from bills) DMOs. _(free)_
 6. **Identity Resolution** — one ruleset (exact email + fuzzy name/address), run **on-demand
-   once** on the tiny set → Unified Individual (validates ADR-005's Lena case). *(tiny → ~free)*
+   once** on the tiny set → Unified Individual (validates ADR-005's Lena case). _(tiny → ~free)_
 7. **Calculated Insights** (batch, manual refresh): `Avg_Monthly_kWh`,
-   `Consumption_Anomaly_Score` over the Energy Usage DMO. *(≈15 credits each, once)*
-8. **Validate via Query API** that the CI returns Lena's anomaly — *before* any agent wiring
-   (mock-first). *(≈free)*
+   `Consumption_Anomaly_Score` over the Energy Usage DMO. _(≈15 credits each, once)_
+8. **Validate via Query API** that the CI returns Lena's anomaly — _before_ any agent wiring
+   (mock-first). _(≈free)_
 9. **Capture as metadata** via a Data Kit into `force-app-datacloud/`; document the
-   Connection + Data Space in `docs/manual-setup/`. *(free)*
+   Connection + Data Space in `docs/manual-setup/`. _(free)_
 10. Hand the **Energy Usage / CI DMO to a Data 360 retriever** in Faz 5 when the agent is built
-    (ADR-007 figures-half). *(deferred)*
+    (ADR-007 figures-half). _(deferred)_
 
 > Net: Faz 2 can be done almost entirely on the **free Salesforce pipeline**, with the only real
 > credit spend being a handful of one-off batch CI runs and a single small identity-resolution

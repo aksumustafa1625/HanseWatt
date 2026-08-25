@@ -8,7 +8,7 @@
 A DACH energy customer agent must speak correctly and behave safely. Two concerns: the
 **linguistic register** (German formal "Sie", not "Du") and the **guardrail policy** (when
 the agent must refuse, mask, or escalate rather than answer). Note the build language is
-English ([ADR-019](ADR-019-build-language-english.md)); this ADR governs the *customer-facing*
+English ([ADR-019](ADR-019-build-language-english.md)); this ADR governs the _customer-facing_
 German layer added at localization time.
 
 ## Decision
@@ -36,9 +36,11 @@ guardrails must be kept in sync with the actions and the DSGVO process as they e
 ## Alternatives Considered
 
 ### Informal "Du"
+
 Rejected: wrong register for a German utility's customer service — reads as unprofessional.
 
 ### Soft guardrails (LLM discretion)
+
 Rejected: deletion/PII requests are too sensitive for model discretion — they must be hard-
 routed to a deterministic process.
 

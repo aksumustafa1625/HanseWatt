@@ -32,19 +32,19 @@ demonstrate. It deliberately complements rather than repeats them.
 
 ## 1. Project identity
 
-| Field | Value |
-|---|---|
-| **Project name** | HanseWatt |
-| **Fictional company** | HanseWatt GmbH — DACH energy retailer (Strom + Gas), HQ Hamburg |
-| **Type** | Salesforce DX portfolio project (not an ISV package) |
-| **Primary clouds** | Service Cloud + Agentforce + Data 360 (Data Cloud) |
-| **Supporting** | Einstein (Prompt Builder + Trust Layer), Experience Cloud (optional portal), MuleSoft (integration narrative) |
-| **UI architecture** | Standard Lightning + LWC where custom UI is needed (no OmniStudio) |
-| **API version** | 64.0 (confirm against the new org's default after signup) |
-| **Org type** | Developer Edition with Agentforce and Data 360 (free, non-expiring if used every 45 days) |
-| **Target market** | DACH (Germany / Austria / Switzerland) — energy + utilities |
-| **Language** | Agent + Knowledge in **German**; code/comments/docs in English |
-| **Goal** | Portfolio evidence for a Salesforce **Service Cloud + AI (Agentforce) + Data Cloud** role in DACH |
+| Field                 | Value                                                                                                         |
+| --------------------- | ------------------------------------------------------------------------------------------------------------- |
+| **Project name**      | HanseWatt                                                                                                     |
+| **Fictional company** | HanseWatt GmbH — DACH energy retailer (Strom + Gas), HQ Hamburg                                               |
+| **Type**              | Salesforce DX portfolio project (not an ISV package)                                                          |
+| **Primary clouds**    | Service Cloud + Agentforce + Data 360 (Data Cloud)                                                            |
+| **Supporting**        | Einstein (Prompt Builder + Trust Layer), Experience Cloud (optional portal), MuleSoft (integration narrative) |
+| **UI architecture**   | Standard Lightning + LWC where custom UI is needed (no OmniStudio)                                            |
+| **API version**       | 64.0 (confirm against the new org's default after signup)                                                     |
+| **Org type**          | Developer Edition with Agentforce and Data 360 (free, non-expiring if used every 45 days)                     |
+| **Target market**     | DACH (Germany / Austria / Switzerland) — energy + utilities                                                   |
+| **Language**          | Agent + Knowledge in **German**; code/comments/docs in English                                                |
+| **Goal**              | Portfolio evidence for a Salesforce **Service Cloud + AI (Agentforce) + Data Cloud** role in DACH             |
 
 ### Naming conventions
 
@@ -79,12 +79,12 @@ choice has business reasoning, governor-limit awareness, test coverage, and an A
 
 ### How it complements the existing portfolio
 
-| Project | Axis it proves | Cloud |
-|---|---|---|
-| **TechnoStore** | Quote-to-Cash, 8 integrations, MuleSoft, SAP | Revenue Cloud (RLM/CLM/CPQ) |
-| **Configra** | ISV / AppExchange, pure-LWC packaging | RLM (ISV) |
-| **Urla Shoes** | Multi-feature breadth, Einstein prompt templates | Platform + Einstein |
-| **HanseWatt (this)** | **Autonomous AI agents, unified data, service** | **Service + Agentforce + Data 360** |
+| Project              | Axis it proves                                   | Cloud                               |
+| -------------------- | ------------------------------------------------ | ----------------------------------- |
+| **TechnoStore**      | Quote-to-Cash, 8 integrations, MuleSoft, SAP     | Revenue Cloud (RLM/CLM/CPQ)         |
+| **Configra**         | ISV / AppExchange, pure-LWC packaging            | RLM (ISV)                           |
+| **Urla Shoes**       | Multi-feature breadth, Einstein prompt templates | Platform + Einstein                 |
+| **HanseWatt (this)** | **Autonomous AI agents, unified data, service**  | **Service + Agentforce + Data 360** |
 
 No overlap. Together they read as a senior generalist with a Revenue **and** Service +
 AI specialization — exactly the DACH enterprise profile.
@@ -103,21 +103,21 @@ inquiries — the classic case for an autonomous AI agent grounded in real consu
 
 ### Personas
 
-| Persona | Role | What they touch |
-|---|---|---|
-| **Lena (Kundin)** | Residential customer | Chats with the Agentforce agent (web + WhatsApp), reads bills, requests tariff change / Umzug (move) |
-| **Jonas (Service-Mitarbeiter)** | Contact-center agent | Picks up escalated Cases via Omni-Channel; uses an *employee* agent + Prompt Templates for case summaries |
-| **Petra (Teamleiterin)** | Service team lead | SLA dashboards, agent-deflection analytics |
-| **Admin / Architect (you)** | Builder | Designs the agent, Data 360 model, flows |
+| Persona                         | Role                 | What they touch                                                                                           |
+| ------------------------------- | -------------------- | --------------------------------------------------------------------------------------------------------- |
+| **Lena (Kundin)**               | Residential customer | Chats with the Agentforce agent (web + WhatsApp), reads bills, requests tariff change / Umzug (move)      |
+| **Jonas (Service-Mitarbeiter)** | Contact-center agent | Picks up escalated Cases via Omni-Channel; uses an _employee_ agent + Prompt Templates for case summaries |
+| **Petra (Teamleiterin)**        | Service team lead    | SLA dashboards, agent-deflection analytics                                                                |
+| **Admin / Architect (you)**     | Builder              | Designs the agent, Data 360 model, flows                                                                  |
 
 ### Demo accounts (DACH spread)
 
-| Account | City | Country | Segment | Story hook |
-|---|---|---|---|---|
-| Lena Bergmann | Hamburg | DE | Residential | Consumption spike (new EV charger) → "why is my bill high" |
-| Familie Huber | Wien | AT | Residential | Move-out (Umzug) request |
-| Müller Maschinenbau GmbH | Köln | DE | SME | High-usage SME, tariff renewal due |
-| Studio Alpina | Zürich | CH | Residential | Outage (Störung) inquiry + CHF billing |
+| Account                  | City    | Country | Segment     | Story hook                                                 |
+| ------------------------ | ------- | ------- | ----------- | ---------------------------------------------------------- |
+| Lena Bergmann            | Hamburg | DE      | Residential | Consumption spike (new EV charger) → "why is my bill high" |
+| Familie Huber            | Wien    | AT      | Residential | Move-out (Umzug) request                                   |
+| Müller Maschinenbau GmbH | Köln    | DE      | SME         | High-usage SME, tariff renewal due                         |
+| Studio Alpina            | Zürich  | CH      | Residential | Outage (Störung) inquiry + CHF billing                     |
 
 ---
 
@@ -161,9 +161,10 @@ Lena opens the HanseWatt web chat (German):
 ```
 
 **Three demo beats that sell it:**
+
 1. **Grounded, not hallucinated** — the agent's bill explanation is backed by a real
    Data 360 Calculated Insight + a cited Knowledge article (show the Trust Layer).
-2. **Autonomous action** — it doesn't just chat, it *creates records* (Case, tariff
+2. **Autonomous action** — it doesn't just chat, it _creates records_ (Case, tariff
    change) via Apex Actions, with proper escalation.
 3. **Closed loop** — service interactions feed Data 360, which proactively prevents the
    next complaint.
@@ -217,18 +218,18 @@ Data 360 → Segments drive proactive engagement. One closed loop.
 
 ## 6. Capability pillars
 
-| # | Pillar | What it proves |
-|---|---|---|
-| **P1** | Service Cloud core | Case lifecycle, Knowledge (DE), Omni-Channel, Entitlements/SLA |
-| **P2** | Data 360 ingestion & harmonization | Data Streams, DLO→DMO mapping, Ingestion API |
-| **P3** | Identity resolution & unified profile | Match/reconcile rules, Unified Individual |
-| **P4** | Calculated Insights & Segments | kWh trend, anomaly score, churn risk; segment activation |
-| **P5** | Agentforce agent | Topics, Actions, Instructions, grounding, testing |
-| **P6** | Einstein Prompt Templates + Trust Layer | Bill explanation, case summary; masking/grounding |
-| **P7** | Integration | MuleSoft / Ingestion API for meter + billing feeds |
-| **P8** | DSGVO / GDPR compliance | consent, RtbF, audit, data-residency narrative |
-| **P9** | Analytics | Agent deflection rate, SLA, CSAT dashboards |
-| **P10** | Documentation & demo | ADRs, diagrams, Notion STAR entries, recording |
+| #       | Pillar                                  | What it proves                                                 |
+| ------- | --------------------------------------- | -------------------------------------------------------------- |
+| **P1**  | Service Cloud core                      | Case lifecycle, Knowledge (DE), Omni-Channel, Entitlements/SLA |
+| **P2**  | Data 360 ingestion & harmonization      | Data Streams, DLO→DMO mapping, Ingestion API                   |
+| **P3**  | Identity resolution & unified profile   | Match/reconcile rules, Unified Individual                      |
+| **P4**  | Calculated Insights & Segments          | kWh trend, anomaly score, churn risk; segment activation       |
+| **P5**  | Agentforce agent                        | Topics, Actions, Instructions, grounding, testing              |
+| **P6**  | Einstein Prompt Templates + Trust Layer | Bill explanation, case summary; masking/grounding              |
+| **P7**  | Integration                             | MuleSoft / Ingestion API for meter + billing feeds             |
+| **P8**  | DSGVO / GDPR compliance                 | consent, RtbF, audit, data-residency narrative                 |
+| **P9**  | Analytics                               | Agent deflection rate, SLA, CSAT dashboards                    |
+| **P10** | Documentation & demo                    | ADRs, diagrams, Notion STAR entries, recording                 |
 
 ---
 
@@ -236,16 +237,16 @@ Data 360 → Segments drive proactive engagement. One closed loop.
 
 ### 7.1 Custom objects (Salesforce core)
 
-| Object | Purpose | Key fields |
-|---|---|---|
-| `Meter__c` | Smart meter device | `Serial__c`, `Type__c` (Strom/Gas), `Account__c`, `Location__c`, `Installed_On__c`, `External_Meter_Id__c` |
-| `Meter_Reading__c` | Periodic consumption (also flows via Data 360) | `Meter__c`, `Read_Date__c`, `kWh__c`, `Source__c` (Smart/Manual), `Is_Estimated__c` |
-| `Tariff__c` | Available tariffs/plans | `Name`, `Type__c` (Strom/Gas), `Price_per_kWh__c`, `Base_Fee__c`, `Green__c`, `Currency__c` |
-| `Service_Contract__c` | Customer's active tariff contract | `Account__c`, `Tariff__c`, `Start__c`, `End__c`, `Status__c`, `Meter__c` |
-| `Energy_Bill__c` | Monthly bill | `Account__c`, `Contract__c`, `Period_Start__c`, `Period_End__c`, `Amount__c`, `Consumption_kWh__c`, `Currency__c`, `Status__c` |
-| `Outage__c` | Network outage / Störung | `Region__c`, `Start__c`, `End__c`, `Status__c`, `Cause__c` |
+| Object                | Purpose                                        | Key fields                                                                                                                     |
+| --------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `Meter__c`            | Smart meter device                             | `Serial__c`, `Type__c` (Strom/Gas), `Account__c`, `Location__c`, `Installed_On__c`, `External_Meter_Id__c`                     |
+| `Meter_Reading__c`    | Periodic consumption (also flows via Data 360) | `Meter__c`, `Read_Date__c`, `kWh__c`, `Source__c` (Smart/Manual), `Is_Estimated__c`                                            |
+| `Tariff__c`           | Available tariffs/plans                        | `Name`, `Type__c` (Strom/Gas), `Price_per_kWh__c`, `Base_Fee__c`, `Green__c`, `Currency__c`                                    |
+| `Service_Contract__c` | Customer's active tariff contract              | `Account__c`, `Tariff__c`, `Start__c`, `End__c`, `Status__c`, `Meter__c`                                                       |
+| `Energy_Bill__c`      | Monthly bill                                   | `Account__c`, `Contract__c`, `Period_Start__c`, `Period_End__c`, `Amount__c`, `Consumption_kWh__c`, `Currency__c`, `Status__c` |
+| `Outage__c`           | Network outage / Störung                       | `Region__c`, `Start__c`, `End__c`, `Status__c`, `Cause__c`                                                                     |
 
-> Some of these (readings, bills) are *also* ingested into Data 360 from external systems;
+> Some of these (readings, bills) are _also_ ingested into Data 360 from external systems;
 > the SF custom objects hold the demo-local copy and the action-write targets. The ADRs
 > will document the "system of record" boundary per object.
 
@@ -278,16 +279,17 @@ Outage__c (region-scoped, linked to Account via region/address)
 
 ### 8.1 Data Streams (ingestion)
 
-| Stream | Source | Cadence | Lands in (DLO) |
-|---|---|---|---|
-| Smart-meter readings | External MDM (Ingestion API / MuleSoft) | hourly/daily batch | `HW_Meter_Reading__dll` |
-| Billing | SAP IS-U (simulated CSV/API) | monthly | `HW_Bill__dll` |
-| CRM (Account/Contact) | Salesforce connector | streaming | standard DLOs |
-| Engagement (chat/case) | Salesforce connector + Web SDK | streaming | standard DLOs |
+| Stream                 | Source                                  | Cadence            | Lands in (DLO)          |
+| ---------------------- | --------------------------------------- | ------------------ | ----------------------- |
+| Smart-meter readings   | External MDM (Ingestion API / MuleSoft) | hourly/daily batch | `HW_Meter_Reading__dll` |
+| Billing                | SAP IS-U (simulated CSV/API)            | monthly            | `HW_Bill__dll`          |
+| CRM (Account/Contact)  | Salesforce connector                    | streaming          | standard DLOs           |
+| Engagement (chat/case) | Salesforce connector + Web SDK          | streaming          | standard DLOs           |
 
 ### 8.2 Harmonization (DLO → DMO)
 
 Map raw DLOs onto Data 360 standard/custom **Data Model Objects**:
+
 - Individual / Contact Point (from Account/Contact)
 - `HW_Energy_Usage__dmo` (from meter readings)
 - `HW_Billing__dmo` (from bills)
@@ -303,21 +305,21 @@ Map raw DLOs onto Data 360 standard/custom **Data Model Objects**:
 
 ### 8.4 Calculated Insights (the agent's "evidence")
 
-| CI | Definition | Used by |
-|---|---|---|
-| `Avg_Monthly_kWh` | trailing 6-month mean per meter | anomaly explanation |
-| `Consumption_Anomaly_Score` | current vs avg, z-score style | "why is my bill high" |
-| `Time_of_Day_Profile` | day vs evening split | EV-charging hypothesis |
-| `Churn_Risk_Score` | complaints + price delta + tenure | proactive retention |
-| `Customer_Lifetime_Value` | cumulative billed | prioritization/routing |
+| CI                          | Definition                        | Used by                |
+| --------------------------- | --------------------------------- | ---------------------- |
+| `Avg_Monthly_kWh`           | trailing 6-month mean per meter   | anomaly explanation    |
+| `Consumption_Anomaly_Score` | current vs avg, z-score style     | "why is my bill high"  |
+| `Time_of_Day_Profile`       | day vs evening split              | EV-charging hypothesis |
+| `Churn_Risk_Score`          | complaints + price delta + tenure | proactive retention    |
+| `Customer_Lifetime_Value`   | cumulative billed                 | prioritization/routing |
 
 ### 8.5 Segments & Activation
 
-| Segment | Rule | Activation |
-|---|---|---|
+| Segment                  | Rule                                               | Activation                     |
+| ------------------------ | -------------------------------------------------- | ------------------------------ |
 | High-consumption anomaly | anomaly score > threshold, no tariff change in 30d | proactive email/journey (Flow) |
-| Renewal due | contract end within 45d | renewal outreach |
-| Churn risk | churn score high + recent complaint | route to retention queue |
+| Renewal due              | contract end within 45d                            | renewal outreach               |
+| Churn risk               | churn score high + recent complaint                | route to retention queue       |
 
 ---
 
@@ -334,28 +336,28 @@ Map raw DLOs onto Data 360 standard/custom **Data Model Objects**:
 
 ### 9.2 Topics
 
-| Topic | Scope | Sample utterance (DE) |
-|---|---|---|
-| Billing & Consumption | explain bills, usage, anomalies | "Warum ist meine Rechnung so hoch?" |
-| Tariff Change | compare + switch tariffs | "Gibt es einen günstigeren Tarif?" |
-| Move (Umzug) | start/stop service at address | "Ich ziehe um." |
-| Outage (Störung) | check outage status by region | "Bei mir ist der Strom weg." |
-| Contract & Renewal | terms, renewal, cancellation | "Wann läuft mein Vertrag aus?" |
+| Topic                  | Scope                           | Sample utterance (DE)                      |
+| ---------------------- | ------------------------------- | ------------------------------------------ |
+| Billing & Consumption  | explain bills, usage, anomalies | "Warum ist meine Rechnung so hoch?"        |
+| Tariff Change          | compare + switch tariffs        | "Gibt es einen günstigeren Tarif?"         |
+| Move (Umzug)           | start/stop service at address   | "Ich ziehe um."                            |
+| Outage (Störung)       | check outage status by region   | "Bei mir ist der Strom weg."               |
+| Contract & Renewal     | terms, renewal, cancellation    | "Wann läuft mein Vertrag aus?"             |
 | Complaint / Escalation | dissatisfaction → human handoff | "Ich will mit einem Mitarbeiter sprechen." |
 
 ### 9.3 Actions (Apex `@InvocableMethod` + Flow)
 
-| Action | Type | Reads / writes |
-|---|---|---|
-| `HWGetLatestBillAction` | Apex | reads `Energy_Bill__c` |
-| `HWExplainConsumptionAction` | Apex | reads Data 360 CI (anomaly + profile) |
-| `HWProposeTariffAction` | Apex | reads `Tariff__c`, ranks by usage |
-| `HWInitiateTariffChangeAction` | Apex | writes Case + `Service_Contract__c` change |
-| `HWCheckOutageAction` | Apex | reads `Outage__c` by region |
-| `HWStartMoveAction` | Flow | creates Move Case + tasks |
-| `HWCreateCaseAction` | Apex | creates SLA-bound Case (Entitlement) |
-| `HWEscalateToHumanAction` | Apex/Flow | sets Case for Omni-Channel routing |
-| `HWScheduleCallbackAction` | Flow | books a callback slot |
+| Action                         | Type      | Reads / writes                             |
+| ------------------------------ | --------- | ------------------------------------------ |
+| `HWGetLatestBillAction`        | Apex      | reads `Energy_Bill__c`                     |
+| `HWExplainConsumptionAction`   | Apex      | reads Data 360 CI (anomaly + profile)      |
+| `HWProposeTariffAction`        | Apex      | reads `Tariff__c`, ranks by usage          |
+| `HWInitiateTariffChangeAction` | Apex      | writes Case + `Service_Contract__c` change |
+| `HWCheckOutageAction`          | Apex      | reads `Outage__c` by region                |
+| `HWStartMoveAction`            | Flow      | creates Move Case + tasks                  |
+| `HWCreateCaseAction`           | Apex      | creates SLA-bound Case (Entitlement)       |
+| `HWEscalateToHumanAction`      | Apex/Flow | sets Case for Omni-Channel routing         |
+| `HWScheduleCallbackAction`     | Flow      | books a callback slot                      |
 
 > All Apex actions: `with sharing`, `WITH USER_MODE` on SOQL, `as user` on DML where the
 > running user is the customer/agent context; bulk-safe; no DML-in-loop; full test coverage.
@@ -364,7 +366,7 @@ Map raw DLOs onto Data 360 standard/custom **Data Model Objects**:
 
 - **Knowledge retriever** over German `Knowledge__kav` (data categories per topic).
 - **Data 360 retriever** over the unified profile + Calculated Insights.
-- Citations surfaced so the demo can show *where* an answer came from.
+- Citations surfaced so the demo can show _where_ an answer came from.
 
 ### 9.5 Instructions (guardrails)
 
@@ -397,11 +399,11 @@ Map raw DLOs onto Data 360 standard/custom **Data Model Objects**:
 
 ## 11. Einstein / Prompt Templates
 
-| Template | Type | Use |
-|---|---|---|
+| Template             | Type                   | Use                                                       |
+| -------------------- | ---------------------- | --------------------------------------------------------- |
 | `HW_BillExplanation` | Flex/Sales-email style | Drafts the German bill-anomaly explanation grounded in CI |
-| `HW_CaseSummary` | Record summary | German summary of chat + consumption for the rep |
-| `HW_KnowledgeDraft` | Field generation | Drafts/updates Knowledge articles from resolved cases |
+| `HW_CaseSummary`     | Record summary         | German summary of chat + consumption for the rep          |
+| `HW_KnowledgeDraft`  | Field generation       | Drafts/updates Knowledge articles from resolved cases     |
 
 All run through the **Trust Layer** (PII masking, toxicity, grounding, audit). Deployed as
 `GenAiPromptTemplate` metadata (reuse the lesson from Urla Shoes that prompt templates are
@@ -434,12 +436,12 @@ deployable).
 
 ## 14. Security model
 
-| Object | OWD | Notes |
-|---|---|---|
-| `Meter__c` / readings | Private/Controlled by Parent | customer-scoped |
-| `Energy_Bill__c` | Private | customer-scoped |
-| `Service_Contract__c` | Private | |
-| `Outage__c` | Public Read | non-personal network data |
+| Object                | OWD                          | Notes                     |
+| --------------------- | ---------------------------- | ------------------------- |
+| `Meter__c` / readings | Private/Controlled by Parent | customer-scoped           |
+| `Energy_Bill__c`      | Private                      | customer-scoped           |
+| `Service_Contract__c` | Private                      |                           |
+| `Outage__c`           | Public Read                  | non-personal network data |
 
 **Permission sets:** `HW_ServiceAgent`, `HW_Admin`, `HW_ReadOnly`, plus a guest/automated
 context for ingestion. All Apex `with sharing`; user-facing flows `WITH USER_MODE` + DML
@@ -479,20 +481,20 @@ HanseWatt/
 
 Each phase ships independently and ends in a committable, demoable state.
 
-| Phase | Theme | Deliverables | Exit criteria |
-|---|---|---|---|
-| **P0** | Org + foundations | Org signup, SFDX init, package dirs, CLAUDE.md, base perms | `sf` deploys; org reachable |
-| **P1** | Service Cloud core | Custom objects + fields, Case record types, German Knowledge, Omni-Channel, Entitlements | A Case routes + meets SLA end-to-end |
-| **P2** | Data 360 ingestion | Data Streams, DLOs, DMO mapping for meter + billing | External data visible in Data 360 |
-| **P3** | Identity + unified profile | Match/reconcile rules, Unified Individual | One unified profile across sources |
-| **P4** | Calculated Insights + Segments | CIs (avg/anomaly/churn), 2-3 segments + activation | CI values queryable; segment activates a flow |
-| **P5** | Agentforce agent | Agent + topics + Apex actions + grounding | Agent answers "why is my bill high" grounded |
-| **P6** | Prompt Templates + Trust Layer | HW_BillExplanation, HW_CaseSummary; masking/grounding shown | Templates run live under Trust Layer |
-| **P7** | Escalation + employee agent | EscalateToHuman → Omni-Channel → rep agent summary | Full hand-off demo works |
-| **P8** | Integration | Ingestion API / MuleSoft feed, outbound confirmations | Meter feed lands automatically |
-| **P9** | DSGVO | Consent + RtbF tool + agent guardrail | RtbF removes/anonymizes a subject |
-| **P10** | Analytics | Deflection / SLA / CSAT dashboards | Dashboard reads real demo data |
-| **P11** | Docs + recording | ADRs, diagrams, Notion STAR, ~10-min recording | Portfolio-ready |
+| Phase   | Theme                          | Deliverables                                                                             | Exit criteria                                 |
+| ------- | ------------------------------ | ---------------------------------------------------------------------------------------- | --------------------------------------------- |
+| **P0**  | Org + foundations              | Org signup, SFDX init, package dirs, CLAUDE.md, base perms                               | `sf` deploys; org reachable                   |
+| **P1**  | Service Cloud core             | Custom objects + fields, Case record types, German Knowledge, Omni-Channel, Entitlements | A Case routes + meets SLA end-to-end          |
+| **P2**  | Data 360 ingestion             | Data Streams, DLOs, DMO mapping for meter + billing                                      | External data visible in Data 360             |
+| **P3**  | Identity + unified profile     | Match/reconcile rules, Unified Individual                                                | One unified profile across sources            |
+| **P4**  | Calculated Insights + Segments | CIs (avg/anomaly/churn), 2-3 segments + activation                                       | CI values queryable; segment activates a flow |
+| **P5**  | Agentforce agent               | Agent + topics + Apex actions + grounding                                                | Agent answers "why is my bill high" grounded  |
+| **P6**  | Prompt Templates + Trust Layer | HW_BillExplanation, HW_CaseSummary; masking/grounding shown                              | Templates run live under Trust Layer          |
+| **P7**  | Escalation + employee agent    | EscalateToHuman → Omni-Channel → rep agent summary                                       | Full hand-off demo works                      |
+| **P8**  | Integration                    | Ingestion API / MuleSoft feed, outbound confirmations                                    | Meter feed lands automatically                |
+| **P9**  | DSGVO                          | Consent + RtbF tool + agent guardrail                                                    | RtbF removes/anonymizes a subject             |
+| **P10** | Analytics                      | Deflection / SLA / CSAT dashboards                                                       | Dashboard reads real demo data                |
+| **P11** | Docs + recording               | ADRs, diagrams, Notion STAR, ~10-min recording                                           | Portfolio-ready                               |
 
 **Suggested first working session after org is live:** P0 + start P1.
 
@@ -511,18 +513,18 @@ Each phase ships independently and ends in a committable, demoable state.
 
 ## 18. ADR catalogue (planned)
 
-| ADR | Decision |
-|---|---|
+| ADR | Decision                                                             |
+| --- | -------------------------------------------------------------------- |
 | 001 | Service + Agentforce + Data 360 scope (vs Field Service alternative) |
-| 002 | Agentforce Service Agent vs custom LLM/Apex orchestration |
-| 003 | Data 360 system-of-record boundary (which data lives where) |
-| 004 | Ingestion API vs MuleSoft vs Connector per feed |
-| 005 | Identity resolution match/reconcile rule design |
-| 006 | Apex `@InvocableMethod` actions vs Flow actions for the agent |
-| 007 | Grounding sources: Knowledge + Data 360 retriever split |
-| 008 | German-language + Trust Layer guardrail policy |
-| 009 | DSGVO RtbF across SF + Data 360 |
-| 010 | Multi-currency (EUR/CHF) handling for AT/CH accounts |
+| 002 | Agentforce Service Agent vs custom LLM/Apex orchestration            |
+| 003 | Data 360 system-of-record boundary (which data lives where)          |
+| 004 | Ingestion API vs MuleSoft vs Connector per feed                      |
+| 005 | Identity resolution match/reconcile rule design                      |
+| 006 | Apex `@InvocableMethod` actions vs Flow actions for the agent        |
+| 007 | Grounding sources: Knowledge + Data 360 retriever split              |
+| 008 | German-language + Trust Layer guardrail policy                       |
+| 009 | DSGVO RtbF across SF + Data 360                                      |
+| 010 | Multi-currency (EUR/CHF) handling for AT/CH accounts                 |
 
 (Michael Nygard format, immutable once accepted — same discipline as TechnoStore.)
 
@@ -531,6 +533,7 @@ Each phase ships independently and ends in a committable, demoable state.
 ## 19. Demo recording plan
 
 ~10-minute single narrative (section 4), recorded once P1–P7 are live:
+
 1. Customer asks in German → grounded answer (show Trust Layer citation).
 2. Autonomous action (tariff change creates records).
 3. Escalation → Omni-Channel → rep agent case summary.
@@ -541,9 +544,9 @@ Each phase ships independently and ends in a committable, demoable state.
 
 ## 20. Portfolio positioning / interview talking points
 
-- *"I built an autonomous Agentforce service agent grounded in Data 360 — it explains
+- _"I built an autonomous Agentforce service agent grounded in Data 360 — it explains
   bills from real calculated insights, acts on records, and escalates safely under the
-  Trust Layer, all GDPR-compliant and in German."*
+  Trust Layer, all GDPR-compliant and in German."_
 - Talk tracks ready: agent topic/action design; Data 360 identity resolution; CI vs
   segment; grounding & hallucination control; SLA/Omni-Channel; DSGVO RtbF across systems.
 - Publishes as Notion STAR entries + ADRs + diagrams (reuse TechnoStore's documentation
@@ -563,21 +566,21 @@ Each phase ships independently and ends in a committable, demoable state.
 
 ## 22. Glossary
 
-| Term | Meaning |
-|---|---|
-| Data 360 | New name for Salesforce Data Cloud |
-| DLO / DMO | Data Lake Object / Data Model Object (Data 360 ingest vs harmonized layer) |
-| CI | Calculated Insight (Data 360 aggregate metric) |
-| Identity Resolution | Unifying records from many sources into one profile |
-| Topic / Action | Agentforce units: what the agent can discuss / what it can do |
-| Grounding | Feeding the LLM real, cited data (Knowledge + Data 360) |
-| Trust Layer | Einstein's masking / grounding / toxicity / audit guardrails |
-| Energieversorger | German for energy retailer/utility |
-| Störung / Umzug | Outage / Move (house) — common service topics |
-| DSGVO | German GDPR |
+| Term                | Meaning                                                                    |
+| ------------------- | -------------------------------------------------------------------------- |
+| Data 360            | New name for Salesforce Data Cloud                                         |
+| DLO / DMO           | Data Lake Object / Data Model Object (Data 360 ingest vs harmonized layer) |
+| CI                  | Calculated Insight (Data 360 aggregate metric)                             |
+| Identity Resolution | Unifying records from many sources into one profile                        |
+| Topic / Action      | Agentforce units: what the agent can discuss / what it can do              |
+| Grounding           | Feeding the LLM real, cited data (Knowledge + Data 360)                    |
+| Trust Layer         | Einstein's masking / grounding / toxicity / audit guardrails               |
+| Energieversorger    | German for energy retailer/utility                                         |
+| Störung / Umzug     | Outage / Move (house) — common service topics                              |
+| DSGVO               | German GDPR                                                                |
 
 ---
 
-*Draft v0.1 — to be split into CLAUDE.md + README + ADRs once the org is live and P0/P1
+_Draft v0.1 — to be split into CLAUDE.md + README + ADRs once the org is live and P0/P1
 ship. Honest-framing rule inherited from TechnoStore: external systems may be simulated;
-the Salesforce code paths and agent are real.*
+the Salesforce code paths and agent are real._

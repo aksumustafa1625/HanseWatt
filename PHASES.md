@@ -44,6 +44,7 @@ bittiğinde reset beklersin. Aşağıdaki 7 kural her fazda uygulanır:
 **Amaç:** Org'a bağlan, repo iskeletini kur, gerçek limitleri doğrula.
 
 **Adımlar:**
+
 1. Kayıt e-postası gelince org'u bağla: `sf org login web --alias hansewatt`
 2. `sfdx-project.json` + paket dizinleri oluştur (force-app, -services, -actions, -handlers, -agent, -datacloud, -lwc, -tests)
 3. `docs/` alt klasörleri: `adr/`, `architecture/`, `manual-setup/`, `security/`, `eval/`
@@ -72,6 +73,7 @@ Digital Wallet'tan 3 kota sayısı yazılmış (sert gate — bu olmadan P1 baş
 **Amaç:** Bir Case'in açılıp yönlendirildiği ve SLA'yı karşıladığı çalışan bir servis tabanı.
 
 **Adımlar:**
+
 1. Custom objeler + alanlar: `Meter__c`, `Meter_Reading__c`, `Tariff__c`, `Service_Contract__c`, `Energy_Bill__c`, `Outage__c`, `Consent__c`
 2. `Case` record type'ları: Billing / Consumption / Move / Outage / Complaint + Almanca support process
 3. German Knowledge: 10 makale (data category'ler agent topic'leriyle eşleşsin)
@@ -90,6 +92,7 @@ Digital Wallet'tan 3 kota sayısı yazılmış (sert gate — bu olmadan P1 baş
 **Amaç:** Harici sayaç + fatura verisini Data 360'a aldır.
 
 **Adımlar:**
+
 1. Synthetic meter feed script'i: 3-6 aylık gerçekçi okuma üret (EV akşam piki, Wärmepumpe, tatil düşük, estimated/gaps)
 2. Data Streams: `HW_MeterReadings` (Ingestion API), `HW_Billing` (SAP IS-U simüle CSV/API)
 3. Salesforce CRM connector + Engagement (chat/case) stream
@@ -107,6 +110,7 @@ Digital Wallet'tan 3 kota sayısı yazılmış (sert gate — bu olmadan P1 baş
 **Amaç:** Dağınık kaynaklardan tek birleşik müşteri profili.
 
 **Adımlar:**
+
 1. DLO → DMO mapping: `HW_Energy_Usage__dmo`, `HW_Billing__dmo`, Individual, Engagement
 2. Match rules: email + fuzzy name/address + external meter/billing id
 3. Reconciliation: contact için most-recent-wins, billing id için source-priority
@@ -123,6 +127,7 @@ Digital Wallet'tan 3 kota sayısı yazılmış (sert gate — bu olmadan P1 baş
 **Amaç:** Agent'ın "kanıtı" olan metrikler + canlı tüketim grafiği.
 
 **Adımlar:**
+
 1. CI'lar: `Avg_Monthly_kWh`, `Consumption_Anomaly_Score`, `Time_of_Day_Profile`
 2. `hwConsumptionChart` LWC (Chart.js): 6 ay ortalama + bu ay + akşam 18-22 spike, anomali/EV annotation
 3. Grafiği Account/Contact record sayfasına yerleştir, Data 360 CI'dan besle
@@ -138,6 +143,7 @@ Digital Wallet'tan 3 kota sayısı yazılmış (sert gate — bu olmadan P1 baş
 **Amaç:** "Faturam neden yüksek?" sorusuna grounded, citation'lı cevap.
 
 **Adımlar:**
+
 1. `HW_Service_Agent` oluştur; topic: Billing & Consumption
 2. Apex Action'lar: `HWGetLatestBillAction`, `HWExplainConsumptionAction`, `HWCreateCaseAction`
    - Kod standardı: `with sharing`, SOQL `WITH USER_MODE`, DML `as user`, bulk-safe, ≥80% test
@@ -158,6 +164,7 @@ Digital Wallet'tan 3 kota sayısı yazılmış (sert gate — bu olmadan P1 baş
 **Amaç:** LLM yazımı + güvenlik katmanı görünür.
 
 **Adımlar:**
+
 1. `GenAiPromptTemplate`: `HW_BillExplanation` (Almanca anomali açıklaması), `HW_CaseSummary` (rep özeti)
 2. Trust Layer: PII masking + grounding + toxicity'yi test et ve screenshot'la (örn. maskeli IBAN logu)
 
@@ -171,6 +178,7 @@ Digital Wallet'tan 3 kota sayısı yazılmış (sert gate — bu olmadan P1 baş
 **Amaç:** Çözemezse insana temiz devir + otomatik özet.
 
 **Adımlar:**
+
 1. Action'lar: `HWProposeTariffAction`, `HWInitiateTariffChangeAction`, `HWEscalateToHumanAction`
 2. `HW_Employee_Agent` (Jonas): topic CaseSummary + NextBestAction
 3. Escalation → Omni-Channel → Jonas Case açınca otomatik Almanca `HW_CaseSummary`
@@ -187,6 +195,7 @@ Digital Wallet'tan 3 kota sayısı yazılmış (sert gate — bu olmadan P1 baş
 **Amaç:** Çekirdeği kaydet; tek başına portföye değer.
 
 **Adımlar (3 perde, ~5 dk):**
+
 1. Perde 1: Lena'nın fatura şoku + grafik
 2. Perde 2: Grounded cevap (citation) + otonom tarife değişikliği
 3. Perde 3: Escalation → Jonas özeti
@@ -201,6 +210,7 @@ Digital Wallet'tan 3 kota sayısı yazılmış (sert gate — bu olmadan P1 baş
 **Amaç:** Sistem bir sonraki şikayeti oluşmadan önler.
 
 **Adımlar:**
+
 1. Segment: `High_Consumption_Anomaly_No_TariffChange_30d`
 2. Activation Flow: fatura kesilmeden 5 gün önce Almanca email ("62% mehr → EV-Tarif prüfen?")
 3. **E7 — Event-driven backbone:** Platform Events (anomaly/outage/escalation)
@@ -216,6 +226,7 @@ Digital Wallet'tan 3 kota sayısı yazılmış (sert gate — bu olmadan P1 baş
 **Amaç:** Compliance'ı kağıt değil, gerçek otomasyon yap.
 
 **Adımlar:**
+
 1. `Consent__c` + consent capture
 2. `hwComplianceActions` LWC butonu: "DSGVO Löschung"
 3. Akış: Account/Contact anonymize → Data 360 Delete API → Platform Event audit log
@@ -231,6 +242,7 @@ Digital Wallet'tan 3 kota sayısı yazılmış (sert gate — bu olmadan P1 baş
 **Amaç:** "Ben agent'ın kalitesini ölçen sistem kurdum" diyebilmek.
 
 **Adımlar:**
+
 1. `HW_Agent_Eval_Result__c` objesi (rubric alanları: grounding/hallucination/correct-action/trust/tone/escalation)
 2. `HW_AgentJudge` prompt template (ikinci LLM, rubric'e göre puanlar)
 3. `HWAgentEvalService`: utterance suite → agent → judge → result rows
@@ -238,6 +250,7 @@ Digital Wallet'tan 3 kota sayısı yazılmış (sert gate — bu olmadan P1 baş
 5. Regresyon: agent değişince yeniden çalıştır → ADR-012
 
 > ⚠️ **Kota uyarısı (en pahalı faz) — "bir kez"in gerçekten bir kez kalması için sıralama:**
+>
 > - **Önce agent'ı dondur.** Eval'i, agent'ın instruction/guardrail'lerini stabilize
 >   ettikten ("artık dokunmuyorum" dedikten) SONRA çalıştır. Aksi halde her agent ayarında
 >   "bir kez"i tekrar tekrar harcarsın.
@@ -257,6 +270,7 @@ Digital Wallet'tan 3 kota sayısı yazılmış (sert gate — bu olmadan P1 baş
 **Amaç:** Enerji + kişisel veri bağlamında güvenlik olgunluğu.
 
 **Adımlar:**
+
 1. `docs/security/red-team-suite.md`: ≥8 saldırı (DE + EN): prompt injection, komşunun faturası, "faturamı sıfırla", veri silme social engineering, toxicity, off-topic, cross-customer lookup, hallucination bait
 2. Her saldırı: beklenen red/escalation + gerçek + verdict (eval objesinde `Is_Adversarial__c=true`)
 3. Trust Layer PII masking kanıtı (transcript + screenshot) → ADR-013
@@ -271,6 +285,7 @@ Digital Wallet'tan 3 kota sayısı yazılmış (sert gate — bu olmadan P1 baş
 **Amaç:** DACH ESG + iş değeri + "her havada uçan" sistem.
 
 **Adımlar:**
+
 1. **E3:** `CO2_Estimate_kg` + `Peer_Comparison_Score` CI'ları (postcode-bucket, GDPR-safe)
 2. **E6:** `hwRoiDashboard` — deflection % → € tasarruf, churn ↓
 3. **E8:** graceful degradation — CI yoksa agent fallback path (VF/karar ağacı)
@@ -285,6 +300,7 @@ Digital Wallet'tan 3 kota sayısı yazılmış (sert gate — bu olmadan P1 baş
 **Amaç:** Aynı agent web + WhatsApp; context korunur (identity resolution kanıtı).
 
 **Adımlar:**
+
 1. TechnoStore Twilio inbound'ı uyarla
 2. Lena web'den başlar, WhatsApp'tan devam eder, agent context'i korur (Messaging Session → Unified Individual)
 
@@ -298,6 +314,7 @@ Digital Wallet'tan 3 kota sayısı yazılmış (sert gate — bu olmadan P1 baş
 **Amaç:** TechnoStore dokümantasyon kalitesini yakala.
 
 **Adımlar:**
+
 1. ADR'lar (001-016), 6 Mermaid diagram
 2. ~30 STAR Notion entry (bilingual DE/EN)
 3. İki demo: 10 dk (tam) + 90 sn (LinkedIn hook), split-screen (müşteri sol / Salesforce sağ)
@@ -311,27 +328,27 @@ Digital Wallet'tan 3 kota sayısı yazılmış (sert gate — bu olmadan P1 baş
 
 ## Özet tablo
 
-| Faz | Tema | Grup |
-|---|---|---|
-| 0 | Org + temel | Çekirdek |
-| 1 | Service Cloud çekirdeği | Çekirdek |
-| 2 | Data 360 ingestion | Çekirdek |
-| 3 | Identity resolution | Çekirdek |
-| 4 | CI + grafik | Çekirdek |
-| 5 | Agent v1 (grounded) | Çekirdek |
-| 6 | Prompt templates + Trust Layer | Çekirdek |
-| 7 | Escalation + Jonas agent | Çekirdek |
-| 🎬 | **Minimum Wow Demo kaydı** | **GATE** |
-| 8 | Closed loop (proaktif) | İkinci dalga |
-| 9 | DSGVO RtbF | İkinci dalga |
-| 10 | Agent Eval framework | İkinci dalga ⭐ |
-| 11 | Red-team showcase | İkinci dalga ⭐ |
-| 12 | Sustainability + ROI | İkinci dalga |
-| 13 | Multi-channel WhatsApp | İkinci dalga |
-| 14 | Docs + kayıtlar | Cila |
+| Faz | Tema                           | Grup            |
+| --- | ------------------------------ | --------------- |
+| 0   | Org + temel                    | Çekirdek        |
+| 1   | Service Cloud çekirdeği        | Çekirdek        |
+| 2   | Data 360 ingestion             | Çekirdek        |
+| 3   | Identity resolution            | Çekirdek        |
+| 4   | CI + grafik                    | Çekirdek        |
+| 5   | Agent v1 (grounded)            | Çekirdek        |
+| 6   | Prompt templates + Trust Layer | Çekirdek        |
+| 7   | Escalation + Jonas agent       | Çekirdek        |
+| 🎬  | **Minimum Wow Demo kaydı**     | **GATE**        |
+| 8   | Closed loop (proaktif)         | İkinci dalga    |
+| 9   | DSGVO RtbF                     | İkinci dalga    |
+| 10  | Agent Eval framework           | İkinci dalga ⭐ |
+| 11  | Red-team showcase              | İkinci dalga ⭐ |
+| 12  | Sustainability + ROI           | İkinci dalga    |
+| 13  | Multi-channel WhatsApp         | İkinci dalga    |
+| 14  | Docs + kayıtlar                | Cila            |
 
 ⭐ = manşet farklılaştırıcılar (çok az adayda var)
 
 ---
 
-*15 faz (P0-P14). İlk 8 (P0-P7) + GATE = Minimum Wow Demo. Org gelince P0 ile başlıyoruz.*
+_15 faz (P0-P14). İlk 8 (P0-P7) + GATE = Minimum Wow Demo. Org gelince P0 ile başlıyoruz._

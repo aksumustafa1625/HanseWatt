@@ -31,10 +31,12 @@ owner); multi-currency adds a CurrencyIsoCode dimension to reports and roll-ups.
 ## Alternatives Considered
 
 ### Single currency (EUR) + manual CHF note
+
 Rejected: not credible for a CH customer; loses the DACH-breadth signal.
 
 ### Advanced Currency Management (dated exchange rates)
-Rejected: ACM is **Opportunity/revenue-oriented** (HanseWatt is a *service* project, no
+
+Rejected: ACM is **Opportunity/revenue-oriented** (HanseWatt is a _service_ project, no
 Opportunities), adds complexity, disables some currency roll-up summaries, and is hard to
 reverse. Our service objects need no historical dated rates.
 

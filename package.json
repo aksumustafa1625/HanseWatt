@@ -4,8 +4,8 @@
   "private": true,
   "description": "HanseWatt — Agentforce Service Cloud + Data 360 (DACH Energy) portfolio project",
   "scripts": {
-    "lint": "eslint **/lwc/**/*.js",
-    "test": "sfdx-lwc-jest",
+    "lint": "eslint --no-error-on-unmatched-pattern **/lwc/**/*.js",
+    "test": "sfdx-lwc-jest --passWithNoTests",
     "prettier": "prettier --write \"**/*.{cls,trigger,js,html,css,json,md,xml}\"",
     "prettier:verify": "prettier --check \"**/*.{cls,trigger,js,html,css,json,md,xml}\""
   },

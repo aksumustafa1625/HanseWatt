@@ -28,13 +28,13 @@ which blocks the whole flow.
 
 ## 2. Environment
 
-| | |
-|---|---|
-| Org alias | `hansewatt` |
-| Edition | **Developer Edition with Agentforce + Data 360** |
-| Instance | `your-org.develop.my.salesforce.com` |
-| API version | **67.0** |
-| Org ID | `00Dxx0000000000XXX` (instance CAN96) |
+|             |                                                  |
+| ----------- | ------------------------------------------------ |
+| Org alias   | `hansewatt`                                      |
+| Edition     | **Developer Edition with Agentforce + Data 360** |
+| Instance    | `your-org.develop.my.salesforce.com`             |
+| API version | **67.0**                                         |
+| Org ID      | `00Dxx0000000000XXX` (instance CAN96)            |
 
 ## 3. What is already built & verified (works fine)
 
@@ -57,13 +57,13 @@ So entitlements/milestones are clearly **functional at the metadata layer**.
 
 Every access path agrees the field is absent from the **active** Case schema:
 
-| Probe | Result |
-|---|---|
-| Apex constructor `new Case(EntitlementId = x)` | **compile error**: `Field does not exist: EntitlementId on Case` |
-| Apex dynamic `c.put('EntitlementId', x)` | **runtime**: `System.SObjectException: Invalid field EntitlementId for Case` |
-| SOQL `SELECT EntitlementId FROM Case LIMIT 1` | `No such column 'EntitlementId' on entity 'Case'` |
-| Apex `Case.SObjectType.getDescribe().fields.getMap()` | does **not** contain `entitlementid` (only custom `slaviolation__c`) |
-| `sf sobject describe --sobject Case` | only `SLAViolation__c` matches `Entitlement\|Sla\|Milestone` |
+| Probe                                                 | Result                                                                       |
+| ----------------------------------------------------- | ---------------------------------------------------------------------------- |
+| Apex constructor `new Case(EntitlementId = x)`        | **compile error**: `Field does not exist: EntitlementId on Case`             |
+| Apex dynamic `c.put('EntitlementId', x)`              | **runtime**: `System.SObjectException: Invalid field EntitlementId for Case` |
+| SOQL `SELECT EntitlementId FROM Case LIMIT 1`         | `No such column 'EntitlementId' on entity 'Case'`                            |
+| Apex `Case.SObjectType.getDescribe().fields.getMap()` | does **not** contain `entitlementid` (only custom `slaviolation__c`)         |
+| `sf sobject describe --sobject Case`                  | only `SLAViolation__c` matches `Entitlement\|Sla\|Milestone`                 |
 
 **The contradiction:** Tooling API **does** report the field as existing:
 
@@ -129,7 +129,7 @@ the object.
 
 ## 8. Current hypotheses (need confirmation)
 
-- **(H1)** This Developer Edition *flavor* (Agentforce + Data 360) does not **provision the
+- **(H1)** This Developer Edition _flavor_ (Agentforce + Data 360) does not **provision the
   standard Case entitlement lookup fields** (`EntitlementId`, `SlaStartDate`, `SlaExitDate`,
   `MilestoneStatus`, `SlaExitDate`) even though the feature toggle reports enabled — a
   platform/edition limitation.
@@ -155,7 +155,7 @@ the object.
 4. Is the Case Entitlement lookup gated behind a **license or permission** (e.g. an Entitlement
    / Service Cloud feature license) that is not active in this org?
 5. Is there a way to **deploy `enableEntitlements=false` reliably** (e.g. MDAPI `deploy
-   --metadata-dir`, or `--ignore-conflicts`) when `sf project deploy start --source-dir`
+--metadata-dir`, or `--ignore-conflicts`) when `sf project deploy start --source-dir`
    reports `NothingToDeploy`?
 6. **Workaround:** can we demonstrate Milestones/SLA **without** `Case.EntitlementId` in this
    org (e.g. milestones on a different supported object, or asserting the milestone
@@ -204,7 +204,7 @@ confirmed the rest is a platform limit:
    fields even from `fields.getMap()`. **Fixed** (set to `true`).
 2. With the license fixed, we ran the **full clean re-provision** the experts prescribed:
    deleted the `Entitlement` record → deleted the `EntitlementProcess` from the org →
-   **disabled** Entitlement Management → **re-enabled** it, via *both* metadata deploy *and*
+   **disabled** Entitlement Management → **re-enabled** it, via _both_ metadata deploy _and_
    the **Setup UI toggle** (the UI action normally triggers the async field-provisioning job).
 
 **Outcome:** `Case.EntitlementId` **still did not materialize** — confirmed by the relationship

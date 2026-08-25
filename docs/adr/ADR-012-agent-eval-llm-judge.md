@@ -5,7 +5,7 @@
 
 ## Context
 
-Almost no portfolio agent is *measured*. "I built an agent" is common; "I built a system
+Almost no portfolio agent is _measured_. "I built an agent" is common; "I built a system
 that scores my agent's quality and catches regressions" is rare and senior. The challenge is
 doing it without burning the Flex-Credit budget on endless live runs.
 
@@ -32,14 +32,17 @@ scorecard; the artifact (result rows) is what's shown, not a live run; reusable 
 red-team pass ([ADR-013](ADR-013-adversarial-red-team-policy.md)).
 
 **Negative / Trade-offs:** an LLM judge is itself imperfect (mitigated by an explicit rubric
-+ small, curated suite); each full run costs credits, so it is run **once** after freeze.
+
+- small, curated suite); each full run costs credits, so it is run **once** after freeze.
 
 ## Alternatives Considered
 
 ### Manual spot-checking
+
 Rejected: not reproducible, not a regression guard, weak portfolio evidence.
 
 ### Large automated suite on a schedule
+
 Rejected: burns the credit budget for marginal coverage; an 8–10 case curated suite run once
 is the disciplined choice.
 

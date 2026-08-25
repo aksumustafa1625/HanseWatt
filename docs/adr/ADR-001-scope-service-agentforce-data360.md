@@ -6,9 +6,10 @@
 ## Context
 
 The portfolio already proves the **sell** side (TechnoStore: Revenue Cloud / Quote-to-Cash
-+ 8 integrations) and ISV packaging (Configra: RLM unlocked package). The gap is the 2026
-DACH-hottest **serve + AI + data** stack: Agentforce (autonomous agents) and Data 360
-(Data Cloud), neither demonstrated elsewhere.
+
+- 8 integrations) and ISV packaging (Configra: RLM unlocked package). The gap is the 2026
+  DACH-hottest **serve + AI + data** stack: Agentforce (autonomous agents) and Data 360
+  (Data Cloud), neither demonstrated elsewhere.
 
 We need a scenario that (a) generates rich, real data for an agent to ground on, (b) is
 credible in the DACH market, and (c) showcases Service Cloud, Agentforce, and Data 360 in

@@ -1,19 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <BusinessProcess xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>HW_Support_Process</fullName>
-    <description>HanseWatt service support process — shared Case status path for all HW record types.</description>
-    <isActive>true</isActive>
-    <values>
-        <fullName>New</fullName>
-        <default>true</default>
-    </values>
-    <values>
-        <fullName>Working</fullName>
-    </values>
-    <values>
-        <fullName>Escalated</fullName>
-    </values>
-    <values>
-        <fullName>Closed</fullName>
-    </values>
+  <fullName>HW_Support_Process</fullName>
+  <description>
+    HanseWatt service support process — shared Case status path for all HW
+    record types.
+  </description>
+  <isActive>true</isActive>
+  <values>
+    <fullName>New</fullName>
+    <default>true</default>
+  </values>
+  <values>
+    <fullName>Working</fullName>
+  </values>
+  <values>
+    <fullName>Escalated</fullName>
+  </values>
+  <values>
+    <fullName>Closed</fullName>
+  </values>
 </BusinessProcess>
