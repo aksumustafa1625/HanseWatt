@@ -6,13 +6,13 @@
 
 ## What exists in the org
 
-| Layer | Item | How it was made | Source-controlled? |
-|---|---|---|---|
-| Provisioning | Data Cloud instance (1 Data Space `default`, tenant endpoint) | auto-provisioned ("Get Started" already done) | ❌ click-only |
-| Connection | `Home` — Salesforce CRM home-org connector (Active) | auto / UI | ❌ click-only |
-| Data Streams | `Account_Home`, `Meter_c_Home`, `Meter_Reading_c_Home`, `Energy_Bill_c_Home` | UI wizard (Salesforce CRM, free pipeline) | ✅ `force-app-datacloud/.../dataStreamDefinitions/` |
-| DLOs | `Account_Home__dll`, `Meter_c_Home__dll`, `Meter_Reading_c_Home__dll`, `Energy_Bill_c_Home__dll` | auto-created by the streams | ❌ (not retrievable in this Dev Edition) |
-| Categories | Account = **Profile**; Meter/Meter_Reading/Energy_Bill = **Other** | set in the stream wizard (irreversible) | (captured in stream def) |
+| Layer        | Item                                                                                             | How it was made                               | Source-controlled?                                  |
+| ------------ | ------------------------------------------------------------------------------------------------ | --------------------------------------------- | --------------------------------------------------- |
+| Provisioning | Data Cloud instance (1 Data Space `default`, tenant endpoint)                                    | auto-provisioned ("Get Started" already done) | ❌ click-only                                       |
+| Connection   | `Home` — Salesforce CRM home-org connector (Active)                                              | auto / UI                                     | ❌ click-only                                       |
+| Data Streams | `Account_Home`, `Meter_c_Home`, `Meter_Reading_c_Home`, `Energy_Bill_c_Home`                     | UI wizard (Salesforce CRM, free pipeline)     | ✅ `force-app-datacloud/.../dataStreamDefinitions/` |
+| DLOs         | `Account_Home__dll`, `Meter_c_Home__dll`, `Meter_Reading_c_Home__dll`, `Energy_Bill_c_Home__dll` | auto-created by the streams                   | ❌ (not retrievable in this Dev Edition)            |
+| Categories   | Account = **Profile**; Meter/Meter_Reading/Energy_Bill = **Other**                               | set in the stream wizard (irreversible)       | (captured in stream def)                            |
 
 Ingested record counts (verified): Account **17** (4 DACH demo + 13 pre-existing org accounts),
 Meter **4**, Meter_Reading **24**, Energy_Bill **4**. **Zero credits** — Salesforce CRM
@@ -36,12 +36,12 @@ POST {instanceUrl}/services/data/v64.0/ssot/queryv2   body: {"sql": "<SQL>"}
 **Validated result (2026-06-29)** — per-meter latest vs trailing-average anomaly, queried
 live from the Data 360 Meter Reading DLO:
 
-| Meter | Latest kWh | Avg prior | Anomaly |
-|---|---|---|---|
-| Huber (Wien) | 200 | 204 | −2% |
-| Alpina (Zürich) | 165 | 164.6 | +0.2% |
-| Müller (Köln, SME) | 4800 | 4754 | +1% |
-| **Lena (Hamburg)** | **520** | **316** | **+64.6%** |
+| Meter              | Latest kWh | Avg prior | Anomaly    |
+| ------------------ | ---------- | --------- | ---------- |
+| Huber (Wien)       | 200        | 204       | −2%        |
+| Alpina (Zürich)    | 165        | 164.6     | +0.2%      |
+| Müller (Köln, SME) | 4800       | 4754      | +1%        |
+| **Lena (Hamburg)** | **520**    | **316**   | **+64.6%** |
 
 Lena's **+64.6%** is the demo's anomaly (blueprint said "~62%"). The data lives in Data 360,
 the computation runs in Data 360 — proven via CLI, zero UI.

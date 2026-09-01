@@ -43,10 +43,12 @@ gracefully. Binds normally in a Service Cloud Enterprise/Developer org. Full dia
 ## Alternatives Considered
 
 ### Case escalation rules instead of Entitlements
+
 Rejected: weaker SLA modelling, no milestone clock, less aligned to the Service Cloud
 job-spec vocabulary recruiters expect.
 
 ### Skills-based routing in Faz 1
+
 Deferred: real value later (language + topic skills are defined), but queue routing is the
 minimal path to the gate; skills-based routing is a Faz 7 enhancement.
 

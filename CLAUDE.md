@@ -7,8 +7,8 @@ bills, takes action, and escalates safely under the Einstein Trust Layer, GDPR/D
 compliant. The "serve + AI" complement to TechnoStore's "sell" (Revenue Cloud) portfolio.
 
 > **Honest framing (inherited from TechnoStore):** external systems (smart-meter MDM, SAP
-> IS-U billing) are *simulated*; the Salesforce code paths, the agent, the Data 360 model,
-> and grounding are *real*.
+> IS-U billing) are _simulated_; the Salesforce code paths, the agent, the Data 360 model,
+> and grounding are _real_.
 
 ## Build language — READ FIRST
 
@@ -21,12 +21,12 @@ controlled localization step at the end**, paired with English glosses. See
 
 ## Org
 
-| Field | Value |
-|---|---|
-| Alias | `hansewatt` |
-| Username | _(local `sf` auth — not committed)_ |
-| Instance | _(personal Dev Edition — not committed)_ |
-| Edition / API | Developer Edition (Agentforce + Data 360) · **API 67.0** |
+| Field             | Value                                                       |
+| ----------------- | ----------------------------------------------------------- |
+| Alias             | `hansewatt`                                                 |
+| Username          | _(local `sf` auth — not committed)_                         |
+| Instance          | _(personal Dev Edition — not committed)_                    |
+| Edition / API     | Developer Edition (Agentforce + Data 360) · **API 67.0**    |
 | Locale / Currency | English (US) UI · **multi-currency: EUR (corporate) + CHF** |
 
 Single build org. **Never touch the TechnoStore / Configra orgs.**
@@ -118,16 +118,16 @@ live SLA gate test awaits an org schema-cache refresh.
 
 ### What's in the org
 
-| Area | Components | ADR |
-|------|-----------|-----|
-| **Data model** | 7 objects + 37 fields: `Meter__c`, `Meter_Reading__c`, `Tariff__c`, `Service_Contract__c`, `Energy_Bill__c`, `Outage__c`, `Consent__c` + `Case.HW_Topic__c` | — |
-| **Case record types** | Billing / Consumption / Move / Outage / Complaint on shared `HW_Support_Process` | [017](docs/adr/ADR-017-sla-entitlement-omnichannel-routing.md) |
-| **Omni-Channel** | `HW_Case_Channel`, `HW_Escalations` queue, `HW_Case_Routing` (LEAST_ACTIVE, cap 1), Available/Busy presence, `HW_German` + `HW_Billing` skills | [017](docs/adr/ADR-017-sla-entitlement-omnichannel-routing.md) |
-| **SLA** | `HW_Standard_SLA` entitlement process (exit on `IsClosed`) + `HW_First_Response` (4h) + `HW_Resolution` (2 business days) milestones | [017](docs/adr/ADR-017-sla-entitlement-omnichannel-routing.md) |
-| **Knowledge** | `HanseWatt_Topics` data-category group (6 topics) + `Body__c` rich-text field + **10 English articles published & categorized** (`scripts/seed_knowledge.apex`) | [018](docs/adr/ADR-018-knowledge-category-topic-alignment.md) |
-| **Security** | Permission sets `HW_Admin`, `HW_ServiceAgent` (bill/reading read-only = SoR), `HW_ReadOnly` | — |
-| **Multi-currency** | Activated; corporate **EUR** + **CHF** (REST insert; Apex DML blocked) | [010](docs/adr/ADR-010-multi-currency-eur-chf.md) |
-| **Seed data** | 4 DACH accounts (Lena/Hamburg-DE, Huber/Wien-AT, Müller GmbH/Köln-DE, Studio Alpina/Zürich-CH) + meters, contracts, bills (Lena's = the spike), readings, consent, outage | — |
+| Area                  | Components                                                                                                                                                                | ADR                                                            |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| **Data model**        | 7 objects + 37 fields: `Meter__c`, `Meter_Reading__c`, `Tariff__c`, `Service_Contract__c`, `Energy_Bill__c`, `Outage__c`, `Consent__c` + `Case.HW_Topic__c`               | —                                                              |
+| **Case record types** | Billing / Consumption / Move / Outage / Complaint on shared `HW_Support_Process`                                                                                          | [017](docs/adr/ADR-017-sla-entitlement-omnichannel-routing.md) |
+| **Omni-Channel**      | `HW_Case_Channel`, `HW_Escalations` queue, `HW_Case_Routing` (LEAST_ACTIVE, cap 1), Available/Busy presence, `HW_German` + `HW_Billing` skills                            | [017](docs/adr/ADR-017-sla-entitlement-omnichannel-routing.md) |
+| **SLA**               | `HW_Standard_SLA` entitlement process (exit on `IsClosed`) + `HW_First_Response` (4h) + `HW_Resolution` (2 business days) milestones                                      | [017](docs/adr/ADR-017-sla-entitlement-omnichannel-routing.md) |
+| **Knowledge**         | `HanseWatt_Topics` data-category group (6 topics) + `Body__c` rich-text field + **10 English articles published & categorized** (`scripts/seed_knowledge.apex`)           | [018](docs/adr/ADR-018-knowledge-category-topic-alignment.md)  |
+| **Security**          | Permission sets `HW_Admin`, `HW_ServiceAgent` (bill/reading read-only = SoR), `HW_ReadOnly`                                                                               | —                                                              |
+| **Multi-currency**    | Activated; corporate **EUR** + **CHF** (REST insert; Apex DML blocked)                                                                                                    | [010](docs/adr/ADR-010-multi-currency-eur-chf.md)              |
+| **Seed data**         | 4 DACH accounts (Lena/Hamburg-DE, Huber/Wien-AT, Müller GmbH/Köln-DE, Studio Alpina/Zürich-CH) + meters, contracts, bills (Lena's = the spike), readings, consent, outage | —                                                              |
 
 ### Gotchas learned (so we don't repeat the deploy cycles)
 
@@ -137,14 +137,14 @@ live SLA gate test awaits an org schema-cache refresh.
   Found via the Metadata WSDL (`/services/wsdl/metadata`, sid-cookie auth) + `describeValueType`.
 - **`BusinessProcess`** decomposed file needs an explicit `<fullName>` element.
 - **Entitlement process** needs an exit criterion (`exitCriteriaFormula = IsClosed`); deploy
-  `MilestoneType` **before** the `EntitlementProcess` in a *separate successful* deploy (else
+  `MilestoneType` **before** the `EntitlementProcess` in a _separate successful_ deploy (else
   rollback drops the milestone types the process references).
 - **`Knowledge__kav.Body__c` schema-cache lag.** New rich-text field appears in Tooling
   `FieldDefinition` but lagged the Apex/SOQL active schema; Knowledge body stored in `Summary`
   for now.
 - **`Case.EntitlementId` is NOT provisioned in this Dev Edition (Agentforce + Data 360).**
   Confirmed after fixing the Service Cloud User license + a full disable/re-enable cycle (UI
-  *and* metadata): the standard Case entitlement lookup never instantiates (catalogued in
+  _and_ metadata): the standard Case entitlement lookup never instantiates (catalogued in
   Tooling `FieldDefinition`, absent from `fields.getMap()`). The live SLA milestone clock
   can't bind here — edition limitation, not our config. `verify_gate.apex` guards on the
   field. Full diagnosis: `docs/troubleshooting/faz1-gate-case-entitlementid.md`.
@@ -170,11 +170,11 @@ clean future-verification path. This does not block Faz 2 or any headline featur
 - **Standard OOTB actions are back doors.** The agent shipped with `Identify Customer By Email`,
   `Update Verified Contact` and `Get All Cases For Contact` in a topic — the first resolves an
   Account from an **email alone**, bypassing our two-factor check entirely. Removed (ADR-021).
-  *A guarantee is only as strong as the weakest path the planner may take.*
+  _A guarantee is only as strong as the weakest path the planner may take._
 - **Changing an Apex action's inputs requires re-creating the agent action** in Builder — the
   GenAiFunction captures the input schema at creation and does not refresh.
 - **An `@InvocableVariable` typed `Id` will crash.** The value is chosen by the LLM; it happily
-  puts an email address in an Account Id slot, and Apex throws on coercion *before your code runs*.
+  puts an email address in an Account Id slot, and Apex throws on coercion _before your code runs_.
   Take `String` and parse through `HWIds` (ADR-021).
 - **Builder preview sessions cap at ~9 customer turns**, then error. Split long demos.
 - **Reset before every recording** (`scripts/reset_tariff_demo.apex`) — a tariff change is

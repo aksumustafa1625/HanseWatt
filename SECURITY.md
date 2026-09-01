@@ -25,17 +25,17 @@ placeholders and removed from the history.
 This project's security posture is not a checklist bolted on at the end; it is
 most of what the later ADRs are about. The ones to read:
 
-| Concern | Record |
-|---|---|
-| What the agent is allowed to decide at all | [ADR-002](docs/adr/ADR-002-agentforce-service-agent-vs-custom-orchestration.md) |
-| Where the system of record boundary sits | [ADR-003](docs/adr/ADR-003-data360-system-of-record-boundary.md) |
-| Trust Layer guardrails, and German formal register | [ADR-008](docs/adr/ADR-008-german-sie-trust-layer-guardrails.md) |
-| **DSGVO right-to-be-forgotten across systems** | [ADR-009](docs/adr/ADR-009-dsgvo-rtbf-across-systems.md) |
-| Agent evaluation with an LLM judge | [ADR-012](docs/adr/ADR-012-agent-eval-llm-judge.md) |
-| **Adversarial / red-team policy and evidence standard** | [ADR-013](docs/adr/ADR-013-adversarial-red-team-policy.md) |
-| **Consent as a state machine, not a sentence** | [ADR-020](docs/adr/ADR-020-tariff-advisory-consent-handshake.md) |
-| **Identity is two-factor; the refusal is a missing code path** | [ADR-021](docs/adr/ADR-021-identity-is-two-factor.md) |
-| **Identity is a token, not a claim** | [ADR-022](docs/adr/ADR-022-identity-is-a-token-not-a-claim.md) |
+| Concern                                                        | Record                                                                          |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| What the agent is allowed to decide at all                     | [ADR-002](docs/adr/ADR-002-agentforce-service-agent-vs-custom-orchestration.md) |
+| Where the system of record boundary sits                       | [ADR-003](docs/adr/ADR-003-data360-system-of-record-boundary.md)                |
+| Trust Layer guardrails, and German formal register             | [ADR-008](docs/adr/ADR-008-german-sie-trust-layer-guardrails.md)                |
+| **DSGVO right-to-be-forgotten across systems**                 | [ADR-009](docs/adr/ADR-009-dsgvo-rtbf-across-systems.md)                        |
+| Agent evaluation with an LLM judge                             | [ADR-012](docs/adr/ADR-012-agent-eval-llm-judge.md)                             |
+| **Adversarial / red-team policy and evidence standard**        | [ADR-013](docs/adr/ADR-013-adversarial-red-team-policy.md)                      |
+| **Consent as a state machine, not a sentence**                 | [ADR-020](docs/adr/ADR-020-tariff-advisory-consent-handshake.md)                |
+| **Identity is two-factor; the refusal is a missing code path** | [ADR-021](docs/adr/ADR-021-identity-is-two-factor.md)                           |
+| **Identity is a token, not a claim**                           | [ADR-022](docs/adr/ADR-022-identity-is-a-token-not-a-claim.md)                  |
 
 The through-line across the last three: **a guardrail the model can talk its way
 past is not a guardrail.** A refusal that depends on the model choosing to refuse

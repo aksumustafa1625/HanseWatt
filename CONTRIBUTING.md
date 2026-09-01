@@ -8,8 +8,8 @@ and one kind more than any other.
 
 **A way past a guardrail.**
 
-Three of the later ADRs argue that a refusal the model *chooses* is a preference,
-and only a refusal the code path *requires* is a control
+Three of the later ADRs argue that a refusal the model _chooses_ is a preference,
+and only a refusal the code path _requires_ is a control
 ([020](docs/adr/ADR-020-tariff-advisory-consent-handshake.md),
 [021](docs/adr/ADR-021-identity-is-two-factor.md),
 [022](docs/adr/ADR-022-identity-is-a-token-not-a-claim.md)). If you can get the
@@ -55,16 +55,16 @@ duplicate numbers — both of which have caught real mistakes.
 
 Eight package directories, split by role rather than by feature:
 
-| Directory | Holds |
-|---|---|
-| `force-app` | Base objects, layouts, permission sets |
-| `force-app-services` | Business logic |
-| `force-app-actions` | Invocable actions the agent may call |
-| `force-app-handlers` | Trigger handlers |
-| `force-app-agent` | Agent, topics, prompt templates |
-| `force-app-datacloud` | Data 360 streams and mappings |
-| `force-app-lwc` | Lightning Web Components |
-| `force-app-tests` | Apex test classes |
+| Directory             | Holds                                  |
+| --------------------- | -------------------------------------- |
+| `force-app`           | Base objects, layouts, permission sets |
+| `force-app-services`  | Business logic                         |
+| `force-app-actions`   | Invocable actions the agent may call   |
+| `force-app-handlers`  | Trigger handlers                       |
+| `force-app-agent`     | Agent, topics, prompt templates        |
+| `force-app-datacloud` | Data 360 streams and mappings          |
+| `force-app-lwc`       | Lightning Web Components               |
+| `force-app-tests`     | Apex test classes                      |
 
 The split is deliberate: what the agent can invoke is a directory you can list,
 rather than a set of annotations scattered through a services folder.

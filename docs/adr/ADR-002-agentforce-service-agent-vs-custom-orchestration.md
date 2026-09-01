@@ -38,11 +38,13 @@ click-heavy and not fully source-trackable (captured in `docs/manual-setup/`).
 ## Alternatives Considered
 
 ### Custom LLM + Apex orchestration
-Rejected: re-invents the Trust Layer, grounding, and audit that are the *point* of the
+
+Rejected: re-invents the Trust Layer, grounding, and audit that are the _point_ of the
 demo; more code, weaker governance story, and no native Testing Center. Would read as
 "bolted-on AI", not "AI-native platform".
 
 ### Einstein Bots (classic)
+
 Rejected: rule/intent-based, not generative or autonomous; cannot ground on Data 360 or
 reason over Calculated Insights. Wrong altitude for the thesis.
 

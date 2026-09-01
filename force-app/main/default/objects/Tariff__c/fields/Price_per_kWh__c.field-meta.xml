@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Price_per_kWh__c</fullName>
-    <label>Price per kWh</label>
-    <type>Currency</type>
-    <precision>16</precision>
-    <scale>4</scale>
+  <fullName>Price_per_kWh__c</fullName>
+  <label>Price per kWh</label>
+  <type>Currency</type>
+  <precision>16</precision>
+  <scale>4</scale>
 </CustomField>

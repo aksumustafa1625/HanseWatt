@@ -9,8 +9,8 @@
 
 Up to this point the agent could **explain** a problem (the +64.6 % consumption anomaly,
 grounded in Data 360), **answer** a procedure question (from a cited Knowledge article), and
-**log** a case. It could not **solve** anything. A reviewer's fair question was: *"the agent
-tells the customer their bill is high — and then what?"*
+**log** a case. It could not **solve** anything. A reviewer's fair question was: _"the agent
+tells the customer their bill is high — and then what?"_
 
 The obvious next capability is the one every DACH energy retailer actually runs: a
 **Tarifwechsel** (tariff change). But it raises two problems that are much harder than they
@@ -19,12 +19,12 @@ first look, and both of them are the reason this ADR exists.
 ### Problem 1 — a tariff recommendation is not arithmetic, it is judgement
 
 German electricity tariffs are priced as **Arbeitspreis** (per kWh) **plus Grundpreis** (a fixed
-monthly base fee). So a tariff with a *lower* per-kWh price can be **more expensive** for a given
+monthly base fee). So a tariff with a _lower_ per-kWh price can be **more expensive** for a given
 customer, because its base fee is higher. "Switch me to a cheaper tariff" therefore cannot be
 answered by picking the lowest headline price.
 
 Worse, in HanseWatt's real seeded catalogue the break-even between the standard tariff and the
-EV tariff is **375 kWh/month** — and Lena's usage *straddles it*: her trailing average is 316
+EV tariff is **375 kWh/month** — and Lena's usage _straddles it_: her trailing average is 316
 kWh/month, but her latest month was 520 kWh (the anomaly the agent just explained).
 
 So the honest answer genuinely depends on a fact the agent **does not know**: is the new load
@@ -33,9 +33,9 @@ permanent (a wallbox / heat pump) or was it a one-off?
 - At 316 kWh/month → **Strom Basis** is cheapest; the EV tariff would cost **~28 € more**.
 - At 520 kWh/month → **EV-Tarif** is cheapest; it saves **~70 €/year**.
 
-A naive implementation would annualise the *anomaly month* (520 × 12) and confidently recommend
-a switch. That is exactly the incoherence a Principal Engineer would catch: *the same agent that
-just flagged 520 as an anomaly cannot two messages later treat it as the customer's normal usage.*
+A naive implementation would annualise the _anomaly month_ (520 × 12) and confidently recommend
+a switch. That is exactly the incoherence a Principal Engineer would catch: _the same agent that
+just flagged 520 as an anomaly cannot two messages later treat it as the customer's normal usage._
 
 ### Problem 2 — this is the first action that mutates a contract
 
@@ -54,14 +54,14 @@ public class Request {
 if (customerConfirmed != true) return refuse();
 ```
 
-and then to write in the README: *"human-in-the-loop is enforced in code, not in the prompt."*
+and then to write in the README: _"human-in-the-loop is enforced in code, not in the prompt."_
 
 **That claim is false, and it is the single weakest point in the design.** The Boolean is
 **filled in by the model**. The topic instruction says "set it only after the customer confirms",
 so the thing deciding whether consent happened is still the LLM's judgement. A jailbroken,
 confused, or simply hallucinating model can set `customerConfirmed = true` with no confirmation
-at all. What the code enforces is not the *existence of consent* — only that *a flag was filled
-in*. It is prompt-wishing hiding behind a parameter.
+at all. What the code enforces is not the _existence of consent_ — only that _a flag was filled
+in_. It is prompt-wishing hiding behind a parameter.
 
 ## Decision
 
@@ -83,7 +83,7 @@ carried in the action's contract.
 Gas tariffs are never costed against an electricity contract (type-matched comparison).
 
 **This is why the capability is an agent action and not a Flow.** A Flow can do the arithmetic.
-It cannot notice that the arithmetic is *undetermined* and ask the customer the one question that
+It cannot notice that the arithmetic is _undetermined_ and ask the customer the one question that
 resolves it.
 
 ### 2. Consent is a **server-issued, expiring, account-scoped state machine** — not a Boolean
@@ -91,6 +91,7 @@ resolves it.
 The change is split into a two-step handshake across two actions:
 
 **Step 1 — `HWProposeTariffChangeAction`** (benign write)
+
 - Costs the catalogue, and if a genuinely cheaper tariff exists, inserts a
   **`Tariff_Change_Request__c`** with the proposed tariff, the quoted saving, the assumption the
   quote depends on, `Status = Proposed`, and `Expires_At = now + 30 min`.
@@ -98,6 +99,7 @@ The change is split into a two-step handshake across two actions:
   agent. It never touches the customer's contract.
 
 **Step 2 — `HWConfirmTariffChangeAction`** (the only mutating action in HanseWatt)
+
 - Applies a change **only if** the presented request number:
   1. **exists**,
   2. **belongs to this account** (`WHERE Name IN :nums AND Account__c IN :accIds`),
@@ -107,9 +109,9 @@ The change is split into a two-step handshake across two actions:
 
 #### 2b. The SECOND confirmation is a state, not an instruction
 
-Splitting propose from confirm proves the customer's *intent* came from a real proposal. It
-does **not** prove they were told the change is **binding**. An instruction that says *"ask
-twice"* is the same trap as the Boolean: nothing in the code stops the model from acting on
+Splitting propose from confirm proves the customer's _intent_ came from a real proposal. It
+does **not** prove they were told the change is **binding**. An instruction that says _"ask
+twice"_ is the same trap as the Boolean: nothing in the code stops the model from acting on
 the first "Ja" — and in the first live run, that is exactly what it did. The narrative
 promised deliberate friction; the behaviour delivered none.
 
@@ -121,21 +123,21 @@ Proposed  --confirm #1-->  Terms_Presented  --confirm #2-->  Applied
            returns the binding terms)
 ```
 
-`HWConfirmTariffChangeAction`'s **first** call is *incapable* of changing the contract. It
+`HWConfirmTariffChangeAction`'s **first** call is _incapable_ of changing the contract. It
 advances the proposal to `Terms_Presented` and hands the agent the binding terms — this is a
 binding contract change, it takes effect next billing period, here is the saving, **and here
 is the assumption the saving rests on** — with an explicit instruction not to claim anything
 changed. Only a **second** call, after the customer has seen those terms and confirmed them,
 applies the change.
 
-The customer is therefore *guaranteed* to see the binding terms. Not because the agent was
+The customer is therefore _guaranteed_ to see the binding terms. Not because the agent was
 asked nicely — because there is no code path that skips them. Verified live: the first "Ja"
 produced the terms and left the contract untouched; only the second applied it.
 
-**Why this is structural and the Boolean was not:** the request number exists *only* in the
+**Why this is structural and the Boolean was not:** the request number exists _only_ in the
 output of step 1. A model that skipped the proposal has nothing to present. A model that
 hallucinates consent and invents `TCR-99999` is refused because no such row exists. A model that
-replays *another customer's* valid number is refused because the query is account-scoped. The
+replays _another customer's_ valid number is refused because the query is account-scoped. The
 guarantee is enforced by the **data flow**, not by hoping the prompt held.
 
 Consent is also now **auditable** (who, when, which proposal, which quoted saving, on what stated
@@ -151,26 +153,28 @@ On success the action (a) switches `Service_Contract__c.Tariff__c`, (b) opens a 
 
 That Platform Event is the **integration seam**: in production a MuleSoft subscriber forwards it
 to **SAP IS-U**, which owns the actual billing registration. In this org the far side of the seam
-is simulated — but the seam itself is real, published, and source-controlled. Saying *"I built the
-integration point; the far side is simulated"* is a materially different claim from *"I simulated
-it"*.
+is simulated — but the seam itself is real, published, and source-controlled. Saying _"I built the
+integration point; the far side is simulated"_ is a materially different claim from _"I simulated
+it"_.
 
 ## Consequences
 
 **Positive**
+
 - The agent now completes the arc: **explain → quantify → solve**, with a € figure a CFO
   understands that the model **cannot invent** (it is arithmetic over real `Tariff__c` rows at the
   customer's real meter readings). This is the **money leg** of the grounding story:
-  *figures → Data 360 · procedure → Knowledge · money → tariff arithmetic.*
+  _figures → Data 360 · procedure → Knowledge · money → tariff arithmetic._
 - The strongest sentence in the project is now defensible rather than aspirational:
   **"An irreversible, contractual action. Human-in-the-loop is enforced by the data flow — if the
   model hallucinates a 'Ja' and invents a proposal number, the Apex refuses and nothing happens."**
 - Two dormant Faz-1 objects (`Tariff__c`, `Service_Contract__c`) are finally load-bearing.
-- The cross-customer guarantee is now structural on the *write* path too: a proposal minted for
+- The cross-customer guarantee is now structural on the _write_ path too: a proposal minted for
   one customer can never be applied to another.
 - Deliberate friction on a binding action reads as maturity, not as a missing feature.
 
 **Negative / trade-offs**
+
 - Two actions instead of one, plus a custom object and a platform event. More moving parts.
 - The handshake costs a conversational turn. That is the point, but it is a cost.
 - The agent still updates a **CRM-side** contract record; the real billing system is not called.
@@ -180,22 +184,22 @@ it"*.
 
 ## Alternatives considered
 
-**A `customerConfirmed` Boolean on the write action.** *Rejected* — the model fills it in, so it
+**A `customerConfirmed` Boolean on the write action.** _Rejected_ — the model fills it in, so it
 guarantees only that a flag was set, not that consent occurred. It is the trap this ADR exists to
 avoid, and it is the first thing a Principal Engineer would attack.
 
-**An out-of-band confirmation (emailed link or 6-digit code).** *Deferred.* Architecturally this
+**An out-of-band confirmation (emailed link or 6-digit code).** _Deferred._ Architecturally this
 is the most rigorous option — consent then travels on a channel the model cannot touch at all. It
 was rejected **for now** because it requires an email/Flow round-trip that destroys the 30-second
 demo, and because the server-issued request number already provides the property that matters:
 **the model cannot fabricate the thing the code checks.** Noted as the production hardening step.
 
-**Checking a `Consent__c` record instead.** *Rejected as insufficient on its own* — a standing
-consent record proves the customer *once* agreed to tariff-change processing; it does not prove
+**Checking a `Consent__c` record instead.** _Rejected as insufficient on its own_ — a standing
+consent record proves the customer _once_ agreed to tariff-change processing; it does not prove
 they agreed to **this** switch, at **this** price, on **this** assumption. The request record does.
 (`Consent__c` remains available as an additional gate.)
 
-**Not acting at all — propose and escalate to a human only.** *Rejected as the default*, because
+**Not acting at all — propose and escalate to a human only.** _Rejected as the default_, because
 it gives up the demo's payoff and the dormant infrastructure stays dormant. But note the design
 **degrades into exactly this** whenever the guardrails fire: no proposal, invented number, foreign
 number, or expired number all end in "nothing changed, shall I open a case?" — which is the honest
@@ -206,20 +210,20 @@ fallback, reached automatically.
 Proven in **free Apex tests** before a single Flex Credit was spent (25 tests; full suite 74 tests,
 100 % pass, 97 % org-wide coverage):
 
-| Claim | Test |
-|---|---|
-| The Grundgebühr trap is real (break-even 375 kWh/month) | `HWTariffServiceTest.grundgebuehrTrapIsReal` |
-| The recommendation is conditional when usage straddles it | `recommendationIsConditionalWhenUsageStraddlesBreakEven` |
-| Same question, different customer, **opposite** answer | `recommendationFlipsForALowConsumptionCustomer` |
-| A gas tariff is never costed against an electricity contract | `gasTariffIsNeverComparedAgainstAnElectricityContract` |
-| No consumption / no contract → refuses, does not guess | `noReadingsIsRefusedNotGuessed`, `noContractIsRefusedNotGuessed` |
-| The proposal number is issued by the platform, not the model | `mintsAServerIssuedRequestNumber` |
-| Already on the cheapest tariff → no switch is manufactured | `doesNotInventASwitchForACustomerAlreadyOnTheCheapestTariff` |
-| **The FIRST confirmation applies NOTHING; it presents the binding terms** | `firstConfirmationPresentsTermsAndChangesNothing` |
-| Only the **second** confirmation applies the change + opens the Case | `secondConfirmationAppliesAndOpensACase` |
-| **Invented number → refused, contract UNCHANGED** | `refusesAnInventedRequestNumber` |
-| **Another customer's number → refused, contract UNCHANGED** | `refusesAnotherCustomersRequestNumber` |
-| **Expired proposal → refused, marked Expired, UNCHANGED** | `refusesAnExpiredProposal` |
-| Valid proposal → contract switched, Case opened, event published | `appliesAValidProposalAndOpensACase` |
-| Confirming twice changes nothing twice | `secondConfirmIsIdempotent` |
-| Bulk-safe (200 records, no DML/SOQL scaling) | `bulkStaysGovernorSafe` (×3) |
+| Claim                                                                     | Test                                                             |
+| ------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| The Grundgebühr trap is real (break-even 375 kWh/month)                   | `HWTariffServiceTest.grundgebuehrTrapIsReal`                     |
+| The recommendation is conditional when usage straddles it                 | `recommendationIsConditionalWhenUsageStraddlesBreakEven`         |
+| Same question, different customer, **opposite** answer                    | `recommendationFlipsForALowConsumptionCustomer`                  |
+| A gas tariff is never costed against an electricity contract              | `gasTariffIsNeverComparedAgainstAnElectricityContract`           |
+| No consumption / no contract → refuses, does not guess                    | `noReadingsIsRefusedNotGuessed`, `noContractIsRefusedNotGuessed` |
+| The proposal number is issued by the platform, not the model              | `mintsAServerIssuedRequestNumber`                                |
+| Already on the cheapest tariff → no switch is manufactured                | `doesNotInventASwitchForACustomerAlreadyOnTheCheapestTariff`     |
+| **The FIRST confirmation applies NOTHING; it presents the binding terms** | `firstConfirmationPresentsTermsAndChangesNothing`                |
+| Only the **second** confirmation applies the change + opens the Case      | `secondConfirmationAppliesAndOpensACase`                         |
+| **Invented number → refused, contract UNCHANGED**                         | `refusesAnInventedRequestNumber`                                 |
+| **Another customer's number → refused, contract UNCHANGED**               | `refusesAnotherCustomersRequestNumber`                           |
+| **Expired proposal → refused, marked Expired, UNCHANGED**                 | `refusesAnExpiredProposal`                                       |
+| Valid proposal → contract switched, Case opened, event published          | `appliesAValidProposalAndOpensACase`                             |
+| Confirming twice changes nothing twice                                    | `secondConfirmIsIdempotent`                                      |
+| Bulk-safe (200 records, no DML/SOQL scaling)                              | `bulkStaysGovernorSafe` (×3)                                     |

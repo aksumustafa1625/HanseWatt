@@ -23,7 +23,7 @@ Use a **retriever split**:
 
 Hard instruction guardrail: the agent **only states numbers returned by an Action or a
 Calculated Insight** — it never invents a figure. Every answer surfaces a citation
-(e.g. *"Quelle: Knowledge 'Why Is My Bill Higher Than Usual?' + CI Avg_Monthly_kWh"*).
+(e.g. _"Quelle: Knowledge 'Why Is My Bill Higher Than Usual?' + CI Avg_Monthly_kWh"_).
 
 ## Consequences
 
@@ -37,10 +37,12 @@ categories must track agent topics as both evolve.
 ## Alternatives Considered
 
 ### Single Knowledge retriever only
+
 Rejected: no live, per-customer figures — the bill-anomaly explanation (the demo's core)
 would be impossible without Data 360.
 
 ### Let the LLM free-generate figures
+
 Rejected: hallucination risk; unacceptable in billing/energy where a wrong number is a
 compliance and trust failure.
 
@@ -62,7 +64,7 @@ vector index over `Knowledge__kav`, consumed by the standard
 - The `AiRetriever` metadata type does not exist here (`INVALID_TYPE` from the Metadata API),
   so the library/retriever can neither be inspected nor managed from source.
 - The Data Library's Data Cloud index never leaves **"Not Started"**, and without an indexed
-  library the standard Knowledge action fails at runtime — while still *greedily* winning
+  library the standard Knowledge action fails at runtime — while still _greedily_ winning
   action selection and stealing billing questions from the custom actions.
 
 This is the fourth edition boundary in this Dev Edition (after the NGA publish 404,
@@ -77,7 +79,7 @@ This is the fourth edition boundary in this Dev Edition (after the NGA publish 4
   kündigung→cancellation, …) lets a German question land on the English corpus deterministically,
   rather than relying on the model to translate.
 - Below a score threshold it returns **nothing**. `HWAnswerFromKnowledgeAction` then tells the
-  agent: *"do not guess the policy — offer to open a case."* The retriever cannot invent a
+  agent: _"do not guess the policy — offer to open a case."_ The retriever cannot invent a
   source; the citation is the real `ArticleNumber`.
 - The two greedy standard Knowledge actions were removed from the topics (Tooling API), and the
   topic **description** was widened so the classifier routes how-to questions to the topic that
@@ -90,11 +92,12 @@ scoring beats a vector index on cost, latency, and auditability — and unlike R
 large, multilingual corpus.
 
 **Verified live (2026-07-12):**
-- *"I'm moving house next month. What do I need to do?"* → the Umzug article, cited
+
+- _"I'm moving house next month. What do I need to do?"_ → the Umzug article, cited
   `HanseWatt Knowledge — Moving House: Start or Stop Service (Umzug) (000001008)`.
-- *"What should I do during a power outage?"* → the Störung article (000001004) — the scorer
+- _"What should I do during a power outage?"_ → the Störung article (000001004) — the scorer
   discriminates between articles.
-- *"Does HanseWatt also offer internet and mobile contracts?"* → **no article, no invented
+- _"Does HanseWatt also offer internet and mobile contracts?"_ → **no article, no invented
   policy.**
 
 The figure side is unchanged and still grounded in Data 360 (+64.6 %). The split now holds

@@ -23,7 +23,7 @@ A built **Right-to-be-Forgotten** tool:
 
 ## Consequences
 
-**Positive:** compliance becomes a *working feature* with cross-system reach + audit — a
+**Positive:** compliance becomes a _working feature_ with cross-system reach + audit — a
 strong DACH differentiator; reuses TechnoStore's GDPR thinking as built code.
 
 **Negative / Trade-offs:** two deletion mechanics to orchestrate and prove; anonymize-vs-
@@ -33,9 +33,11 @@ Data 360 deletion is asynchronous, so the audit event records "requested", recon
 ## Alternatives Considered
 
 ### Salesforce-only deletion
+
 Rejected: leaves personal data in the Data 360 profile — not actually compliant.
 
 ### Manual deletion runbook
+
 Rejected: a documented manual process is weaker portfolio evidence than a working,
 audited automation.
 

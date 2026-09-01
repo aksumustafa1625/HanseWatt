@@ -14,13 +14,13 @@ We need an explicit, defensible boundary.
 
 Define system-of-record per data type:
 
-| Data | System of Record | Why |
-|---|---|---|
-| Account / Contact | Salesforce | customer master, transactional CRM |
-| `Meter__c`, `Tariff__c`, `Service_Contract__c`, `Outage__c` | Salesforce | low-volume operational/dimension data, written by UI + agent actions |
-| `Meter_Reading__c` (history) | **Data 360** | high-volume time-series; SF keeps only a small recent copy for display |
-| `Energy_Bill__c` (history) | **Data 360** (from SAP IS-U feed) | external billing system feed; SF holds latest for action reads |
-| `Consent__c`, `HW_Agent_Eval_Result__c` | Salesforce | governance/audit, written by SF logic |
+| Data                                                        | System of Record                  | Why                                                                    |
+| ----------------------------------------------------------- | --------------------------------- | ---------------------------------------------------------------------- |
+| Account / Contact                                           | Salesforce                        | customer master, transactional CRM                                     |
+| `Meter__c`, `Tariff__c`, `Service_Contract__c`, `Outage__c` | Salesforce                        | low-volume operational/dimension data, written by UI + agent actions   |
+| `Meter_Reading__c` (history)                                | **Data 360**                      | high-volume time-series; SF keeps only a small recent copy for display |
+| `Energy_Bill__c` (history)                                  | **Data 360** (from SAP IS-U feed) | external billing system feed; SF holds latest for action reads         |
+| `Consent__c`, `HW_Agent_Eval_Result__c`                     | Salesforce                        | governance/audit, written by SF logic                                  |
 
 **Agent reads Calculated Insights, never raw time-series rows.** High-volume aggregation
 (averages, anomaly scores) is computed in Data 360 and exposed as CIs; the agent's actions

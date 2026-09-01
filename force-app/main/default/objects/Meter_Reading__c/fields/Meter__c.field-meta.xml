@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Meter__c</fullName>
-    <label>Meter</label>
-    <type>Lookup</type>
-    <referenceTo>Meter__c</referenceTo>
-    <relationshipLabel>Readings</relationshipLabel>
-    <relationshipName>Readings</relationshipName>
-    <required>false</required>
+  <fullName>Meter__c</fullName>
+  <label>Meter</label>
+  <type>Lookup</type>
+  <referenceTo>Meter__c</referenceTo>
+  <relationshipLabel>Readings</relationshipLabel>
+  <relationshipName>Readings</relationshipName>
+  <required>false</required>
 </CustomField>

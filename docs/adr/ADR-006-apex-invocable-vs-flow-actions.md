@@ -25,7 +25,7 @@ bulk-safe, no DML-in-loop, ≥80% test coverage with `HttpCalloutMock`.
 ## Consequences
 
 **Positive:** Apex actions are **unit-testable for free** (Apex tests burn no Flex Credits)
-— central to the quota discipline: action logic is proven by tests *before* it is ever
+— central to the quota discipline: action logic is proven by tests _before_ it is ever
 wired to the live agent. Precise FLS/sharing enforcement (`WITH USER_MODE` / `as user`)
 gives a defensible security story. Flow keeps simple processes admin-editable.
 
@@ -35,10 +35,12 @@ disciplined coverage. Mixed ownership (dev vs admin) of the action layer.
 ## Alternatives Considered
 
 ### All-Flow actions
+
 Rejected: hard to unit-test deterministically, weaker for complex SOQL/Data 360 reads and
 bulk-safe DML, and no free pre-agent verification path — every iteration would burn credits.
 
 ### All-Apex actions
+
 Rejected: loses declarative agility for genuinely simple, branchy processes (Move,
 callback) that benefit from admin tuning without a deploy.
 

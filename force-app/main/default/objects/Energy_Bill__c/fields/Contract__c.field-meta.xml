@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Contract__c</fullName>
-    <label>Service Contract</label>
-    <type>Lookup</type>
-    <referenceTo>Service_Contract__c</referenceTo>
-    <relationshipLabel>Energy Bills</relationshipLabel>
-    <relationshipName>Energy_Bills</relationshipName>
+  <fullName>Contract__c</fullName>
+  <label>Service Contract</label>
+  <type>Lookup</type>
+  <referenceTo>Service_Contract__c</referenceTo>
+  <relationshipLabel>Energy Bills</relationshipLabel>
+  <relationshipName>Energy_Bills</relationshipName>
 </CustomField>

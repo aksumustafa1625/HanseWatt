@@ -1,19 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Move</fullName>
-    <active>true</active>
-    <businessProcess>HW_Support_Process</businessProcess>
-    <description>Move (Umzug) — start/stop service at an address, final bill.</description>
-    <label>Move (Umzug)</label>
-    <picklistValues>
-        <picklist>HW_Topic__c</picklist>
-        <values>
-            <fullName>Move</fullName>
-            <default>true</default>
-        </values>
-        <values>
-            <fullName>Other</fullName>
-            <default>false</default>
-        </values>
-    </picklistValues>
+  <fullName>Move</fullName>
+  <active>true</active>
+  <businessProcess>HW_Support_Process</businessProcess>
+  <description>
+    Move (Umzug) — start/stop service at an address, final bill.
+  </description>
+  <label>Move (Umzug)</label>
+  <picklistValues>
+    <picklist>HW_Topic__c</picklist>
+    <values>
+      <fullName>Move</fullName>
+      <default>true</default>
+    </values>
+    <values>
+      <fullName>Other</fullName>
+      <default>false</default>
+    </values>
+  </picklistValues>
 </RecordType>

@@ -36,10 +36,12 @@ language); German content is a later localization step.
 ## Alternatives Considered
 
 ### Wait for `Body__c` schema cache before seeding
+
 Rejected: open-ended wait (the field stayed hidden >6 min); `Summary` unblocks Faz 1 now
 with a trivial later swap.
 
 ### Free-form categories not tied to topics
+
 Rejected: defeats topic-scoped retrieval; the whole point is topic→category alignment.
 
 ## References

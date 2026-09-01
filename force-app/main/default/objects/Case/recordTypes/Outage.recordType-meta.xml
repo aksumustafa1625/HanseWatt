@@ -1,19 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Outage</fullName>
-    <active>true</active>
-    <businessProcess>HW_Support_Process</businessProcess>
-    <description>Outage (Störung) — network/supply interruption by region.</description>
-    <label>Outage (Störung)</label>
-    <picklistValues>
-        <picklist>HW_Topic__c</picklist>
-        <values>
-            <fullName>Outage</fullName>
-            <default>true</default>
-        </values>
-        <values>
-            <fullName>Other</fullName>
-            <default>false</default>
-        </values>
-    </picklistValues>
+  <fullName>Outage</fullName>
+  <active>true</active>
+  <businessProcess>HW_Support_Process</businessProcess>
+  <description>
+    Outage (Störung) — network/supply interruption by region.
+  </description>
+  <label>Outage (Störung)</label>
+  <picklistValues>
+    <picklist>HW_Topic__c</picklist>
+    <values>
+      <fullName>Outage</fullName>
+      <default>true</default>
+    </values>
+    <values>
+      <fullName>Other</fullName>
+      <default>false</default>
+    </values>
+  </picklistValues>
 </RecordType>

@@ -1,17 +1,19 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
-    <deploymentStatus>Deployed</deploymentStatus>
-    <description>A customer's active tariff contract (which tariff on which meter).</description>
-    <enableActivities>true</enableActivities>
-    <enableHistory>false</enableHistory>
-    <enableReports>true</enableReports>
-    <enableSearch>true</enableSearch>
-    <label>Service Contract</label>
-    <pluralLabel>Service Contracts</pluralLabel>
-    <nameField>
-        <displayFormat>SC-{000000}</displayFormat>
-        <label>Contract Number</label>
-        <type>AutoNumber</type>
-    </nameField>
-    <sharingModel>ReadWrite</sharingModel>
+  <deploymentStatus>Deployed</deploymentStatus>
+  <description>
+    A customer's active tariff contract (which tariff on which meter).
+  </description>
+  <enableActivities>true</enableActivities>
+  <enableHistory>false</enableHistory>
+  <enableReports>true</enableReports>
+  <enableSearch>true</enableSearch>
+  <label>Service Contract</label>
+  <pluralLabel>Service Contracts</pluralLabel>
+  <nameField>
+    <displayFormat>SC-{000000}</displayFormat>
+    <label>Contract Number</label>
+    <type>AutoNumber</type>
+  </nameField>
+  <sharingModel>ReadWrite</sharingModel>
 </CustomObject>
